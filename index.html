@@ -1,0 +1,1621 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Oefenapp voor vmbo Zorg &amp; Welzijn, profielmodule Mens &amp; Zorg, in de opbouw van het cspe onderdeel D.">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Virtuele Cliënt Mens &amp; Zorg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: opdrachtenboekje — smalle inhoudsrail links, één 'pagina' rechts; punten in de kantlijn zoals in het cspe-boekje */
+:root{
+  --paper:#eef2f8; --sheet:#ffffff; --ink:#13213a; --muted:#56637c; --line:#d6dde9;
+  --blue:#1f4fbf; --blue-soft:#e3ebfb; --blue-ink:#ffffff;
+  --coral:#d9482b; --coral-soft:#fde8e3;
+  --ok:#17804f; --ok-soft:#dff3e8; --bad:#c2342a; --bad-soft:#fbe3e1; --warn:#9a6a10; --warn-soft:#fbf0d9;
+  --bubble-c:#f1f4f9; --stage:#dfe7f3; --stage2:#c9d6ea;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0e1522; --sheet:#162034; --ink:#e5ebf6; --muted:#9ba8c2; --line:#2a3752;
+  --blue:#7ea4ff; --blue-soft:#1d2c4c; --blue-ink:#0e1522;
+  --coral:#ff7b5e; --coral-soft:#3a1d17;
+  --ok:#4cc58c; --ok-soft:#133426; --bad:#ff6d62; --bad-soft:#3b1a1a; --warn:#e6b450; --warn-soft:#352a12;
+  --bubble-c:#1e2a42; --stage:#1b2740; --stage2:#24345a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#0e1522; --sheet:#162034; --ink:#e5ebf6; --muted:#9ba8c2; --line:#2a3752;
+  --blue:#7ea4ff; --blue-soft:#1d2c4c; --blue-ink:#0e1522;
+  --coral:#ff7b5e; --coral-soft:#3a1d17;
+  --ok:#4cc58c; --ok-soft:#133426; --bad:#ff6d62; --bad-soft:#3b1a1a; --warn:#e6b450; --warn-soft:#352a12;
+  --bubble-c:#1e2a42; --stage:#1b2740; --stage2:#24345a; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:1.9rem;font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.4rem;font-weight:800}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--sheet);border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+textarea{min-height:84px;resize:vertical}
+.wrap{max-width:1120px;margin:0 auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:16px 12px;border-bottom:2px solid var(--ink);margin-bottom:20px}
+.brand{display:flex;flex-direction:column;gap:2px;min-width:0}
+.eyebrow{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.brand b{font-family:var(--f-display);font-size:1.25rem;font-weight:800}
+.topctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 14px;font-weight:700;font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.who{font-size:.9rem;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid var(--ink);background:var(--sheet);border-radius:10px;padding:10px 16px;font-weight:700;min-height:44px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:var(--blue-ink)}
+.btn.ghost{border-color:var(--line)}
+.btn.coral{background:var(--coral);border-color:var(--coral);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:.9rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+
+/* home */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;align-items:start;margin-bottom:28px}
+.hero p.lead{font-size:1.08rem;margin-top:10px;max-width:60ch}
+.card{background:var(--sheet);border:1.5px solid var(--line);border-radius:14px;padding:18px}
+.form{display:grid;gap:12px}
+.form label{font-weight:700;font-size:.92rem;display:grid;gap:6px}
+.covers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.cover{background:var(--sheet);border:1.5px solid var(--ink);border-radius:6px;padding:0;text-align:left;display:flex;flex-direction:column;min-height:300px;box-shadow:4px 4px 0 var(--ink);transition:transform .15s}
+.cover:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.cover .band{background:var(--blue);color:var(--blue-ink);padding:12px 16px;font-family:var(--f-display);font-weight:800;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cover .band small{font-family:var(--f-body);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.cover .body{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.cover .place{font-family:var(--f-display);font-size:1.25rem;font-weight:800}
+.cover .meta{font-size:.85rem;color:var(--muted)}
+.cover .prog{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:4px;border:1.5px solid var(--line);border-radius:999px;padding:2px 10px;font-size:.8rem;font-weight:700;background:var(--sheet)}
+.chip.done{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.chip.bad{border-color:var(--bad);color:var(--bad);background:var(--bad-soft)}
+.chip.warn{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+.chip.blue{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+
+/* case */
+.casegrid{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:4px}
+.rail .back{margin-bottom:10px}
+.tab{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:8px;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:8px;font-weight:700}
+.tab .n{font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:var(--muted)}
+.tab .p{font-size:.78rem;color:var(--muted);font-weight:700}
+.tab[aria-current="true"]{background:var(--ink);color:var(--sheet)}
+.tab[aria-current="true"] .n,.tab[aria-current="true"] .p{color:var(--sheet)}
+.tab .st{width:10px;height:10px;border-radius:50%;background:var(--line);justify-self:end}
+.tab .st.ok{background:var(--ok)}
+.sheet{background:var(--sheet);border:1.5px solid var(--line);border-radius:14px;padding:28px;min-width:0}
+.opd{display:grid;grid-template-columns:56px minmax(0,1fr);gap:0 12px}
+.opd .marg{font-family:var(--f-display);font-weight:800;font-size:1.05rem;padding-top:4px;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.opd .marg .pt{color:var(--coral)}
+.opd .marg .nr{font-size:1.6rem;line-height:1}
+.opd .content{display:flex;flex-direction:column;gap:16px;min-width:0}
+.boekje{border-left:4px solid var(--blue);background:var(--blue-soft);padding:14px 16px;border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:8px}
+.boekje ul{margin:0;padding-left:20px}
+.rule{font-size:.9rem;font-style:italic;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fact{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
+.fact b{display:block;font-family:var(--f-display);font-size:1.4rem}
+details.docent{border:1.5px dashed var(--line);border-radius:10px;padding:12px 14px}
+details.docent summary{font-weight:700;cursor:pointer}
+details.docent .crit{margin-top:10px;display:grid;gap:10px}
+details.docent ul{margin:4px 0 0;padding-left:20px}
+
+/* timer */
+.timer{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
+.timer .clock{font-family:var(--f-display);font-weight:800;font-size:1.4rem;font-variant-numeric:tabular-nums;min-width:4.2ch}
+
+/* quiz */
+.q{display:flex;flex-direction:column;gap:12px}
+.qhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.opts{display:grid;gap:8px}
+.opt{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;border:1.5px solid var(--line);background:var(--sheet);border-radius:10px;padding:10px 12px;text-align:left;min-height:48px}
+.opt .l{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font-weight:700}
+.opt[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft)}
+.opt[aria-pressed="true"] .l{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.dots{display:flex;gap:6px}
+.dots i{width:22px;height:6px;border-radius:3px;background:var(--line)}
+.dots i.on{background:var(--blue)}
+.expl{font-size:.92rem;border-left:3px solid var(--line);padding-left:10px;color:var(--muted)}
+
+/* chat */
+.chatgrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+.chatbox{border:1.5px solid var(--line);border-radius:12px;display:flex;flex-direction:column;height:560px;min-width:0;background:var(--sheet)}
+.chathead{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1.5px solid var(--line)}
+.ava{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;background:var(--coral-soft);color:var(--coral);flex:none}
+.log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:82%;padding:9px 13px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.c{background:var(--bubble-c);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.s{background:var(--blue);color:var(--blue-ink);border-bottom-right-radius:4px;align-self:flex-end}
+.msg.a{align-self:center;background:transparent;border:1.5px dashed var(--line);font-style:italic;color:var(--muted);font-size:.9rem;max-width:92%;text-align:center}
+.msg.n{align-self:center;font-size:.88rem;color:var(--muted);text-align:center;max-width:92%}
+.msg em{font-style:italic;opacity:.85}
+.typing{align-self:flex-start;color:var(--muted);font-size:.88rem;font-style:italic}
+.composer{display:flex;gap:8px;padding:10px;border-top:1.5px solid var(--line)}
+.composer input{flex:1;min-width:0}
+.actions{display:flex;flex-direction:column;gap:12px;min-width:0}
+.agroup{display:flex;flex-direction:column;gap:6px}
+.agroup h4{margin:0;font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.abtn{border:1.5px solid var(--line);background:var(--sheet);border-radius:9px;padding:8px 10px;text-align:left;font-size:.92rem;min-height:40px}
+.abtn:hover{border-color:var(--blue)}
+.abtn.used{border-color:var(--ok);background:var(--ok-soft);color:var(--ink)}
+.prep{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.check{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-size:.95rem}
+.check input{width:20px;height:20px;flex:none;margin-top:2px}
+.aiswitch{display:flex;align-items:center;gap:8px;font-size:.88rem}
+.aiswitch input{width:18px;height:18px}
+
+/* assessment */
+.assess{display:flex;flex-direction:column;gap:14px}
+.sec{border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.sec .sh{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 14px;background:var(--paper);font-weight:700}
+.sec .sh .sc{font-family:var(--f-display);font-weight:800;font-variant-numeric:tabular-nums}
+.sec ul{list-style:none;margin:0;padding:6px 14px 12px;display:grid;gap:6px}
+.sec li{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:.95rem}
+.mark{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.8rem;margin-top:1px}
+.mark.y{background:var(--ok);color:var(--sheet)}
+.mark.n{background:var(--bad);color:var(--sheet)}
+.tip{display:block;font-size:.86rem;color:var(--muted)}
+.total{display:flex;align-items:baseline;gap:10px;font-family:var(--f-display)}
+.total b{font-size:2.2rem;font-weight:800}
+
+/* order */
+.ordergrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.pool,.seq{border:1.5px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:120px}
+.pool h4,.seq h4{margin:0 0 2px;font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.stepc{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;border:1.5px solid var(--line);background:var(--sheet);border-radius:9px;padding:8px 10px;text-align:left;font-size:.93rem;min-height:44px}
+.stepc .no{font-family:var(--f-display);font-weight:800;color:var(--blue)}
+.stepc .mv{display:flex;gap:4px}
+.stepc .mv button{border:1.5px solid var(--line);background:var(--sheet);border-radius:6px;width:32px;height:32px;display:grid;place-items:center;font-weight:800}
+.stepc.right{border-color:var(--ok);background:var(--ok-soft)}
+.stepc.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.mats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.mat{border:1.5px solid var(--line);background:var(--sheet);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:.88rem;font-weight:700;min-height:104px}
+.mat svg{width:34px;height:34px}
+.mat[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft)}
+.mat.right{border-color:var(--ok);background:var(--ok-soft)}
+.mat.wrong{border-color:var(--bad);background:var(--bad-soft)}
+
+/* film */
+.player{border:1.5px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--sheet)}
+.stage{position:relative;aspect-ratio:16/9;max-width:100%;background:linear-gradient(180deg,var(--stage) 0 68%,var(--stage2) 68% 100%);overflow:hidden}
+.stage .fig{position:absolute;bottom:8%;width:22%;transition:transform .4s}
+.stage .fig.s{left:10%}
+.stage .fig.c{right:10%}
+.stage .fig.talk{animation:bob .6s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-3%)}}
+.stage .tag{position:absolute;bottom:2%;font-size:.75rem;font-weight:700;background:var(--sheet);border:1.5px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.stage .tag.s{left:12%}
+.stage .tag.c{right:12%}
+.stage .bubble{position:absolute;top:7%;max-width:44%;background:var(--sheet);border:1.5px solid var(--ink);border-radius:14px;padding:8px 12px;font-size:clamp(.78rem,1.8vw,1rem);font-weight:700;line-height:1.3}
+.stage .bubble.s{left:6%}
+.stage .bubble.c{right:6%}
+.stage .actcard{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34%;background:var(--sheet);border:1.5px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:clamp(.7rem,1.5vw,.9rem)}
+.stage .actcard svg{width:clamp(28px,6vw,48px);height:clamp(28px,6vw,48px);color:var(--ink)}
+.stage .flash{position:absolute;inset:0;border:6px solid var(--coral);pointer-events:none;opacity:0;transition:opacity .2s}
+.stage .flash.on{opacity:1}
+.stage .fig svg{width:100%;height:auto;display:block}
+.stage .playcover{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--ink) 45%,transparent);cursor:pointer}
+.stage .playcover span{background:var(--sheet);color:var(--ink);border-radius:999px;padding:12px 22px;font-weight:800;font-family:var(--f-display)}
+.subs{padding:10px 14px;min-height:3.2em;border-top:1.5px solid var(--line);font-size:.95rem}
+.ctrl{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1.5px solid var(--line);flex-wrap:wrap}
+.bar{flex:1;min-width:140px;height:10px;background:var(--line);border-radius:5px;position:relative;cursor:pointer}
+.bar .fill{position:absolute;inset:0 auto 0 0;background:var(--blue);border-radius:5px}
+.bar .flag{position:absolute;top:-4px;width:4px;height:18px;background:var(--coral);border-radius:2px}
+.time{font-variant-numeric:tabular-nums;font-size:.88rem;color:var(--muted)}
+.scorepick{display:flex;gap:8px;flex-wrap:wrap}
+.scorepick button{border:1.5px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 14px;font-weight:700}
+.scorepick button[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.errlist{display:grid;gap:6px;list-style:none;padding:0;margin:0}
+.errlist li{display:grid;grid-template-columns:24px 1fr;gap:8px;font-size:.93rem}
+video{width:100%;border-radius:10px;background:#000}
+.kw{width:100%;border-collapse:collapse;font-size:.92rem}
+.kw th,.kw td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+.kw td.c{text-align:center;width:64px}
+.kw input{width:18px;height:18px}
+.tablewrap{overflow-x:auto}
+.restab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.restab th,.restab td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left}
+.restab td.r,.restab th.r{text-align:right}
+.restab tfoot td{font-weight:800;font-family:var(--f-display);font-size:1.1rem;border-bottom:0}
+.note{font-size:.82rem;color:var(--muted);max-width:75ch}
+.inline-confirm{border:1.5px solid var(--warn);background:var(--warn-soft);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.disp{display:flex;margin-top:6px}
+.disp[aria-pressed="true"]{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+.facet{gap:14px}
+.qq{font-weight:700}
+.mcl{display:grid;gap:6px}
+.mco{display:flex;gap:10px;align-items:center;padding:6px 8px;border-radius:8px;cursor:pointer}
+.mco input{width:18px;height:18px}
+.mco.right{background:var(--ok-soft)}.mco.wrong{background:var(--bad-soft)}
+.mx,.qtab{border-collapse:collapse;font-size:.95rem;min-width:100%}
+.mx th,.mx td,.qtab th,.qtab td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:middle}
+.mx th{font-size:.85rem;text-align:center}
+.mx td.c{text-align:center;width:96px;white-space:nowrap}
+.mx td.c input{width:18px;height:18px}
+.mx td.c .ok{color:var(--ok);font-weight:800;margin-left:4px}
+.mx tr.right td:first-child{background:var(--ok-soft)}.mx tr.wrong td:first-child{background:var(--bad-soft)}
+.qtab caption{font-weight:700;text-align:left;padding-bottom:6px}
+.qtab thead th{background:var(--blue-soft)}
+.mt{display:grid;gap:8px}
+.mtr{display:grid;grid-template-columns:140px minmax(0,1fr);gap:6px 12px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.mtr .tip{grid-column:2}
+.mtr.right{background:var(--ok-soft)}.mtr.wrong{background:var(--bad-soft)}
+@media (max-width:560px){.mtr{grid-template-columns:1fr}.mtr .tip{grid-column:1}.mx td.c{width:64px}}
+.modepick,.peek{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.feedbackai{border:1.5px solid var(--blue);background:var(--blue-soft);border-radius:10px;padding:12px 14px;white-space:pre-wrap}
+footer{margin-top:32px}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .covers{grid-template-columns:1fr}
+  .casegrid{grid-template-columns:1fr}
+  .rail{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px}
+  .rail .back{margin:0}
+  .tab{grid-template-columns:auto auto;white-space:nowrap}
+  .tab .st,.tab .p{display:none}
+  .chatgrid{grid-template-columns:1fr}
+  .chatbox{height:480px}
+  .ordergrid{grid-template-columns:1fr}
+  .mats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .sheet{padding:18px 14px}
+  .opd{grid-template-columns:1fr}
+  .opd .marg{flex-direction:row;align-items:baseline;gap:10px;justify-content:flex-start}
+  .prep{grid-template-columns:1fr}
+  h1{font-size:1.55rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* =========================================================
+   DATA — drie oefenexamens in cspe-opbouw (onderdeel D, profielmodule 4)
+   ========================================================= */
+const ICONS = {
+  hands:'<path d="M7 11V5.5a1.5 1.5 0 0 1 3 0V10M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-.6a6 6 0 0 1-4.6-2.2L4 14.5a1.6 1.6 0 0 1 2.4-2L7 13"/>',
+  gloves:'<path d="M6 21v-6l-2-4a1.5 1.5 0 0 1 2.6-1.5L8 12V5a1.5 1.5 0 0 1 3 0v5M11 5V3.5a1.5 1.5 0 0 1 3 0V10M14 5a1.5 1.5 0 0 1 3 0v5M17 7a1.5 1.5 0 0 1 3 0v8l-2 6H6"/><path d="M6 18h12"/>',
+  gauze:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M4 14h16M9 4v16M14 4v16"/>',
+  quick:'<rect x="3" y="9" width="18" height="6" rx="1"/><rect x="9" y="7" width="6" height="10" rx="1"/>',
+  roll:'<circle cx="9" cy="12" r="6"/><circle cx="9" cy="12" r="2"/><path d="M15 12h6v5h-6"/>',
+  elastic:'<circle cx="9" cy="12" r="6"/><path d="M5 9l8 6M5 13l6 4M7 7l6 4"/><path d="M15 12h6v5h-6"/>',
+  tape:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M17 17l4 2"/>',
+  scissors:'<circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M8 15L18 3M16 15L6 3"/>',
+  strips:'<rect x="3" y="6" width="18" height="3" rx="1"/><rect x="3" y="11" width="18" height="3" rx="1"/><rect x="3" y="16" width="18" height="3" rx="1"/>',
+  finger:'<path d="M10 21V8a2 2 0 0 1 4 0v13"/><rect x="9.5" y="4" width="5" height="9" rx="2.5"/><path d="M10 10h4"/>',
+  sling:'<path d="M3 5l18 0L12 20z"/><path d="M8 5l4 8 4-8"/>',
+  cotton:'<path d="M7 18a4 4 0 0 1-.6-8 5 5 0 0 1 9.6-1.4A4 4 0 0 1 17 18z"/>',
+  bin:'<path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/>',
+  ring:'<circle cx="12" cy="14" r="6"/><path d="M9 6l3-3 3 3-3 3z"/>',
+  chair:'<path d="M7 3v10h10M7 13v8M17 13v8M17 3v6"/>',
+  phone:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+  talk:'<path d="M4 5h16v10H9l-5 4z"/>',
+  door:'<path d="M5 21V3h11v18M16 21h3M12 12h.01"/>',
+  box:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4h6v3M12 11v6M9 14h6"/>',
+  turn:'<path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 4v5h-5"/>',
+  stand:'<circle cx="12" cy="4" r="2"/><path d="M12 7v7M8 10h8M10 21l2-7 2 7"/>',
+  coldpack:'<rect x="4" y="5" width="16" height="14" rx="3"/><path d="M12 8v8M8.5 10l7 4M15.5 10l-7 4"/>',
+  water:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>'
+};
+const ico = (k)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]||ICONS.talk}</svg>`;
+
+/* gemeenschappelijke voorbereiding (persoonlijke hygiëne, beroepshouding) */
+const PREP = [
+  {id:'kleding', label:'Schone werkkleding aan', ok:true},
+  {id:'schoenen', label:'Platte, dichte schoenen aan', ok:true},
+  {id:'kauwgom', label:'Kauwgom uit je mond', ok:true},
+  {id:'sieraden', label:'Sieraden aan hand en pols af', ok:true},
+  {id:'haar', label:'Lang haar vast', ok:true},
+  {id:'telefoon', label:'Telefoon in je zak, dan kun je de tijd zien', ok:false},
+  {id:'parfum', label:'Extra parfum op, dan ruik je fris', ok:false},
+  {id:'nagels', label:'Nepnagels laten zitten, die zijn net gezet', ok:false}
+];
+
+const CASES = [
+/* ---------------- A ---------------- */
+{
+  id:'A', versie:'versie A', stijl:'opbouw cspe 2026',
+  place:'Woonzorgcentrum De Schie', town:'Delft',
+  intro:'Woonzorgcentrum De Schie in Delft biedt zorg aan ouderen. Sommige bewoners wonen in een appartement in het woonzorgcentrum, anderen in een aanleunwoning ernaast. Elke woensdag is er een activiteitenmiddag in de recreatiezaal, met koffie, bingo en een beweegquiz.',
+  topics:'rolstoeltransfer · wonddrukverband',
+  quiz:[
+    {t:'matrix', ctx:'Meneer Van Leeuwen kan zelf zijn voeten op de voetsteunen van de rolstoel zetten.', q:'Stimuleer je in deze situaties wel of niet zijn zelfredzaamheid?', cols:['wel stimulerend','niet stimulerend'], rows:[
+      {s:'Je vraagt of hij zelf zijn voeten op de steunen zet.', a:0},
+      {s:'Je zet zijn voeten snel voor hem op de steunen.', a:1},
+      {s:'Je wacht rustig tot hij het zelf gedaan heeft.', a:0}], e:'Wat meneer zelf kan, laat je hem zelf doen. Vragen en rustig wachten helpt hem daarbij.'},
+    {t:'match', q:'Waar biedt het hulpmiddel vooral ondersteuning bij?', items:[{l:'rolstoel',a:3},{l:'rollator',a:0},{l:'glijzeil',a:1}], o:['het lopen','het verplaatsen in bed','het zelfstandig douchen','het verplaatsen over een lange afstand'], e:'Rollator: lopen met steun. Glijzeil: verplaatsen in bed. Rolstoel: grotere afstanden.'},
+    {t:'mc', ctx:'Meneer Van Leeuwen heeft hartfalen.', q:'Wat merk je daar vaak aan?', o:['hij is snel moe','hij heeft jeuk','hij heeft koorts','hij ziet slecht'], a:0, e:'Bij hartfalen pompt het hart minder goed. Daardoor is iemand snel moe en kortademig.'},
+    {t:'matrix', ctx:'Mevrouw Jansen heeft een snijwond in haar onderarm. De wond bloedt hevig.', q:'Zijn deze EHBO-adviezen juist of onjuist?', cols:['juist advies','onjuist advies'], rows:[
+      {s:'druk geven op de wond', a:0},
+      {s:'de arm naar beneden laten hangen', a:1},
+      {s:'een wonddrukverband aanleggen', a:0},
+      {s:'watten op de wond leggen', a:1}], e:'Druk op de wond en een wonddrukverband stoppen het bloeden. Houd de arm juist omhoog. Watten plakken in de wond.'},
+    {t:'matrix', ctx:'Je praat met meneer Van Leeuwen.', q:'Zijn deze vragen open of gesloten?', cols:['open','gesloten'], rows:[
+      {s:'Zit u goed?', a:1},
+      {s:'Hoe was de bingo?', a:0},
+      {s:'Wilt u uw vest aan?', a:1},
+      {s:'Wat heeft u vanmiddag gedaan?', a:0}], e:'Op een gesloten vraag antwoord je met ja of nee. Op een open vraag vertel je meer.'},
+    {t:'mc', table:{title:'Medicijnlijst meneer Van Leeuwen', head:['tijd','medicijn'], rows:[['08:00','1 plastablet'],['08:00','1 bloeddruktablet'],['18:00','1 bloeddruktablet']]}, ctx:'Je kijkt op de medicijnlijst van meneer.', q:'Hoe vaak per dag neemt meneer een bloeddruktablet?', o:['1 keer','2 keer','3 keer','4 keer'], a:1, e:'Om 08:00 en om 18:00: dat is 2 keer per dag.'}
+  ],
+  chat:{
+    name:'meneer Van Leeuwen', short:'Meneer Van Leeuwen', ini:'VL', aanspreek:'meneer',
+    text:'Meneer Van Leeuwen is 79 jaar en woont in een aanleunwoning naast De Schie. Hij heeft hartfalen. Hierdoor is hij snel moe en kortademig. Voor langere afstanden gebruikt hij een rolstoel. Meneer kan zelf staan, maar heeft hulp nodig bij het opstaan en gaan zitten.\n\nMeneer heeft vanmiddag meegedaan aan de bingo in de recreatiezaal. Zijn dochter haalt hem zo op bij de lift. Je ziet meneer voor het eerst.',
+    tasks:['Help meneer met het aantrekken van zijn vest.','Help meneer in de rolstoel.','Breng meneer naar de lift.'],
+    opening:'Meneer Van Leeuwen zit aan een tafel in de recreatiezaal. Op tafel staat een tasje met zijn bingoprijs. Zijn vest hangt over de stoel naast hem. De rolstoel staat vier meter verderop, níet op de rem, met de voetsteunen omlaag.',
+    persona:'Je bent meneer Van Leeuwen, 79 jaar. Je woont in een aanleunwoning bij woonzorgcentrum De Schie in Delft. Je hebt hartfalen: je bent snel moe en kortademig en je laat korte stiltes vallen als je praat (gebruik soms ...). Je hebt een goed humeur en houdt van een praatje. Je hebt net meegedaan aan de bingo en een doosje bonbons gewonnen; dat zit in een tasje op tafel. Je dochter Ingrid haalt je zo op bij de lift.',
+    re:{purpose:/(help|helpen|rolstoel|lift|breng|ophalen|dochter|vest)/, interest:/(bingo|gewonnen|prijs|leuk|gezellig|hoe was|middag|gedaan|dochter|ingrid|quiz|bonbon)/},
+    qa:[
+      {re:/(bingo|gewonnen|prijs|hoe was|leuk geweest|middag|quiz|gedaan|vandaag)/, a:['Oh, de bingo was heel gezellig! ... Ik heb zelfs een doosje bonbons gewonnen.','Twee keer bijna een volle kaart! ... *lacht* En de derde keer was het raak.']},
+      {re:/(hoe gaat|hoe voelt|gaat het|voelt u)/, a:['Gaat wel ... ik ben wel moe. *haalt adem* Het was een drukke middag.','Een beetje moe, hoor ... maar wel tevreden.']},
+      {re:/(dochter|ingrid|wie haalt|familie|kinderen)/, a:['Mijn dochter Ingrid haalt me op. Die is altijd precies op tijd.','Ik heb twee kinderen. Ingrid woont hier vlakbij, gelukkig.']},
+      {re:/(koud|jas|aantrekken|waar is uw vest)/, a:['Buiten is het fris, hè. Mijn vest hangt daar over de stoel.']},
+      {re:/(hart|ziek|benauwd|adem)/, a:['Mijn hart wil niet meer zo ... *haalt adem* ... daardoor ben ik snel buiten adem.']},
+      {re:/(vroeger|werk|gewerkt|beroep)/, a:['Ik was vroeger postbode in Delft. Elke dag op de fiets!','Veertig jaar postbode ... ik ken elk straatje hier.']},
+      {re:/(bonbon|chocola|snoep)/, a:['Die bonbons deel ik straks met Ingrid. ... Nou ja, misschien. *knipoogt*']},
+      {re:/(rolstoel|lopen)/, a:['Korte stukjes lopen gaat nog. Voor de rest neem ik de rolstoel.']},
+      {re:/(woont u|aanleunwoning|huis|appartement)/, a:['Ik woon hiernaast, in een aanleunwoning. Lekker dichtbij.']}
+    ],
+    fill:['Ja hoor.','Dat is goed.','*knikt* Hm-hm.','Fijn dat je er bent.','Ja ... *haalt adem* ... prima.','Oh ja?','*glimlacht*','Zo, zo.'],
+    textActs:[
+      {re:/(staat u|sta je|staat u wel) (goed|stevig)|goed staan/, id:'askStand'},
+      {re:/(zit u|zit je|zit u wel) (goed|lekker|fijn|prettig)|goed zitten/, id:'askSit'},
+      {re:/(voeten|voet).*(zelf|steun)/, id:'askFeet'}
+    ],
+    actions:[
+      {id:'hands', g:'Voorbereiden', label:'Handen reinigen', narr:'Je reinigt je handen.'},
+      {id:'eye', g:'Voorbereiden', label:'Op ooghoogte gaan en oogcontact maken', narr:'Je gaat op ooghoogte en kijkt meneer aan.'},
+      {id:'near', g:'Rolstoel klaarzetten', label:'Rolstoel dicht bij meneer zetten', narr:'Je rijdt de rolstoel naast de stoel van meneer.'},
+      {id:'brake', g:'Rolstoel klaarzetten', label:'Rolstoel op de rem zetten', narr:'Je zet de rolstoel op de rem.'},
+      {id:'footUp', g:'Rolstoel klaarzetten', label:'Voetsteunen omhoog klappen', narr:'Je klapt de voetsteunen omhoog.'},
+      {id:'vest', g:'Verzorgen', label:'Vest pakken en helpen aantrekken', narr:'Je pakt het vest en helpt meneer het aan te trekken.', reply:'Dank je ... Zo, lekker warm.'},
+      {id:'stand', g:'Verplaatsen', label:'Aanwijzingen geven en helpen opstaan (rug recht, door de knieën)', narr:'Je legt uit wat meneer moet doen, houdt hem vast en helpt hem omhoog.', reply:'Pfoe ... *haalt adem* ... ja, ik sta.', req:['near','brake','footUp'],
+        missing:{near:'Die rolstoel staat wel ver weg, hè? Zo moet ik een heel stuk lopen.', brake:'Moet de rolstoel niet op de rem? Straks rolt hij weg.', footUp:'Moeten de voetsteunen niet omhoog? Zo val ik misschien.'}},
+      {id:'pull', g:'Verplaatsen', label:'Meneer onder de oksels omhoog trekken', as:'stand', narr:'Je pakt meneer onder zijn oksels en trekt hem omhoog.', reply:'Au! Voorzichtig ... je trekt aan mijn armen.', req:['near','brake','footUp'],
+        missing:{near:'Die rolstoel staat wel ver weg, hè?', brake:'Moet de rolstoel niet op de rem? Straks rolt hij weg.', footUp:'Moeten de voetsteunen niet omhoog? Zo val ik misschien.'}, fx:st=>{st.flags.ergoBad=1; st.flags.pulled=1;}},
+      {id:'askStand', g:'Verplaatsen', label:'Vragen of meneer goed staat', req:['stand'], reply:'Ja hoor, ik sta goed.'},
+      {id:'sit', g:'Verplaatsen', label:'Laten draaien en aanwijzingen geven om te gaan zitten', req:['stand'], narr:'Je laat meneer kleine stapjes draaien en zegt wat hij moet doen.', reply:'*gaat langzaam zitten* Zo ...'},
+      {id:'drop', g:'Verplaatsen', label:'Meneer snel in de rolstoel laten zakken', as:'sit', req:['stand'], narr:'Je laat meneer snel in de rolstoel zakken.', reply:'Oei! Dat ging wel hard.', fx:st=>{st.flags.ergoBad=1; st.flags.dropped=1;}},
+      {id:'askSit', g:'Verplaatsen', label:'Vragen of meneer goed zit', req:['sit'], reply:'Ja, ik zit goed, dank je.'},
+      {id:'footDown', g:'Verplaatsen', label:'Voetsteunen voorzichtig omlaag klappen', req:['sit'], narr:'Je klapt de voetsteunen voorzichtig omlaag.'},
+      {id:'askFeet', g:'Verplaatsen', label:'Vragen of meneer zelf zijn voeten op de steunen zet', req:['footDown'], reply:'Dat lukt me zelf wel. *zet zijn voeten op de steunen*'},
+      {id:'placeFeet', g:'Verplaatsen', label:'Zelf de voeten van meneer op de steunen zetten', as:'askFeet', req:['footDown'], narr:'Je tilt de voeten van meneer op de steunen.', reply:'Oh ... dat had ik zelf ook gekund, hoor.', fx:st=>{st.flags.feetBad=1;}},
+      {id:'bag', g:'Afronden', label:'Tasje met de bingoprijs meegeven', narr:'Je geeft meneer het tasje.', reply:'Oh ja, mijn bonbons! Goed dat je eraan denkt.'},
+      {id:'drive', g:'Afronden', label:'Rem eraf en in rustig tempo naar de lift rijden', req:['sit','footDown','bag'],
+        missing:{sit:'Ik zit nog niet in de rolstoel, hoor.', footDown:'Moeten de voetsteunen niet naar beneden? Waar laat ik anders mijn voeten?', bag:'Oh, ik vergeet mijn tasje! Wil je dat nog even voor me pakken?'},
+        pre:st=>{ if(!did(st,'askFeet')){st.flags.noAskFeet=1; return '*Meneer zet zelf zijn voeten op de voetsteunen.*';} },
+        narr:'Je haalt de rem eraf en rijdt rustig naar de lift.', reply:'*bij de lift* Hier wacht ik op Ingrid. Ze komt zo.', end:true},
+      {id:'fast', g:'Afronden', label:'Snel naar de lift rijden, de dochter wacht', as:'drive', req:['sit','footDown','bag'],
+        missing:{sit:'Ik zit nog niet in de rolstoel, hoor.', footDown:'Moeten de voetsteunen niet naar beneden?', bag:'Oh, ik vergeet mijn tasje! Wil je dat nog even voor me pakken?'},
+        pre:st=>{ if(!did(st,'askFeet')){st.flags.noAskFeet=1; return '*Meneer zet zelf zijn voeten op de voetsteunen.*';} },
+        narr:'Je rijdt snel naar de lift.', reply:'Ho ho, niet zo hard! Ik word er duizelig van.', fx:st=>{st.flags.fast=1;}, end:true}
+    ],
+    beats:[
+      {id:'who', when:st=>st.msgs>=2 && !st.said.purpose, line:'Wie ben jij? Kom je me helpen?', fx:st=>{st.prompted.purpose=1}},
+      {id:'concern', when:st=>st.said.purpose && st.msgs>=3, line:'Ik kan niet zoveel meer ... *haalt adem* ... door mijn hart. Ik ben bang dat het steeds erger wordt.', fx:st=>{st.concernAt=st.msgs}},
+      {id:'vestAsk', when:st=>did(st,'stand') && !did(st,'vest'), line:'Wil je mijn vest even pakken? Het is fris buiten.', fx:st=>{st.prompted.vest=1}},
+      {id:'bagHint', when:st=>did(st,'sit') && !did(st,'bag'), line:'Ik heb vanmiddag nog wat gewonnen bij de bingo, hoor.'}
+    ],
+    bye:'Dankjewel voor je hulp. Ik heb een fijne middag gehad!',
+    criteria:[
+      {code:'D2a', title:'voorbereiding en communicatie', max:2, mode:'minus', items:[
+        {l:'heeft gezorgd voor goede persoonlijke hygiëne (werkkleding, platte schoenen, geen kauwgom)', ok:st=>st.prepOk, tip:'Kijk nog eens naar de voorbereiding: wat hoort wel en niet bij een goede beroepshouding?'},
+        {l:'groet meneer op eigen initiatief en stelt zichzelf verstaanbaar voor', ok:st=>st.said.greet&&st.said.intro, tip:'Begin met een groet en zeg je naam: “Goedemiddag meneer, ik ben …”.'},
+        {l:'vertelt op eigen initiatief wat zij/hij komt doen', ok:st=>st.said.purpose&&!st.prompted.purpose, tip:'Vertel meteen waarvoor je komt: “Ik kom u helpen om in de rolstoel te gaan zitten.”'},
+        {l:'zet de rolstoel vóór het verplaatsen dicht bij meneer', ok:st=>before(st,'near','stand')&&!st.prompted.near, tip:'Haal de rolstoel eerst dichtbij.'},
+        {l:'zet de rolstoel vóór het verplaatsen op de rem en klapt de voetsteunen omhoog', ok:st=>before(st,'brake','stand')&&before(st,'footUp','stand')&&!st.prompted.brake&&!st.prompted.footUp, tip:'Rem erop en voetsteunen omhoog, vóórdat meneer opstaat.'}
+      ]},
+      {code:'D2b', title:'aantrekken vest en helpen met verplaatsen', max:4, mode:'minus', items:[
+        {l:'helpt meneer op eigen initiatief met het aantrekken van het vest', ok:st=>did(st,'vest')&&!st.prompted.vest, tip:'Denk zelf aan het vest, wacht niet tot meneer erom vraagt.'},
+        {l:'helpt meneer op een juiste manier van stoel naar rolstoel (aanwijzingen, vasthouden, vraagt of hij goed staat én goed zit)', ok:st=>did(st,'stand')&&!st.flags.pulled&&!st.flags.dropped&&did(st,'askStand')&&did(st,'askSit'), tip:'Geef aanwijzingen, houd vast, vraag “Staat u goed?” en later “Zit u goed?”.'},
+        {l:'klapt de voetsteunen voorzichtig omlaag en vraagt of meneer zelf zijn voeten erop zet (helpt niet)', ok:st=>did(st,'footDown')&&!st.prompted.footDown&&did(st,'askFeet')&&!st.flags.feetBad&&!st.flags.noAskFeet, tip:'Vraag of meneer zijn voeten zelf op de steunen kan zetten. Doe het niet voor hem.'},
+        {l:'rijdt in een rustig tempo naar de lift', ok:st=>did(st,'drive')&&!st.flags.fast, tip:'Rijd rustig, meneer is kortademig en snel moe.'},
+        {l:'zorgt op eigen initiatief dat meneer zijn tasje meeneemt', ok:st=>did(st,'bag')&&!st.prompted.bag, tip:'Kijk rond: neemt meneer alles mee?'},
+        {l:'werkt ergonomisch bij opstaan en gaan zitten', ok:st=>did(st,'stand')&&!st.flags.ergoBad, tip:'Rug recht, door je knieën, niet trekken aan armen of oksels.'}
+      ]},
+      {code:'D2c', title:'interesse tonen, communicatie en afsluiting', max:2, mode:'bands', bands:[[4,2],[2,1],[0,0]], items:[
+        {l:'toont interesse in meneer (bijv. vraagt naar de bingo of zijn middag)', ok:st=>st.said.interest, tip:'Maak een praatje: “Hoe was de bingo?”.'},
+        {l:'reageert op wat meneer vertelt over zijn aandoening (bijv. “dat is vervelend”)', ok:st=>st.empathyOk, tip:'Als meneer zegt dat hij bang is, reageer dan: “Dat kan ik me goed voorstellen.”'},
+        {l:'communiceert steeds passend: u-vorm, oogcontact, vriendelijk', ok:st=>uForm(st)&&did(st,'eye'), tip:'Zeg steeds “u” en maak oogcontact.'},
+        {l:'rondt netjes af (vraagt of hij nog iets kan doen) en neemt correct afscheid', ok:st=>st.said.closing&&st.said.bye, tip:'Vraag “Kan ik nog iets voor u doen?” en neem afscheid.'}
+      ]}
+    ]
+  },
+  ehbo:{
+    who:'mevrouw Jansen',
+    text:'Mevrouw Jansen werkt in de keuken van De Schie. Ze heeft zich met een mes in haar rechter onderarm gesneden. De wond bloedt hevig. De wond is al schoongespoeld.',
+    tasks:['Leg een wonddrukverband aan.','De materialen liggen klaar. Kies de juiste materialen.','Zet de stappen in de goede volgorde.','Beantwoord daarna twee vragen van de examinator.'],
+    mats:[
+      {id:'snel', l:'Snelverband 6 × 8 cm', i:'quick', ok:true},
+      {id:'ideaal', l:'Ideaalzwachtel 8 cm × 5 m', i:'roll', ok:true},
+      {id:'pleister', l:'Rol kleefpleister', i:'tape', ok:true},
+      {id:'schaar', l:'EHBO-schaar', i:'scissors', ok:true},
+      {id:'elastisch', l:'Elastisch windsel 8 cm × 4 m', i:'elastic', ok:false},
+      {id:'hecht', l:'Hechtstrips', i:'strips', ok:false},
+      {id:'bob', l:'Vingerbob', i:'finger', ok:false},
+      {id:'mitella', l:'Driekante doek (mitella)', i:'sling', ok:false}
+    ],
+    steps:[
+      'Mevrouw begroeten, geruststellen en vragen wat er is gebeurd',
+      'Handen reinigen of handschoenen aantrekken',
+      'Mevrouw laten zitten en de arm ondersteunen',
+      'Vertellen welke handelingen je gaat doen',
+      'Snelverband openen en het kompres op de wond leggen zonder het aan te raken',
+      'Randen van het kompres afdekken en het snelverband vastzetten met kleefpleister',
+      'Ideaalzwachtel met druk om de arm wikkelen, richting de elleboog, elke slag overlapt',
+      'Ideaalzwachtel vastzetten met kleefpleister',
+      'Vragen of het verband goed zit en advies geven over de huisarts',
+      'Afval weggooien, handen wassen en afscheid nemen'
+    ],
+    why:[
+      {q:'Waarom zwachtel je richting de elleboog?', o:['Dan zit het verband mooier','Zo wordt bloed en vocht niet naar de hand gedrukt en knel je niets af','Dan gaat het sneller','Dat staat zo in het rooster'], a:1},
+      {q:'Waarom raak je het deel van het kompres dat op de wond komt niet aan?', o:['Dan plakt het niet meer','Zo komen er geen ziektekiemen in de wond','Dat doet pijn','Dan is het kompres niet meer wit'], a:1}
+    ],
+    oral:[
+      [{q:'Wat is het verschil tussen een oppervlakkige en een gedeeltelijke verbranding?', o:['Bij een gedeeltelijke verbranding zijn er blaren','Bij een oppervlakkige verbranding is de huid verkoold','Bij een gedeeltelijke verbranding doet het geen pijn','Er is geen verschil'], a:0},
+       {q:'Welke symptomen horen bij een volledige verbranding?', o:['Rode huid die erg pijn doet','Grauwwitte of verkoolde huid; de wond zelf doet geen pijn','Alleen blaren','Jeuk en uitslag'], a:1}],
+      [{q:'Welke symptomen horen bij een botbreuk?', o:['Jeuk en roodheid','Pijn, andere stand en het lichaamsdeel kan niet goed bewegen','Koorts en hoofdpijn','Alleen een blauwe plek'], a:1},
+       {q:'Welke symptomen horen bij een ontwrichte schouder?', o:['Pijn, zwelling en de schouder staat anders (uit de kom)','Alleen kriebel in de vingers','Bloed uit de neus','Kortademigheid'], a:0}]
+    ]
+  },
+  film:{
+    title:'Stagiair Daan legt een wonddrukverband aan', s:'Daan', sIni:'D', c:'Mevrouw Jansen', cIni:'J',
+    frames:[
+      {d:5, who:'s', say:'Hallo mevrouw Jansen, ik ben Daan. Ik kom u helpen.', act:{i:'door', t:'Daan komt de EHBO-ruimte binnen.'}},
+      {d:6, who:'s', say:'Blijft u maar even staan, dan gaat het snel.', act:{i:'stand', t:'Mevrouw blijft staan tijdens het verbinden.'}, err:{a:'comm', t:'Daan laat mevrouw staan. Hij moet vragen of ze wil gaan zitten.', k:['zit','staan','stoel']}},
+      {d:6, act:{i:'box', t:'Daan pakt meteen de verbanddoos. Hij reinigt zijn handen niet en trekt geen handschoenen aan.'}, err:{a:'verband', t:'Geen handen gereinigd en geen handschoenen aan.', k:['hand','handschoen','hygi','wassen']}},
+      {d:5, who:'s', say:'Ik leg eerst een snelverband op de wond, daarna een zwachtel.', act:{i:'talk', t:'Daan vertelt wat hij gaat doen.'}},
+      {d:6, act:{i:'quick', t:'Daan pakt het kompres van het snelverband vast aan de kant die op de wond komt.'}, err:{a:'verband', t:'Daan raakt het deel van het kompres aan dat op de wond komt.', k:['kompres','aanraak','aangeraakt','vinger','steriel','binnenkant','vastpak']}},
+      {d:5, act:{i:'tape', t:'Hij dekt de randen van het kompres af en zet het vast met kleefpleister.'}},
+      {d:6, act:{i:'roll', t:'Daan wikkelt de ideaalzwachtel om de arm, richting de pols.'}, err:{a:'verband', t:'Verkeerde richting: je zwachtelt richting de elleboog.', k:['richting','pols','elleboog','verkeerd','kant']}},
+      {d:5, who:'c', say:'Ik kan echt niet tegen bloed ...', act:{i:'talk', t:'Mevrouw kijkt naar de wond en wordt wit.'}},
+      {d:6, who:'s', say:'Kijkt u maar even de andere kant op. Het bloeden stopt al.', act:{i:'talk', t:'Daan stelt mevrouw rustig gerust.'}},
+      {d:5, who:'c', say:'Moet ik hiermee naar de huisarts?', act:{i:'talk', t:'Mevrouw stelt een vraag.'}},
+      {d:6, who:'s', say:'Houd het in de gaten. Blijft het bloeden of pijn doen, bel dan de huisarts.', act:{i:'talk', t:'Daan geeft advies.'}},
+      {d:6, act:{i:'bin', t:'Daan loopt weg. De verpakkingen en het bebloede papier blijven op tafel liggen.'}, err:{a:'verband', t:'Afval is niet weggegooid.', k:['afval','verpakking','prullenbak','opruim','weggooi','papier','emmer']}},
+      {d:5, who:'c', say:'Eh ... dankjewel?', act:{i:'door', t:'Daan is al weg. Hij zegt geen gedag.'}, err:{a:'comm', t:'Daan neemt geen afscheid.', k:['afscheid','gedag','doei','tot ziens','groet']}}
+    ]
+  }
+},
+/* ---------------- B ---------------- */
+{
+  id:'B', versie:'versie B', stijl:'opbouw cspe 2025',
+  place:'Zorgboerderij De Molenhoeve', town:'Den Hoorn',
+  intro:'Zorgboerderij De Molenhoeve aan de rand van Delft biedt dagbesteding aan volwassenen en ouderen met een zorgvraag. Er zijn dieren, een moestuin en een kas. ’s Middags zijn er activiteiten zoals bloemschikken en kaas maken. Na de lunch kunnen deelnemers rusten in de rustkamer.',
+  topics:'uit bed met papegaai · vingerbob',
+  quiz:[
+    {t:'mc', ctx:'Mevrouw Yilmaz heeft al jaren pijnlijke en stijve gewrichten.', q:'Bij welke aandoening past dit het best?', o:['reuma','griep','diabetes','beroerte'], a:0, e:'Bij reuma zijn gewrichten pijnlijk, stijf en soms ontstoken.'},
+    {t:'matrix', ctx:'Je helpt mevrouw Yilmaz met haar vest. Haar rechterarm doet pijn.', q:'Doe je het zo juist of onjuist?', cols:['juist','onjuist'], rows:[
+      {s:'eerst de rechterarm in de mouw', a:0},
+      {s:'eerst de linkerarm in de mouw', a:1},
+      {s:'rustig werken en vragen of het pijn doet', a:0}], e:'Aankleden: eerst de zere arm. Zo hoeft die arm zo weinig mogelijk te draaien.'},
+    {t:'match', q:'Waar biedt het hulpmiddel vooral ondersteuning bij?', items:[{l:'papegaai',a:1},{l:'hoog-laagbed',a:2},{l:'passieve tillift',a:3}], o:['het lopen','het zelf omhoog komen in bed','het werken op de goede hoogte','het verplaatsen als iemand niet kan staan'], e:'Met een papegaai trekt iemand zich zelf op. Een hoog-laagbed zet je op werkhoogte. Een passieve tillift gebruik je als iemand niet kan staan.'},
+    {t:'matrix', ctx:'Je helpt mevrouw Yilmaz met aankleden.', q:'Houd je zo wel of geen rekening met haar privacy?', cols:['wel','niet'], rows:[
+      {s:'Je doet de deur dicht.', a:0},
+      {s:'Je laat de deur openstaan.', a:1},
+      {s:'Je dekt haar af met een handdoek.', a:0}], e:'Deur dicht en afdekken wat niet nodig is: zo houd je rekening met privacy.'},
+    {t:'mc', ctx:'Meneer Rijsdijk heeft een snijwond in zijn wijsvinger. De wond is schoon.', q:'Welk verband gebruik je?', o:['een vingerbob','een mitella','een coldpack','een ideaalzwachtel'], a:0, e:'Een kompres met een vingerbob is het verband voor een vinger.'},
+    {t:'matrix', ctx:'Je schrijft in het dossier van mevrouw Yilmaz.', q:'Is wat je schrijft objectief of subjectief?', cols:['objectief','subjectief'], rows:[
+      {s:'Mevrouw heeft een uur geslapen.', a:0},
+      {s:'Mevrouw was chagrijnig.', a:1},
+      {s:'Mevrouw liep zelf naar de stoel.', a:0}], e:'Objectief: wat je ziet of meet. Subjectief: een mening of gevoel.'}
+  ],
+  chat:{
+    name:'mevrouw Yilmaz', short:'Mevrouw Yilmaz', ini:'Y', aanspreek:'mevrouw',
+    text:'Mevrouw Yilmaz is 74 jaar en komt drie dagen per week naar de dagbesteding. Ze heeft reuma. Vooral haar rechterarm is pijnlijk en stijf. Ze heeft hulp nodig bij het in en uit bed komen. Ze kan zelfstandig lopen en zelf gaan zitten in een stoel.\n\nMevrouw heeft na de lunch een dutje gedaan in de rustkamer. Straks wordt ze opgehaald voor het bloemschikken. Je ziet mevrouw voor het eerst.',
+    tasks:['Help mevrouw uit bed met behulp van de papegaai.','Help mevrouw met haar vest en haar schoenen.','Schuif de stoel van de tafel, zodat mevrouw kan gaan zitten.','Zorg dat het bed er weer netjes uitziet.'],
+    opening:'Mevrouw Yilmaz ligt wakker in bed in de rustkamer. Het bed staat laag. Haar vest ligt op de stoel bij de tafel, haar instapschoenen staan onder het bed. Boven het bed hangt een papegaai.',
+    persona:'Je bent mevrouw Yilmaz, 74 jaar. Je komt drie dagen per week naar dagbesteding op zorgboerderij De Molenhoeve. Je hebt reuma; vooral je rechterarm is pijnlijk en stijf. Je hebt net een dutje gedaan in de rustkamer en ligt in bed. Straks ga je bloemschikken, daar heb je zin in. Je bent vriendelijk, een beetje stil, en praat graag over je kleinkinderen en je tuin.',
+    re:{purpose:/(help|helpen|uit bed|opstaan|bloemschik|vest|schoen|stoel)/, interest:/(geslapen|slapen|rust|dutje|uitgerust|bloemschik|bloemen|middag|kleinkind|tuin|lekker gelegen)/},
+    qa:[
+      {re:/(geslapen|slapen|dutje|rust|uitgerust|gedaan|vandaag)/, a:['Ja, heerlijk even gerust. Ik was echt moe na de lunch.','Ik heb lekker geslapen, hoor. Dat bed ligt goed.']},
+      {re:/(bloemschik|bloemen|activiteit|straks)/, a:['Straks ga ik bloemschikken. Dat vind ik het leukste van de week!','We maken een herfststukje, met takjes uit de tuin.']},
+      {re:/(hoe gaat|hoe voelt|gaat het|pijn)/, a:['Mijn rechterarm doet vandaag wel pijn. Verder gaat het goed.','Het gaat ... die arm is stijf vandaag.']},
+      {re:/(kleinkind|kleinzoon|familie|kinderen)/, a:['Mijn kleinzoon komt vanavond eten. Daar heb ik zin in.','Ik heb vier kleinkinderen. De jongste is net twee.']},
+      {re:/(tuin|dieren|geit|kip|boerderij|kas)/, a:['Ik kijk graag bij de geitjes. Die zijn zo grappig.','Thuis heb ik een kleine tuin, met rozen.']},
+      {re:/(reuma|arm|ziekte|schouder)/, a:['Ik heb al jaren reuma. Vooral mijn rechterarm doet zeer.']},
+      {re:/(eten|lunch|soep)/, a:['De soep was lekker vandaag. Pompoensoep.']},
+      {re:/(waar is|waar zijn|waar ligt|waar staan).*(vest|schoen)/, a:['Mijn vest ligt daar op de stoel, en mijn schoenen staan onder het bed.']}
+    ],
+    fill:['Ja, goed.','Dat is fijn.','*knikt*','Prima.','Oké, dankjewel.','Hm-hm.','*glimlacht*'],
+    textActs:[
+      {re:/(staat u|sta je|staat u wel) (goed|stevig)|goed staan/, id:'askStand'},
+      {re:/(zit u|zit je|zit u wel) (goed|lekker|fijn|prettig)|goed zitten/, id:'askSitBed'},
+      {re:/(wilt u|kunt u|wil je).*(vastpakken|vasthouden|mij vast)/, id:'hold'}
+    ],
+    actions:[
+      {id:'hands', g:'Voorbereiden', label:'Handen reinigen', narr:'Je reinigt je handen.'},
+      {id:'eye', g:'Voorbereiden', label:'Oogcontact maken, rustig praten', narr:'Je kijkt mevrouw aan.'},
+      {id:'bedUp', g:'Voorbereiden', label:'Bed op werkhoogte zetten', narr:'Je zet het bed op werkhoogte.'},
+      {id:'headUp', g:'Voorbereiden', label:'Hoofdeinde omhoog zetten', narr:'Je zet het hoofdeinde iets omhoog.'},
+      {id:'parrot', g:'Uit bed', label:'Papegaai aangeven en helpen omhoog tot zit (zere arm sparen)', narr:'Je geeft mevrouw de papegaai in haar linkerhand en ondersteunt haar rug.', reply:'Hup ... zo. Met links gaat het goed.', fx:st=>{ if(!did(st,'bedUp')){st.flags.ergoBad=1; st.flags.bedLow=1; return '*Het bed staat nog laag: je moet diep bukken.*';} }},
+      {id:'pullArm', g:'Uit bed', label:'Mevrouw aan haar armen omhoog trekken', as:'parrot', narr:'Je pakt mevrouw bij haar armen en trekt haar omhoog.', reply:'Au! Mijn arm!', fx:st=>{st.flags.armBad=1; st.flags.ergoBad=1;}},
+      {id:'legs', g:'Uit bed', label:'Helpen de benen over de rand van het bed te zetten', req:['parrot'], narr:'Je helpt mevrouw draaien tot haar onderbenen over de rand hangen.'},
+      {id:'askSitBed', g:'Uit bed', label:'Vragen of mevrouw goed zit', req:['legs'], reply:'Ja, ik zit goed. Even op adem komen.'},
+      {id:'vest', g:'Aankleden', label:'Vest aantrekken: eerst de zere rechterarm', narr:'Je helpt eerst de zere rechterarm in de mouw, daarna de linker.', reply:'Dank je. Zo hoef ik mijn arm bijna niet te draaien.'},
+      {id:'vestWrong', g:'Aankleden', label:'Vest aantrekken: eerst de linkerarm', as:'vest', narr:'Je helpt eerst de linkerarm in de mouw.', reply:'Au ... nu moet ik mijn zere arm zo ver naar achteren draaien.', fx:st=>{st.flags.vestBad=1;}},
+      {id:'shoes', g:'Aankleden', label:'Schoenen klaarzetten zodat mevrouw erin kan stappen', narr:'Je zet de instapschoenen voor de voeten van mevrouw. Ze stapt erin.'},
+      {id:'bedDown', g:'Opstaan', label:'Bed lager zetten, voeten plat op de grond', req:['legs'], narr:'Je zet het bed lager. De voeten van mevrouw staan plat op de grond.'},
+      {id:'hold', g:'Opstaan', label:'Vragen of mevrouw jou vastpakt, en haar zelf vastpakken', req:['legs'], narr:'Mevrouw pakt jou vast, jij pakt haar vast.'},
+      {id:'stand', g:'Opstaan', label:'Aanwijzingen geven en helpen opstaan (rug recht, door de knieën)', req:['legs'], narr:'Je telt af en helpt mevrouw omhoog.', reply:'Zo, ik sta.', fx:st=>{ if(!before(st,'bedDown','stand')) st.flags.standBad=1; if(!before(st,'hold','stand')) st.flags.standBad=1; if(!before(st,'bedDown','stand')){st.flags.ergoBad=1; return '*Het bed staat te hoog, de voeten van mevrouw raken de grond nauwelijks.*';} }},
+      {id:'askStand', g:'Opstaan', label:'Vragen of mevrouw goed staat', req:['stand'], reply:'Ja, ik sta stevig.'},
+      {id:'chair', g:'Naar de stoel', label:'Stoel van de tafel schuiven', narr:'Je schuift de stoel van de tafel.'},
+      {id:'walkSelf', g:'Naar de stoel', label:'Mevrouw zelf naar de stoel laten lopen en gaan zitten', req:['stand','shoes','chair'],
+        missing:{stand:'Ik moet eerst nog opstaan, hoor.', shoes:'Mijn schoenen! Ik ga niet op mijn sokken lopen.', chair:'Wil je de stoel even voor me naar achteren schuiven?'},
+        narr:'Mevrouw loopt zelf naar de stoel en gaat zitten.', reply:'*gaat zitten* Heerlijk. Nu ben ik klaar voor het bloemschikken.'},
+      {id:'walkHelp', g:'Naar de stoel', label:'Mevrouw naar de stoel ondersteunen en laten zakken', as:'walkSelf', req:['stand','shoes','chair'],
+        missing:{stand:'Ik moet eerst nog opstaan, hoor.', shoes:'Mijn schoenen! Ik ga niet op mijn sokken lopen.', chair:'Wil je de stoel even voor me naar achteren schuiven?'},
+        narr:'Je ondersteunt mevrouw naar de stoel en laat haar zakken.', reply:'Dat kan ik zelf ook wel, hoor.', fx:st=>{st.flags.selfBad=1;}},
+      {id:'bedMake', g:'Afronden', label:'Bed netjes maken (laken recht, dekbed, kussen opschudden)', narr:'Je trekt het laken recht, slaat het dekbed om en schudt het kussen op.'}
+    ],
+    beats:[
+      {id:'who', when:st=>st.msgs>=2 && !st.said.purpose, line:'Hallo ... wie ben jij? Kom je me helpen?', fx:st=>{st.prompted.purpose=1}},
+      {id:'concern', when:st=>st.said.purpose && st.msgs>=3, line:'Mijn arm doet vandaag zo’n pijn. Vroeger deed ik alles zelf ... nu heb ik overal hulp bij nodig.', fx:st=>{st.concernAt=st.msgs}},
+      {id:'vestAsk', when:st=>did(st,'stand') && !did(st,'vest'), line:'Mag ik mijn vest aan? Ik heb het een beetje koud.', fx:st=>{st.prompted.vest=1}}
+    ],
+    isEnd:st=>did(st,'walkSelf')&&did(st,'bedMake'),
+    bye:'Dankjewel, lief van je. Tot de volgende keer!',
+    criteria:[
+      {code:'D2a', title:'voorbereiding en introductie', max:2, mode:'minus', items:[
+        {l:'heeft gezorgd voor goede persoonlijke hygiëne (werkkleding, platte schoenen, geen sieraden, geen kauwgom, handen gereinigd)', ok:st=>st.prepOk&&did(st,'hands'), tip:'Denk aan je voorbereiding én aan handen reinigen.'},
+        {l:'groet mevrouw op eigen initiatief en stelt zichzelf verstaanbaar voor', ok:st=>st.said.greet&&st.said.intro, tip:'Groet en zeg je naam.'},
+        {l:'vertelt op eigen initiatief wat zij/hij komt doen', ok:st=>st.said.purpose&&!st.prompted.purpose, tip:'Vertel meteen dat je mevrouw uit bed komt helpen.'},
+        {l:'zet vóór het helpen het bed op werkhoogte', ok:st=>before(st,'bedUp','parrot'), tip:'Eerst het bed op werkhoogte, dan pas helpen.'}
+      ]},
+      {code:'D2b', title:'uit bed helpen, vest en schoenen', max:4, mode:'bands', bands:[[7,4],[6,3],[4,2],[2,1],[0,0]], items:[
+        {l:'geeft de papegaai aan en ondersteunt omhoog tot zit, met aandacht voor de zere arm', ok:st=>did(st,'parrot')&&!st.flags.armBad, tip:'Laat mevrouw met haar goede arm de papegaai gebruiken. Trek nooit aan haar armen.'},
+        {l:'helpt tot de onderbenen over de rand hangen en vraagt of mevrouw goed zit', ok:st=>did(st,'legs')&&did(st,'askSitBed'), tip:'Vraag “Zit u goed?” voordat je verder gaat.'},
+        {l:'helpt op eigen initiatief met het vest', ok:st=>did(st,'vest')&&!st.prompted.vest, tip:'Denk zelf aan het vest.'},
+        {l:'houdt bij het vest rekening met de zere arm (eerst de rechterarm)', ok:st=>did(st,'vest')&&!st.flags.vestBad, tip:'Aankleden: eerst de zere arm.'},
+        {l:'zorgt dat mevrouw haar schoenen aan heeft vóór ze naar de stoel loopt', ok:st=>did(st,'shoes')&&!st.prompted.shoes, tip:'Schoenen aan vóór het lopen.'},
+        {l:'helpt op de juiste manier uit bed (bed lager, elkaar vastpakken, aanwijzingen, vraagt of ze goed staat)', ok:st=>did(st,'stand')&&!st.flags.standBad&&did(st,'askStand'), tip:'Bed lager, vastpakken, aanwijzingen geven, “Staat u goed?”.'},
+        {l:'werkt ergonomisch bij het opstaan uit bed', ok:st=>did(st,'stand')&&!st.flags.ergoBad, tip:'Bed op de goede hoogte, rug recht, door de knieën.'}
+      ]},
+      {code:'D2c', title:'interesse tonen, communicatie en afsluiting', max:2, mode:'bands', bands:[[5,2],[3,1],[0,0]], items:[
+        {l:'schuift de stoel van de tafel zodat mevrouw kan zitten', ok:st=>did(st,'chair')&&!st.prompted.chair, tip:'Schuif de stoel op tijd naar achteren.'},
+        {l:'laat mevrouw zelfstandig naar de stoel lopen en gaan zitten', ok:st=>did(st,'walkSelf')&&!st.flags.selfBad, tip:'Wat mevrouw zelf kan, laat je haar zelf doen.'},
+        {l:'toont interesse (bijv. vraagt of ze goed gerust heeft of naar het bloemschikken)', ok:st=>st.said.interest, tip:'Vraag bijvoorbeeld: “Heeft u lekker gerust?”'},
+        {l:'laat het bed netjes achter', ok:st=>did(st,'bedMake'), tip:'Laken recht, dekbed omgeslagen, kussen opgeschud.'},
+        {l:'communiceert passend (u-vorm, oogcontact, vriendelijk) en neemt correct afscheid', ok:st=>uForm(st)&&did(st,'eye')&&st.said.bye, tip:'Steeds “u”, oogcontact en een nette groet aan het eind.'},
+        {l:'rondt netjes af (vraagt of ze nog iets kan doen / alles naar wens is)', ok:st=>st.said.closing, tip:'“Kan ik nog iets voor u doen?”'}
+      ]}
+    ]
+  },
+  ehbo:{
+    who:'meneer Rijsdijk',
+    text:'Meneer Rijsdijk is vrijwilliger bij De Molenhoeve. Hij heeft zich bij het snoeien in de kas gesneden aan zijn linker wijsvinger. De wond is al schoongespoeld, drooggedept en ontsmet. Meneer draagt een ring aan die vinger.',
+    tasks:['Verzorg de wond met een kompres en een vingerbob.','De materialen liggen klaar. Kies de juiste materialen.','Zet de stappen in de goede volgorde.','Beantwoord daarna twee vragen van de examinator.'],
+    mats:[
+      {id:'kompres', l:'Steriel kompres 5 × 5 cm', i:'gauze', ok:true},
+      {id:'bob', l:'Vingerbob', i:'finger', ok:true},
+      {id:'snel', l:'Snelverband 6 × 8 cm', i:'quick', ok:false},
+      {id:'ideaal', l:'Ideaalzwachtel', i:'roll', ok:false},
+      {id:'watten', l:'Watten', i:'cotton', ok:false},
+      {id:'cold', l:'Coldpack', i:'coldpack', ok:false},
+      {id:'hecht', l:'Hechtstrips', i:'strips', ok:false},
+      {id:'mitella', l:'Driekante doek', i:'sling', ok:false}
+    ],
+    steps:[
+      'Meneer begroeten, vragen wat er is gebeurd en geruststellen',
+      'Meneer laten zitten en vertellen wat je gaat doen',
+      'Vragen of meneer zijn ring wil afdoen',
+      'Handen reinigen of handschoenen aantrekken',
+      'Steriel kompres op de wond leggen zonder de binnenkant aan te raken',
+      'Vingerbob op de vingertop zetten en het eerste rolletje helemaal afrollen',
+      'De vingerbob een slag draaien, zodat de top dicht is',
+      'Het tweede rolletje helemaal naar beneden rollen',
+      'Vragen of de vingerbob goed zit en meneer aan zijn ring herinneren',
+      'Afval weggooien en afscheid nemen'
+    ],
+    why:[
+      {q:'Waarom draai je de vingerbob voordat je het tweede rolletje afrolt?', o:['Dan ziet het er mooier uit','Dan is de vingertop dicht en schuift het verband niet af','Dan zit hij strakker om de wond','Dat hoeft niet, het mag ook zonder draaien'], a:1},
+      {q:'Waarom moet de ring af vóór je de vinger verbindt?', o:['Een ring is niet hygiënisch','De vinger kan opzwellen, de ring gaat dan knellen','Anders past de vingerbob niet','De ring kan kwijtraken'], a:1}
+    ],
+    oral:[
+      [{q:'Wanneer geef je buikstoten?', o:['Bij een lichte verslikking, als iemand nog goed hoest','Bij een ernstige verslikking: iemand kan niet meer hoesten, praten of ademen','Bij buikpijn','Bij een bloedneus'], a:1},
+       {q:'Noem een reden om iemand in stabiele zijligging te leggen.', o:['Iemand heeft een gebroken been','Iemand is niet aanspreekbaar maar ademt normaal: zo blijft de luchtweg vrij','Iemand heeft hoofdpijn','Iemand heeft het koud'], a:1}],
+      [{q:'Hoe haal je een splinter weg?', o:['Uitknijpen met je nagels','Met een (ontsmet) pincet, in de richting waarin hij erin ging','Er een pleister op plakken en laten zitten','Wegsnijden met een schaar'], a:1},
+       {q:'Iemand heeft een kneuzing aan zijn enkel. Wat doe je?', o:['Warm maken met een kruik','Koelen, bijvoorbeeld met een coldpack in een doek','Er meteen op laten lopen','Stevig masseren'], a:1}]
+    ]
+  },
+  film:{
+    title:'Stagiair Lotte legt een vingerbob aan', s:'Lotte', sIni:'L', c:'Meneer Rijsdijk', cIni:'R',
+    frames:[
+      {d:5, who:'s', say:'Goedemiddag meneer Rijsdijk, ik ben Lotte. Wat is er gebeurd?', act:{i:'talk', t:'Lotte begroet meneer.'}},
+      {d:5, who:'c', say:'Ik heb me gesneden aan de snoeischaar.', act:{i:'finger', t:'Meneer laat zijn wijsvinger zien.'}},
+      {d:5, who:'s', say:'Gaat u maar zitten. Ik doe een kompres en een vingerbob om uw vinger.', act:{i:'chair', t:'Meneer gaat zitten.'}},
+      {d:6, act:{i:'ring', t:'Lotte trekt zonder iets te vragen de ring van zijn vinger.'}, err:{a:'comm', t:'Lotte vraagt niet of meneer de ring zelf wil afdoen of dat zij het mag doen.', k:['ring','vragen','gevraagd','toestemming']}},
+      {d:5, act:{i:'gloves', t:'Lotte trekt handschoenen aan.'}},
+      {d:5, act:{i:'gauze', t:'Ze pakt het steriele kompres bij de hoekjes en legt het op de wond.'}},
+      {d:6, act:{i:'finger', t:'Ze zet de vingerbob op de vingertop en rolt het eerste rolletje maar half af.'}, err:{a:'verband', t:'Het eerste rolletje moet helemaal worden afgerold, tot onderaan de vinger.', k:['rolletje','half','afrol','afgerold','eerste','onderkant','helemaal']}},
+      {d:5, act:{i:'turn', t:'Ze draait de vingerbob om de top af te sluiten.'}},
+      {d:5, act:{i:'finger', t:'Ze rolt het tweede rolletje helemaal naar beneden.'}},
+      {d:5, who:'c', say:'Au, het klopt zo in mijn vinger ...', act:{i:'talk', t:'Meneer heeft pijn.'}},
+      {d:6, who:'s', say:'Mm-mm.', act:{i:'phone', t:'Lotte kijkt op haar telefoon en reageert niet echt.'}, err:{a:'comm', t:'Geen oogcontact en niet geruststellen. Telefoon hoort weg.', k:['telefoon','oogcontact','gerust','reageer','luister','aandacht','mobiel']}},
+      {d:5, who:'s', say:'Zit de vingerbob goed?', act:{i:'talk', t:'Lotte controleert het verband.'}},
+      {d:6, act:{i:'ring', t:'Meneer loopt weg. Zijn ring blijft op tafel liggen.'}, err:{a:'verband', t:'Lotte herinnert meneer niet aan zijn ring.', k:['ring','vergeten','herinner','meegeven']}},
+      {d:5, who:'s', say:'Fijne middag nog, meneer!', act:{i:'door', t:'Lotte neemt afscheid.'}}
+    ]
+  }
+},
+/* ---------------- C ---------------- */
+{
+  id:'C', versie:'versie C', stijl:'opbouw cspe 2024',
+  place:'Logeerhuis Duinzicht', town:'Monster',
+  intro:'Logeerhuis Duinzicht in Monster is een vakantie- en logeerhuis voor volwassenen met een (licht) verstandelijke beperking. Gasten logeren een week in kleine groepjes met een begeleider. Elke dag is er een activiteitenprogramma: samen koken, muziek maken en wandelen naar het strand.',
+  topics:'opstaan met rollator · brandwond verbinden',
+  quiz:[
+    {t:'matrix', ctx:'Meneer Pinas is slechthorend.', q:'Help je hem zo wel of niet goed?', cols:['wel goed','niet goed'], rows:[
+      {s:'Je kijkt hem aan als je praat.', a:0},
+      {s:'Je roept vanuit de gang.', a:1},
+      {s:'Je praat rustig en duidelijk.', a:0}], e:'Kijk de cliënt aan en praat rustig en duidelijk. Dan kan hij ook je mond zien.'},
+    {t:'mc', ctx:'Mevrouw Bouali heeft zich gebrand aan een hete pan.', q:'Hoe lang koel je de brandwond?', o:['1 minuut','10 tot 20 minuten','1 uur','niet koelen'], a:1, e:'Koel 10 tot 20 minuten met lauw, zacht stromend water.'},
+    {t:'matrix', ctx:'Mevrouw Bouali heeft een brandwond op haar onderarm.', q:'Zijn deze EHBO-adviezen juist of onjuist?', cols:['juist advies','onjuist advies'], rows:[
+      {s:'koelen met lauw stromend water', a:0},
+      {s:'zalf op de wond smeren', a:1},
+      {s:'blaren doorprikken', a:1},
+      {s:'armband in de buurt afdoen', a:0}], e:'Koelen en sieraden afdoen is goed. Geen zalf en blaren niet doorprikken.'},
+    {t:'mc', ctx:'Mevrouw Bouali heeft een rode huid met blaren.', q:'Welke verbranding is dit?', o:['oppervlakkige','gedeeltelijke','volledige','geen verbranding'], a:1, e:'Blaren horen bij een gedeeltelijke (tweedegraads) verbranding.'},
+    {t:'match', q:'Waar biedt het hulpmiddel vooral ondersteuning bij?', items:[{l:'rollator',a:0},{l:'rolstoel',a:3},{l:'douchestoel',a:2}], o:['het lopen','het verplaatsen in bed','het zittend douchen','het verplaatsen over een lange afstand'], e:'Rollator: lopen. Douchestoel: zittend douchen. Rolstoel: grotere afstanden.'},
+    {t:'matrix', ctx:'Meneer Pinas kan zelf zijn schoen aandoen.', q:'Stimuleer je in deze situaties wel of niet zijn zelfredzaamheid?', cols:['wel stimulerend','niet stimulerend'], rows:[
+      {s:'Je moedigt hem aan.', a:0},
+      {s:'Je doet de schoen voor hem aan.', a:1},
+      {s:'Je geeft een compliment als het lukt.', a:0}], e:'Aanmoedigen en een compliment geven helpt meneer om het zelf te doen.'}
+  ],
+  chat:{
+    name:'meneer Pinas', short:'Meneer Pinas', ini:'P', aanspreek:'meneer',
+    text:'Meneer Pinas is 45 jaar en logeert deze week in Duinzicht. Hij heeft een licht verstandelijke beperking. Hij moet gestimuleerd worden om mee te doen aan activiteiten en om zich klaar te maken. Meneer is slechthorend en loopt met een rollator. Hij heeft hulp nodig bij het opstaan uit een stoel. Hij kan zelf gaan zitten en zonder hulp staan. Hij moet één schoen nog aandoen; dat kan hij zelf.\n\nOver een kwartier begint de activiteit ‘samen koken’ in de keuken. Zijn vriend Kevin is daar al. Je ziet meneer voor het eerst.',
+    tasks:['Stimuleer meneer om naar de activiteit te gaan en zich klaar te maken.','Help hem met opstaan uit de stoel.','Begeleid meneer naar de keuken.'],
+    opening:'Meneer Pinas zit in een stoel in de woonkamer van zijn logeerhuisje. Eén schoen staat naast de stoel. Zijn tas hangt aan de kapstok. De rollator staat bij de deur.',
+    persona:'Je bent meneer Pinas, 45 jaar, met een licht verstandelijke beperking. Je logeert een week in logeerhuis Duinzicht in Monster. Je bent slechthorend: soms vraag je “Wat zeg je?”. Je praat in korte, eenvoudige zinnen. Je hebt niet zo veel zin om mee te gaan koken; je bent een beetje verdrietig omdat je je kat Tijger thuis mist (die is bij je zus). Je vriend Kevin is al in de keuken. Als iemand je aanmoedigt, ga je toch mee.',
+    re:{purpose:/(help|helpen|ophalen|halen|koken|keuken|activiteit|mee)/, interest:/(logeren|vakantie|bevalt|leuk hier|strand|kevin|week|gedaan|slapen|geslapen|eten)/, stim:/(koken|lekker|gezellig|leuk|kevin|vriend|zin|samen|ga mee|kom mee|maken|proeven|eten)/},
+    qa:[
+      {re:/(logeren|vakantie|bevalt|leuk hier|week|kamer|gedaan|vandaag)/, a:['Het is wel leuk hier. Gisteren zijn we naar het strand gelopen.','Leuk. Mijn kamer heeft uitzicht op de duinen.']},
+      {re:/(kevin|vriend)/, a:['Kevin is mijn vriend. Hij kookt altijd heel lekker.','Kevin woont thuis ook bij mij in de buurt.']},
+      {re:/(strand|zee|duin)/, a:['Ik vind de zee mooi. Maar het waaide wel hard.']},
+      {re:/(hoe gaat|hoe voelt|gaat het)/, a:['Gaat wel.','Hmm. Een beetje.']},
+      {re:/(kat|tijger|huisdier)/, a:['Tijger is een rode kat. Hij slaapt altijd op mijn bed.']},
+      {re:/(pizza|lievelingseten|lekker eten|wat eet)/, a:['Ik eet graag pizza. Met veel kaas.']},
+      {re:/(muziek|liedje|zingen)/, a:['Ik luister graag naar muziek. Liefst heel hard. *lacht*']},
+      {re:/(schoen)/, a:['Ja ... die schoen moet nog aan.']},
+      {re:/(werk|school|dagbesteding|thuis)/, a:['Thuis werk ik in een fietsenwerkplaats. Banden plakken!']}
+    ],
+    fill:['Oké.','Ja.','*knikt*','Hm.','Goed.','*haalt zijn schouders op*','Mwah.'],
+    textActs:[
+      {re:/(staat u|sta je|staat u wel) (goed|stevig)|goed staan/, id:'askStand'},
+      {re:/(mag ik|zal ik|kan ik) (u|je|jou) helpen.*(op ?staan|overeind|omhoog)|help(en)? (u|je) met opstaan/, id:'askHelp'},
+      {re:/schoen.*(zelf|aan|lukt)/, id:'shoeSelf'}
+    ],
+    actions:[
+      {id:'hands', g:'Voorbereiden', label:'Handen reinigen', narr:'Je reinigt je handen.'},
+      {id:'eye', g:'Voorbereiden', label:'Op ooghoogte, meneer aankijken, duidelijk praten', narr:'Je gaat op ooghoogte zitten zodat meneer je mond kan zien.'},
+      {id:'shoeSelf', g:'Klaarmaken', label:'Meneer aanmoedigen zijn schoen zelf aan te doen', narr:'Je moedigt meneer aan en wacht rustig.', reply:'*doet langzaam zijn schoen aan* Zo. Gelukt!'},
+      {id:'shoeDo', g:'Klaarmaken', label:'De schoen voor meneer aandoen', as:'shoeSelf', narr:'Je doet de schoen voor meneer aan.', reply:'Oh ... dat kan ik ook zelf, hoor.', fx:st=>{st.flags.shoeBad=1;}},
+      {id:'rollNear', g:'Rollator', label:'Rollator dicht bij de stoel zetten', narr:'Je haalt de rollator en zet hem voor de stoel.'},
+      {id:'rollBrake', g:'Rollator', label:'Rollator op de rem zetten', narr:'Je zet de rollator op de rem.'},
+      {id:'askHelp', g:'Opstaan', label:'Vragen of je meneer mag helpen met opstaan', narr:'Je vraagt of je meneer mag helpen met opstaan.', reply:'Ja, graag.'},
+      {id:'stand', g:'Opstaan', label:'Aanwijzingen geven en helpen opstaan (rug recht, door de knieën)', req:['rollNear','rollBrake'],
+        missing:{rollNear:'Waar is mijn rollator? Die staat bij de deur.', rollBrake:'Staat mijn rollator wel op de rem? Die rolt altijd weg.'},
+        narr:'Je zegt wat meneer moet doen, houdt hem vast en helpt hem omhoog.', reply:'Zo. Ik sta.', fx:st=>{ if(!before(st,'askHelp','stand')) st.flags.noAskHelp=1; }},
+      {id:'pull', g:'Opstaan', label:'Meneer aan zijn handen omhoog trekken', as:'stand', req:['rollNear','rollBrake'],
+        missing:{rollNear:'Waar is mijn rollator?', rollBrake:'Staat mijn rollator wel op de rem?'},
+        narr:'Je pakt de handen van meneer en trekt hem omhoog.', reply:'Ho! Niet zo trekken.', fx:st=>{st.flags.pulled=1; st.flags.ergoBad=1; if(!before(st,'askHelp','stand')) st.flags.noAskHelp=1;}},
+      {id:'askStand', g:'Opstaan', label:'Vragen of meneer goed staat', req:['stand'], reply:'Ja, ik sta goed.'},
+      {id:'bag', g:'Naar de keuken', label:'Tas van meneer meenemen', narr:'Je pakt de tas van de kapstok en hangt hem aan de rollator.', reply:'Oh ja, daar zit mijn schort in!'},
+      {id:'walk', g:'Naar de keuken', label:'In het tempo van meneer naar de keuken lopen', req:['stand','shoeSelf','bag'],
+        missing:{stand:'Ik zit nog, hoor.', shoeSelf:'Wacht, mijn schoen zit nog niet aan.', bag:'Mijn tas! Daar zit mijn schort in.'},
+        narr:'Jullie lopen rustig naar de keuken, in het tempo van meneer.', reply:'*in de keuken* Kijk, daar is Kevin!'},
+      {id:'walkFast', g:'Naar de keuken', label:'Vooruit lopen, dan zijn jullie er sneller', as:'walk', req:['stand','shoeSelf','bag'],
+        missing:{stand:'Ik zit nog, hoor.', shoeSelf:'Wacht, mijn schoen zit nog niet aan.', bag:'Mijn tas! Daar zit mijn schort in.'},
+        narr:'Je loopt vooruit. Meneer moet zich haasten.', reply:'Wacht nou! Niet zo snel.', fx:st=>{st.flags.tempoBad=1;}},
+      {id:'sitSelf', g:'Naar de keuken', label:'Bij de activiteit: meneer zelf laten gaan zitten', req:['walk'], narr:'Meneer zet zijn rollator op de rem en gaat zelf zitten.', reply:'Zo. Hoi Kevin!', end:true},
+      {id:'sitHelp', g:'Naar de keuken', label:'Bij de activiteit: meneer helpen gaan zitten', as:'sitSelf', req:['walk'], narr:'Je helpt meneer op de stoel.', reply:'Dat kan ik zelf, hoor.', fx:st=>{st.flags.sitBad=1;}, end:true}
+    ],
+    beats:[
+      {id:'hear1', when:st=>st.msgs===1, line:'Wat zeg je? Ik hoor je niet goed.', fx:st=>{st.repeatAt=st.msgs}},
+      {id:'who', when:st=>st.msgs>=3 && !st.said.purpose, line:'Wie ben jij? Waarom kom je?', fx:st=>{st.prompted.purpose=1}},
+      {id:'reluct', when:st=>st.said.purpose && st.msgs>=2, line:'Koken? ... Ik weet het niet. Ik blijf liever hier zitten.', fx:st=>{st.reluctAt=st.msgs}},
+      {id:'sad', when:st=>st.reluctAt>=0 && st.msgs>=st.reluctAt+2, line:'*kijkt naar beneden* Ik ben een beetje verdrietig.', fx:st=>{st.sadAt=st.msgs}},
+      {id:'hear2', when:st=>st.msgs>=7, line:'Hè? Kun je dat nog een keer zeggen?', fx:st=>{st.repeatAt=st.msgs}}
+    ],
+    bye:'Dag! Tot straks.',
+    special:(st,t,c)=>{ // extra regels voor stimuleren, verdriet en slechthorendheid
+      const out=[];
+      if(st.repeatAt>=0 && st.msgs===st.repeatAt+1){
+        st.repeatAsks++;
+        if(/(zei ik (al|toch)|luister|hoor je (nou|nu|het)|doof|net al gezegd)/.test(t) || t.trim().length<3) st.repeatBad=1;
+        else out.push('Ah, nu hoor ik het.');
+      }
+      if(st.reluctAt>=0 && !st.stimOk && c.re.stim.test(t)){ st.stimOk=1; out.push('Nou ... oké. Als Kevin er ook is, ga ik mee.'); }
+      if(st.sadAt>=0 && !st.askedWhy && /(waarom|hoe komt|wat is er|wat scheelt|vertel|wat maakt|aan de hand|verdrietig)/.test(t)){ st.askedWhy=1; st.concernAt=st.msgs; out.push('Ik mis mijn kat Tijger. Die is nu bij mijn zus.'); }
+      return out;
+    },
+    criteria:[
+      {code:'D2a', title:'begroeting en hygiëne', max:1, mode:'all', items:[
+        {l:'heeft gezorgd voor goede persoonlijke hygiëne (incl. minimaal één keer handen reinigen)', ok:st=>st.prepOk&&did(st,'hands'), tip:'Voorbereiding én handen reinigen.'},
+        {l:'groet meneer op eigen initiatief en stelt zichzelf verstaanbaar voor', ok:st=>st.said.greet&&st.said.intro, tip:'Groet en zeg je naam.'},
+        {l:'vertelt op eigen initiatief wat zij/hij komt doen', ok:st=>st.said.purpose&&!st.prompted.purpose, tip:'“Ik kom u ophalen voor het koken.”'},
+        {l:'gebruikt de u-vorm, is vriendelijk en maakt oogcontact', ok:st=>uForm(st)&&did(st,'eye'), tip:'Zeg “u”, ga op ooghoogte en kijk meneer aan (belangrijk bij slechthorendheid).'}
+      ]},
+      {code:'D2b', title:'stimuleren en zelfredzaamheid', max:1, mode:'all', items:[
+        {l:'stimuleert meneer om mee te doen aan de activiteit', ok:st=>st.stimOk, tip:'Vertel wat er leuk is: “Kevin is er ook, jullie gaan samen pizza maken!”'},
+        {l:'moedigt meneer aan zijn schoen zelf aan te doen en helpt niet', ok:st=>did(st,'shoeSelf')&&!st.flags.shoeBad, tip:'Hij kan het zelf: aanmoedigen en wachten.'},
+        {l:'laat meneer bij de activiteit zelf gaan zitten', ok:st=>did(st,'sitSelf')&&!st.flags.sitBad, tip:'Meneer kan zelf gaan zitten.'}
+      ]},
+      {code:'D2c', title:'helpen bij opstaan en begeleiden naar de activiteit', max:4, mode:'bands', bands:[[7,4],[6,3],[4,2],[2,1],[0,0]], items:[
+        {l:'zet op eigen initiatief de rollator dichtbij en op de rem', ok:st=>before(st,'rollNear','stand')&&before(st,'rollBrake','stand')&&!st.prompted.rollNear&&!st.prompted.rollBrake, tip:'Rollator dichtbij en op de rem, vóór het opstaan.'},
+        {l:'vraagt of hij mag helpen / meldt dat hij gaat helpen met opstaan', ok:st=>did(st,'stand')&&!st.flags.noAskHelp, tip:'Vraag eerst: “Mag ik u helpen met opstaan?”'},
+        {l:'geeft de juiste aanwijzingen vóór het opstaan', ok:st=>did(st,'stand')&&!st.flags.pulled, tip:'Zeg wat meneer moet doen: naar voren schuiven, voeten neer, handen op de leuning.'},
+        {l:'houdt meneer vast tot hij staat en vraagt of hij goed staat', ok:st=>did(st,'askStand'), tip:'“Staat u goed?”'},
+        {l:'zorgt op eigen initiatief dat de tas meegaat', ok:st=>did(st,'bag')&&!st.prompted.bag, tip:'Kijk wat meneer mee moet nemen.'},
+        {l:'loopt mee in het tempo van meneer', ok:st=>did(st,'walk')&&!st.flags.tempoBad, tip:'Loop naast meneer, in zijn tempo.'},
+        {l:'werkt steeds ergonomisch', ok:st=>did(st,'stand')&&!st.flags.ergoBad, tip:'Niet trekken; rug recht, door de knieën.'}
+      ]},
+      {code:'D2d', title:'interesse, empathie en afsluiting', max:2, mode:'minus', items:[
+        {l:'toont interesse (bijv. vraagt hoe het logeren bevalt)', ok:st=>st.said.interest, tip:'“Hoe bevalt het logeren?”'},
+        {l:'vraagt naar de reden van het verdriet en toont empathie', ok:st=>st.askedWhy&&st.empathyOk, tip:'Vraag “Wat is er?” en reageer met begrip: “Wat jammer, dat snap ik.”'},
+        {l:'blijft geduldig als meneer vraagt iets te herhalen', ok:st=>st.repeatAsks>0&&!st.repeatBad, tip:'Herhaal rustig wat je zei, iets duidelijker.'},
+        {l:'neemt op vriendelijke wijze afscheid', ok:st=>st.said.bye, tip:'Neem netjes afscheid: “Veel plezier met koken!”'}
+      ]}
+    ]
+  },
+  ehbo:{
+    who:'mevrouw Bouali',
+    text:'Mevrouw Bouali is kok in Logeerhuis Duinzicht. Ze heeft zich gebrand aan een hete pan. Ze heeft een gedeeltelijke (tweedegraads) verbranding op haar linker onderarm. Ze heeft de brandwond al 20 minuten gekoeld. Mevrouw draagt een armband om haar linkerpols.',
+    tasks:['Leg een verband aan met een kompres en zet het vast met een elastisch windsel.','De materialen liggen klaar. Kies de juiste materialen.','Zet de stappen in de goede volgorde.','Beantwoord daarna twee vragen van de examinator.'],
+    mats:[
+      {id:'nv', l:'Niet-verklevend kompres 10 × 10 cm', i:'gauze', ok:true},
+      {id:'elastisch', l:'Elastisch windsel 8 cm × 4 m', i:'elastic', ok:true},
+      {id:'pleister', l:'Rol kleefpleister', i:'tape', ok:true},
+      {id:'schaar', l:'EHBO-schaar', i:'scissors', ok:true},
+      {id:'watten', l:'Watten', i:'cotton', ok:false},
+      {id:'snel', l:'Snelverband', i:'quick', ok:false},
+      {id:'ideaal', l:'Ideaalzwachtel', i:'roll', ok:false},
+      {id:'hecht', l:'Hechtstrips', i:'strips', ok:false}
+    ],
+    steps:[
+      'Mevrouw begroeten, vragen wat er is gebeurd en geruststellen',
+      'Mevrouw laten zitten en vertellen wat je gaat doen',
+      'Vragen of mevrouw haar armband wil afdoen',
+      'Handen reinigen of handschoenen aantrekken',
+      'Niet-verklevend kompres in één keer op de brandwond leggen',
+      'Elastisch windsel om de arm wikkelen richting de elleboog, elke slag overlapt',
+      'Einde van het windsel vastzetten met kleefpleister, niet op de wond',
+      'Vragen of het verband goed zit en niet te strak is',
+      'Advies geven: neem contact op met de huisarts',
+      'Armband meegeven, afval weggooien en afscheid nemen'
+    ],
+    why:[
+      {q:'Waarom gebruik je geen watten op een brandwond?', o:['Watten zijn te duur','Watten pluizen en plakken vast in de wond','Watten zijn niet steriel genoeg voor een vinger','Watten koelen te veel'], a:1},
+      {q:'Waarom plak je de pleister niet op de wond?', o:['Dan houdt hij niet','Bij het weghalen beschadig je de huid en doet het pijn','Dan zie je de wond niet meer','Dat is niet netjes'], a:1}
+    ],
+    oral:[
+      [{q:'Wat moet je doen vóórdat je een brandwond gaat koelen? (112 is al gebeld)', o:['Zalf op de wond smeren','Kleding en sieraden in de buurt van de wond verwijderen, als dat kan','Blaren doorprikken','Een pleister op de wond plakken'], a:1},
+       {q:'Waar let je op tijdens het koelen met kraanwater?', o:['Zo koud mogelijk water','De straal niet recht op de wond, en het water lauw en prettig','Zo hard mogelijk spuiten','Om de minuut stoppen'], a:1}],
+      [{q:'Iemand is gestoken door een wesp. Wanneer bel je de huisarts?', o:['Als het een beetje rood is','Als hij eerder een allergische reactie had op een steek','Als het jeukt','Nooit, het gaat altijd vanzelf over'], a:1},
+       {q:'Iemand is gebeten door een teek. Wanneer bel je de huisarts?', o:['Als de teek er goed uit is','Als de teek er niet uit wil of langer dan 24 uur in de huid zat','Als het plekje rood is direct na het verwijderen','Nooit'], a:1}]
+    ]
+  },
+  film:{
+    title:'Stagiair Mo verbindt een brandwond', s:'Mo', sIni:'M', c:'Mevrouw Bouali', cIni:'B',
+    frames:[
+      {d:5, who:'s', say:'Hallo mevrouw Bouali, ik ben Mo. Ik kom uw brandwond verzorgen.', act:{i:'door', t:'Mo komt binnen.'}},
+      {d:5, who:'c', say:'Is twintig minuten koelen genoeg?', act:{i:'water', t:'Mevrouw heeft de wond gekoeld.'}},
+      {d:5, who:'s', say:'Ja, twintig minuten is lang genoeg. Gaat u maar zitten.', act:{i:'chair', t:'Mevrouw gaat zitten.'}},
+      {d:6, act:{i:'cotton', t:'Mo legt een stuk watten op de brandwond.'}, err:{a:'verband', t:'Gebruik een niet-verklevend kompres. Watten pluizen en plakken in de wond.', k:['watten','kompres','verklevend','pluis']}},
+      {d:6, act:{i:'gauze', t:'Hij schuift het nog een paar keer heen en weer tot het goed ligt.'}, err:{a:'verband', t:'Leg het kompres in één keer goed, zonder te schuiven.', k:['schuif','verschuiv','heen en weer','één keer']}},
+      {d:6, act:{i:'elastic', t:'Mo wikkelt het elastisch windsel richting de pols.'}, err:{a:'verband', t:'Verkeerde richting: je wikkelt richting de elleboog.', k:['richting','pols','elleboog','verkeerd']}},
+      {d:5, who:'c', say:'Au, het doet echt pijn!', act:{i:'talk', t:'Mevrouw heeft pijn.'}},
+      {d:6, who:'s', say:'Valt wel mee hoor, stel je niet aan.', act:{i:'talk', t:'Mo reageert op de pijn.'}, err:{a:'comm', t:'Niet geruststellend en geen u-vorm. Toon begrip.', k:['aanstel','stel je','gerust','begrip','vriendelijk','u-vorm','empathie','pijn','reageer']}},
+      {d:6, act:{i:'tape', t:'Hij plakt de pleister vast bovenop de wond.'}, err:{a:'verband', t:'De pleister mag niet op de wond.', k:['pleister','op de wond','bovenop']}},
+      {d:5, who:'c', say:'Moet ik naar de huisarts?', act:{i:'talk', t:'Mevrouw stelt een vraag.'}},
+      {d:6, who:'s', say:'Nee hoor, dat is niet nodig.', act:{i:'talk', t:'Mo geeft advies.'}, err:{a:'comm', t:'Fout advies: bij deze verbranding neem je contact op met de huisarts.', k:['huisarts','advies','dokter','arts']}},
+      {d:5, who:'s', say:'Fijne dag nog, mevrouw. Beterschap!', act:{i:'door', t:'Mo neemt afscheid.'}}
+    ]
+  }
+}
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const KEY='virtuele-client-mz-v1';
+let S = {name:'', klas:'', level:'kb', results:{}};
+try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S, JSON.parse(raw)); }catch(e){}
+const save=()=>{ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} };
+const R=(cid)=> (S.results[cid] ||= {});
+
+let view={screen:'home', caseId:null, tab:'intro'};
+let runtime={}; // niet-opgeslagen werkstaat per opdracht
+let SAMPLE=null; // AI (alleen als de kijker dit heeft)
+let AI_STATE='checking', AI_WHY='';
+function aiSwitch(st){
+  if(AI_STATE==='none') return '';
+  const on=AI_STATE==='on';
+  const msg= on ? (st.ai?'De cliënt praat natuurlijker; de beoordeling blijft hetzelfde.':'Zet aan voor een cliënt die natuurlijker praat.')
+    : AI_STATE==='checking' ? 'AI wordt gecontroleerd …'
+    : (AI_WHY || 'Niet beschikbaar in deze weergave. Open de app in claude.ai terwijl je bent ingelogd. De cliënt werkt nu met vaste zinnen.');
+  return `<div class="aiswitch" style="flex-wrap:wrap"><label style="display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" id="ai-on" ${st.ai&&on?'checked':''} ${on?'':'disabled'}> Slimme cliënt (AI)</label><span class="small muted">${esc(msg)}</span></div>`;
+}
+function bindAi(st){ const ai=document.getElementById('ai-on'); if(ai) ai.onchange=()=>{ st.ai=ai.checked; render(); }; }
+
+const $=(s,el=document)=>el.querySelector(s);
+const esc=(s)=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+const fmtAct=(s)=>esc(s).replace(/\*([^*]+)\*/g,'<em>$1</em>');
+const shuffle=(a)=>{a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a;};
+const caseById=(id)=>CASES.find(c=>c.id===id);
+const shufQ=(q)=>{ const idx=shuffle(q.o.map((_,i)=>i)); return {...q, o:idx.map(i=>q.o[i]), a:idx.indexOf(q.a)}; };
+
+/* chat helpers */
+function did(st,id){ return st.done[id]!==undefined; }
+function before(st,a,b){ return did(st,a) && (!did(st,b) || st.done[a]<st.done[b]); }
+function uForm(st){ return st.uCount>0 && st.jeCount===0 && !st.flags.rude; }
+
+/* scoring */
+function scoreSection(sec, st){
+  const res=sec.items.map(it=>({l:it.l, tip:it.tip, ok:!!it.ok(st)}));
+  const n=res.filter(r=>r.ok).length, wrong=res.length-n;
+  let pts=0;
+  if(sec.mode==='minus') pts=Math.max(0, sec.max-wrong);
+  else if(sec.mode==='all') pts= wrong===0?sec.max:0;
+  else { for(const [min,p] of sec.bands){ if(n>=min){pts=p;break;} } }
+  return {code:sec.code,title:sec.title,max:sec.max,pts,items:res};
+}
+
+/* =========================================================
+   RENDER — shell
+   ========================================================= */
+function render(){
+  const app=$('#app');
+  app.innerHTML = topbar() + (view.screen==='home'? homeView() : caseView()) + footer();
+  bindTop();
+  if(view.screen==='home') bindHome(); else bindCase();
+}
+function topbar(){
+  return `<header class="topbar">
+    <div class="brand"><span class="eyebrow">SC Delfland · Zorg &amp; Welzijn · profielmodule Mens &amp; Zorg</span><b>Virtuele cliënt</b></div>
+    <div class="topctl">
+      ${S.name?`<span class="who">${esc(S.name)}${S.klas?' · '+esc(S.klas):''}</span>`:''}
+      <div class="seg" role="group" aria-label="Niveau">
+        <button data-level="bb" aria-pressed="${S.level==='bb'}">BB</button>
+        <button data-level="kb" aria-pressed="${S.level==='kb'}">KB</button>
+      </div>
+    </div>
+  </header>`;
+}
+function bindTop(){
+  document.querySelectorAll('[data-level]').forEach(b=>b.onclick=()=>{S.level=b.dataset.level; save(); render();});
+}
+function footer(){
+  return `<footer><p class="note">Oefenmateriaal in de opbouw van het profielvak-cspe Z&amp;W (onderdeel D, profielmodule 4 – mens en zorg). De casussen zijn verzonnen en aangepast voor oefening op school. Dit is geen product van het CvTE en is niet door het CvTE goedgekeurd. Bij EHBO geldt het Oranje Kruis boekje als bron.</p></footer>`;
+}
+
+/* ---------- HOME ---------- */
+function caseProgress(c){
+  const r=S.results[c.id]||{};
+  return ['o1','o2','o3','o4'].map((k,i)=>`<span class="chip ${r[k]?'done':''}">${i+1}${r[k]?' · '+r[k].score+'p':''}</span>`).join('');
+}
+function homeView(){
+  return `<section class="hero">
+    <div>
+      <span class="eyebrow">Oefenen voor het cspe</span>
+      <h1>Oefen zorg op maat met een virtuele cliënt</h1>
+      <p class="lead">Elk oefenexamen is opgebouwd zoals onderdeel D van het echte cspe: eerst vragen, dan een zorg-op-maatopdracht, een EHBO-opdracht en een terugkijkopdracht. Je praat met de cliënt in een chat, zet handelingen in de goede volgorde, beoordeelt een filmpje van een stagiair en maakt een minitoets.</p>
+      <div class="facts" style="margin-top:18px">
+        <div class="fact"><b>6p</b><span class="small muted">1 · vragen</span></div>
+        <div class="fact"><b>8p</b><span class="small muted">2 · zorg op maat (chat)</span></div>
+        <div class="fact"><b>9p</b><span class="small muted">3 · EHBO (stappen)</span></div>
+        <div class="fact"><b>2p</b><span class="small muted">4 · terugkijken (film)</span></div>
+      </div>
+    </div>
+    <form class="card form" id="who" autocomplete="off">
+      <h3>Wie ben jij?</h3>
+      <label>Naam<input id="f-name" value="${esc(S.name)}" placeholder="Voornaam en achternaam"></label>
+      <label>Klas<input id="f-klas" value="${esc(S.klas)}" placeholder="Bijv. 3KB-ZW"></label>
+      <div class="form"><span style="font-weight:700;font-size:.92rem">Niveau</span>
+        <div class="seg" role="group" aria-label="Niveau kiezen">
+          <button type="button" data-level="bb" aria-pressed="${S.level==='bb'}">Basis (BB)</button>
+          <button type="button" data-level="kb" aria-pressed="${S.level==='kb'}">Kader (KB)</button>
+        </div>
+        <p class="small muted">${S.level==='bb'?'Basis: het rollenspel start in de oefenmodus en je krijgt een hint bij de EHBO-stappen.':'Kader: het rollenspel start in de examenmodus en je krijgt extra ‘waarom’-vragen bij de EHBO-stappen.'}</p>
+      </div>
+      <button class="btn primary" type="submit">Opslaan</button>
+    </form>
+  </section>
+  <h2 style="margin-bottom:14px">Kies een oefenexamen</h2>
+  <div class="covers">
+    ${CASES.map(c=>`<button class="cover" data-case="${c.id}">
+      <div class="band"><span>Oefenexamen ${c.id}</span><small>${c.versie}</small></div>
+      <div class="body">
+        <span class="eyebrow">Onderdeel D · profielmodule 4 – mens en zorg</span>
+        <span class="place">${esc(c.place)}</span>
+        <span class="meta">${esc(c.town)} · ${esc(c.topics)}</span>
+        <span class="meta">${esc(c.stijl)} · richttijd 60 min · 25 punten</span>
+        <div class="prog">${caseProgress(c)}</div>
+      </div>
+    </button>`).join('')}
+  </div>`;
+}
+function bindHome(){
+  $('#who').onsubmit=(e)=>{e.preventDefault(); S.name=$('#f-name').value.trim(); S.klas=$('#f-klas').value.trim(); save(); render();};
+  document.querySelectorAll('[data-case]').forEach(b=>b.onclick=()=>{ view={screen:'case',caseId:b.dataset.case,tab:'intro'}; runtime={}; render(); window.scrollTo(0,0); });
+}
+
+/* ---------- CASE ---------- */
+const TABS=[
+  {id:'intro', n:'i', l:'Inleiding'},
+  {id:'o1', n:'1', l:'Vragen', p:6},
+  {id:'o2', n:'2', l:'Zorg op maat', p:8},
+  {id:'o3', n:'3', l:'EHBO', p:9},
+  {id:'o4', n:'4', l:'Terugkijken', p:2},
+  {id:'res', n:'Σ', l:'Uitslag'}
+];
+function caseView(){
+  const c=caseById(view.caseId), r=S.results[c.id]||{};
+  return `<div class="casegrid">
+    <nav class="rail" aria-label="Opdrachten">
+      <button class="btn ghost sm back" id="home">← Alle examens</button>
+      ${TABS.map(t=>`<button class="tab" data-tab="${t.id}" aria-current="${view.tab===t.id}"><span class="n">${t.n}</span><span>${t.l}</span>${t.p?`<span class="p">${r[t.id]?r[t.id].score+'/':''}${t.p}p</span>`:'<span></span>'}</button>`).join('')}
+    </nav>
+    <main class="sheet" id="sheet">${tabContent(c)}</main>
+  </div>`;
+}
+function bindCase(){
+  $('#home').onclick=()=>{ stopFilm(); view={screen:'home'}; render(); window.scrollTo(0,0); };
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ stopFilm(); view.tab=b.dataset.tab; render(); });
+  const c=caseById(view.caseId);
+  ({intro:bindIntro,o1:bindQuiz,o2:bindChat,o3:bindEhbo,o4:bindFilm,res:bindRes})[view.tab](c);
+}
+function tabContent(c){
+  return ({intro:introView,o1:quizView,o2:chatView,o3:ehboView,o4:filmView,res:resView})[view.tab](c);
+}
+function opdHead(nr,p,title){
+  return `<div class="marg"><span class="pt">${p}p</span><span class="nr">${nr}</span></div>`;
+}
+
+/* ---------- INTRO ---------- */
+function introView(c){
+  return `<div class="opd"><div class="marg"><span class="nr">i</span></div><div class="content">
+    <span class="eyebrow">Oefenexamen VMBO-${S.level.toUpperCase()} · ${c.versie} · onderdeel D</span>
+    <h1>${esc(c.place)}</h1>
+    <p class="muted">De richttijd voor dit onderdeel is 60 minuten. Je kunt maximaal 25 punten behalen. Voor elk opdrachtnummer staat hoeveel punten je kunt halen.</p>
+    <div class="boekje"><h3>Inleiding</h3><p>${esc(c.intro)}</p><p><b>Jij loopt stage bij ${esc(c.place)}.</b></p></div>
+    <div><h3 style="margin-bottom:8px">Opdrachten onderdeel D</h3>
+      <ol style="margin:0;padding-left:22px;display:grid;gap:4px">
+        <li>Vragen maken (minitoets) — 6p</li>
+        <li>Zorg-op-maatopdracht: gesprek en handelingen met ${esc(c.chat.name)} — 8p</li>
+        <li>EHBO-opdracht: materialen kiezen en stappen ordenen — 9p</li>
+        <li>Terugkijkopdracht: filmpje van een stagiair beoordelen — 2p</li>
+      </ol></div>
+    <div class="row"><button class="btn primary" data-go="o1">Begin met opdracht 1</button></div>
+    <details class="docent"><summary>Voor de docent: beoordelingsmodel opdracht 2</summary>
+      <div class="crit">${c.chat.criteria.map(s=>`<div><b>${s.code} ${esc(s.title)}</b> <span class="muted small">(max ${s.max}p · ${s.mode==='minus'?'alle aspecten juist '+s.max+', per fout −1':s.mode==='all'?'alle aspecten juist':'staffel: '+s.bands.filter(b=>b[1]>0).map(b=>b[0]+'+ juist → '+b[1]).join(', ')})</span>
+        <ul>${s.items.map(i=>`<li>${esc(i.l)}</li>`).join('')}</ul></div>`).join('')}
+      <p class="small muted">De chat herkent groeten, voorstellen, u-vorm, interesse en empathie aan woorden in de tekst; handelingen kiest de leerling met knoppen. Gebruik de uitslag als oefening, niet als officieel cijfer.</p></div>
+    </details>
+  </div></div>`;
+}
+function bindIntro(){ document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{view.tab=b.dataset.go; render(); window.scrollTo(0,0);}); }
+
+/* ---------- OPDRACHT 1: QUIZ (Facet-stijl) ---------- */
+function quizSet(c){ return c.quiz.slice(0,6); }
+function prepQ(q){
+  if(q.t==='mc'){ const r=shufQ(q); return r; }
+  if(q.t==='matrix') return {...q, rows:shuffle(q.rows)};
+  if(q.t==='match') return {...q, items:shuffle(q.items)};
+  return q;
+}
+function qRight(q,ans){
+  if(ans===undefined) return false;
+  if(q.t==='mc') return ans===q.a;
+  if(q.t==='matrix') return q.rows.every((r,i)=>ans[i]===r.a);
+  if(q.t==='match') return q.items.every((it,i)=>ans[i]===it.a);
+  return false;
+}
+function qComplete(q,ans){
+  if(ans===undefined) return false;
+  if(q.t==='mc') return true;
+  const n=q.t==='matrix'?q.rows.length:q.items.length;
+  return Array.isArray(ans) && ans.filter(v=>v!==undefined&&v!==null).length===n && ans.length===n;
+}
+function tableHTML(t){ return t?`<div class="tablewrap"><table class="qtab"><caption>${esc(t.title)}</caption><thead><tr>${t.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${t.rows.map(r=>`<tr>${r.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:''; }
+function qBody(q,ans,review,k=0){
+  let h=(q.table?tableHTML(q.table):'')+(q.ctx?`<p>${esc(q.ctx)}</p>`:'')+`<p class="qq">${esc(q.q)}</p>`;
+  if(q.t==='mc'){
+    h+=`<div class="mcl">${q.o.map((o,j)=>{const cls=review?(j===q.a?'right':(j===ans?'wrong':'')):''; return `<label class="mco ${cls}"><input type="radio" name="mc${k}" data-mc="${j}" ${ans===j?'checked':''} ${review?'disabled':''}><span>${esc(o)}</span></label>`;}).join('')}</div>`;
+  } else if(q.t==='matrix'){
+    h+=`<div class="tablewrap"><table class="mx"><thead><tr><th></th>${q.cols.map(cn=>`<th>${esc(cn)}</th>`).join('')}</tr></thead><tbody>${q.rows.map((r,i)=>`<tr class="${review?(ans&&ans[i]===r.a?'right':'wrong'):''}"><td>${esc(r.s)}</td>${q.cols.map((_,j)=>`<td class="c"><input type="radio" name="mx${k}_${i}" data-mx="${i}:${j}" aria-label="${esc(r.s)}: ${esc(q.cols[j])}" ${ans&&ans[i]===j?'checked':''} ${review?'disabled':''}>${review&&j===r.a?'<span class="ok">✓</span>':''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  } else if(q.t==='match'){
+    h+=`<div class="mt">${q.items.map((it,i)=>`<div class="mtr ${review?(ans&&ans[i]===it.a?'right':'wrong'):''}"><b>${esc(it.l)}</b><select data-mt="${i}" aria-label="${esc(it.l)}" ${review?'disabled':''}><option value="">kies …</option>${q.o.map((o,j)=>`<option value="${j}" ${ans&&ans[i]===j?'selected':''}>${esc(o)}</option>`).join('')}</select>${review&&!(ans&&ans[i]===it.a)?`<span class="tip">Goed: ${esc(q.o[it.a])}</span>`:''}</div>`).join('')}</div>`;
+  }
+  return h;
+}
+function quizView(c){
+  const rt = runtime.quiz ||= {i:0, ans:[], done:false, set:quizSet(c).map(prepQ)};
+  const r=R(c.id).o1;
+  if(rt.done || (r && r.set && r.set[0] && r.set[0].t && !rt.retry && rt.ans.length===0)){
+    const ans = rt.done? rt.ans : r.ans; const set = rt.done? rt.set : r.set;
+    const score = set.filter((q,i)=>qRight(q,ans[i])).length;
+    return `<div class="opd">${opdHead(1,6)}<div class="content">
+      <h2>Vragen maken — uitslag</h2>
+      <div class="total"><b>${score}</b><span>van 6 punten</span></div>
+      ${set.map((q,i)=>`<div class="q card"><div class="qhead"><span class="eyebrow">Vraag ${i+1} · 1p</span><span class="chip ${qRight(q,ans[i])?'done':'bad'}">${qRight(q,ans[i])?'goed':'fout'}</span></div>${qBody(q,ans[i],true,i)}<p class="expl">${esc(q.e)}</p></div>`).join('')}
+      <p class="small muted">Net als in Facet krijg je bij een vraag met meerdere regels alleen het punt als alle regels goed zijn.</p>
+      <div class="row"><button class="btn ghost" id="q-retry">Opnieuw maken</button><button class="btn primary" data-go="o2">Naar opdracht 2</button></div>
+    </div></div>`;
+  }
+  const q=rt.set[rt.i], a=rt.ans[rt.i];
+  return `<div class="opd">${opdHead(1,6)}<div class="content">
+    <h2>Vragen maken</h2>
+    <div class="q card facet">
+      <div class="qhead"><span class="eyebrow">Vraag ${rt.i+1} van ${rt.set.length} · 1p</span><span class="dots">${rt.set.map((_,i)=>`<i class="${i<=rt.i?'on':''}"></i>`).join('')}</span></div>
+      ${qBody(q,a,false,rt.i)}
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost sm" id="q-prev" ${rt.i===0?'disabled':''}>Vorige</button>
+        <button class="btn primary" id="q-next" ${qComplete(q,a)?'':'disabled'}>${rt.i===rt.set.length-1?'Inleveren':'Volgende'}</button>
+      </div>
+    </div>
+  </div></div>`;
+}
+function bindQuiz(c){
+  const rt=runtime.quiz; bindIntro();
+  const q=rt.set&&rt.set[rt.i];
+  const upd=()=>{ const n=$('#q-next'); if(n) n.disabled=!qComplete(q,rt.ans[rt.i]); };
+  document.querySelectorAll('[data-mc]').forEach(b=>b.onchange=()=>{ rt.ans[rt.i]=+b.dataset.mc; upd(); });
+  document.querySelectorAll('[data-mx]').forEach(b=>b.onchange=()=>{ const [i,j]=b.dataset.mx.split(':').map(Number); const arr=(rt.ans[rt.i] ||= Array(q.rows.length).fill(undefined)); arr[i]=j; upd(); });
+  document.querySelectorAll('[data-mt]').forEach(b=>b.onchange=()=>{ const i=+b.dataset.mt; const arr=(rt.ans[rt.i] ||= Array(q.items.length).fill(undefined)); arr[i]=b.value===''?undefined:+b.value; upd(); });
+  const n=$('#q-next'); if(n) n.onclick=()=>{ if(rt.i<rt.set.length-1){rt.i++; render();} else { rt.done=true; const score=rt.set.filter((qq,i)=>qRight(qq,rt.ans[i])).length; R(c.id).o1={score,ans:rt.ans.slice(),set:rt.set}; save(); render(); window.scrollTo(0,0);} };
+  const p=$('#q-prev'); if(p) p.onclick=()=>{rt.i--; render();};
+  const rr=$('#q-retry'); if(rr) rr.onclick=()=>{ runtime.quiz={i:0,ans:[],done:false,retry:true,set:shuffle(quizSet(c)).map(prepQ)}; render(); };
+}
+
+/* ---------- OPDRACHT 2: CHAT ---------- */
+function newChat(c){
+  return {phase:'prep', prep:{}, said:{}, msgs:0, uCount:0, jeCount:0, done:{}, seq:0, prompted:{}, flags:{}, used:{},
+    concernAt:-1, empathyOk:false, repeatAt:-1, repeatAsks:0, repeatBad:0, reluctAt:-1, sadAt:-1, stimOk:0, askedWhy:0,
+    log:[], ended:false, ai:false, busy:false, timer:null, timeLeft:600, confirmEnd:false,
+    actOrder:shuffle(c.chat.actions.map(a=>a.id)), prepOrder:shuffle(PREP),
+    mode:S.level==='bb'?'oefen':'examen', peeks:0, peekOpen:false};
+}
+function chatView(c){
+  const st = runtime.chat ||= newChat(c);
+  const ch=c.chat;
+  if(st.phase==='prep') return `<div class="opd">${opdHead(2,8)}<div class="content">
+      <h2>Zorg-op-maatopdracht</h2>
+      ${R(c.id).o2?`<span class="chip blue" style="align-self:flex-start">Vorige keer: ${R(c.id).o2.score}/8</span>`:''}
+      ${prepTimer(st,10)}
+      <div class="boekje"><p style="white-space:pre-line">${esc(ch.text)}</p>
+        <p><b>Ga naar ${esc(ch.name)} en geef zorg op maat.</b></p>
+        <ul>${ch.tasks.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
+      <div><h3 style="margin-bottom:8px">Klaarmaken: wat doe je vóór je naar de cliënt gaat?</h3>
+        <p class="small muted" style="margin-bottom:8px">Vink alles aan wat bij een goede beroepshouding hoort. Let op: niet alles klopt.</p>
+        <div class="prep">${st.prepOrder.map(p=>`<label class="check"><input type="checkbox" id="prep-${p.id}" data-prep="${p.id}" ${st.prep[p.id]?'checked':''}><span>${esc(p.label)}</span></label>`).join('')}</div></div>
+      <div class="modepick"><span style="font-weight:700">Hoe wil je oefenen?</span>
+        <div class="seg" role="group" aria-label="Modus">
+          <button type="button" data-mode="oefen" aria-pressed="${st.mode==='oefen'}">Oefenmodus</button>
+          <button type="button" data-mode="examen" aria-pressed="${st.mode==='examen'}">Examenmodus</button>
+        </div>
+        <span class="small muted">${st.mode==='oefen'?'Je mag tijdens het rollenspel in de opdracht spieken. De app telt hoe vaak.':'Zoals het echte cspe: tijdens het rollenspel kun je de opdracht niet meer bekijken.'}</span>
+      </div>
+      ${aiSwitch(st)}
+      <p class="rule">${st.mode==='oefen'?'Probeer zo min mogelijk te spieken. Op het examen mag je tijdens de uitvoering niet meer in het opdrachtenboekje kijken.':'Tijdens de uitvoering mag je niet meer in het opdrachtenboekje kijken.'}</p>
+      <div class="row"><button class="btn primary" id="start-chat">Start het rollenspel</button></div>
+    </div></div>`;
+  if(st.phase==='done') return assessView(c,st);
+  return `<div class="opd">${opdHead(2,8)}<div class="content">
+    <div class="row" style="justify-content:space-between"><h2>Rollenspel: ${esc(ch.short)}</h2>
+      </div>
+    ${aiSwitch(st)}
+    ${st.mode==='oefen'?`<div class="peek"><button class="btn sm ghost" id="peek" aria-expanded="${st.peekOpen}">${st.peekOpen?'Opdracht verbergen':'Opdracht bekijken (spieken)'}</button><span class="small muted">${st.peeks?st.peeks+'× gespiekt':'Nog niet gespiekt'}</span></div>
+      ${st.peekOpen?`<div class="boekje"><p style="white-space:pre-line">${esc(ch.text)}</p><p><b>Ga naar ${esc(ch.name)} en geef zorg op maat.</b></p><ul>${ch.tasks.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:''}`
+      :`<p class="small muted">Examenmodus: je kunt de opdracht niet meer bekijken.</p>`}
+    <p class="small muted">Typ wat je zegt in de chat. Kies wat je doet met de knoppen. De cliënt reageert op allebei.</p>
+    <div class="chatgrid">
+      <div class="chatbox">
+        <div class="chathead"><span class="ava">${esc(ch.ini)}</span><div><b>${esc(ch.short)}</b><div class="small muted">${esc(c.place)}</div></div></div>
+        <div class="log" id="log" aria-live="polite">${st.log.map(m=>`<div class="msg ${m.k}">${m.k==='s'?esc(m.t):fmtAct(m.t)}</div>`).join('')}${st.busy?'<div class="typing">'+esc(ch.short)+' typt …</div>':''}</div>
+        <form class="composer" id="composer" autocomplete="off">
+          <input id="say" placeholder="Wat zeg je tegen ${esc(ch.aanspreek)}?" ${st.busy?'disabled':''} aria-label="Bericht">
+          <button class="btn primary" ${st.busy?'disabled':''}>Zeg</button>
+        </form>
+      </div>
+      <div class="actions">
+        <div class="agroup"><h4>Wat doe je?</h4><p class="small muted">Kies zelf de goede handeling op het goede moment. Niet alles is juist.</p>${st.actOrder.map(id=>ch.actions.find(a=>a.id===id)).map(a=>`<button class="abtn ${st.usedAct&&st.usedAct[a.id]?'used':''}" data-act="${a.id}" ${st.ended||st.busy?'disabled':''}>${esc(a.label)}</button>`).join('')}</div>
+        ${st.confirmEnd?`<div class="inline-confirm"><span class="small">Je bent nog niet klaar met de opdracht. Toch afronden?</span><button class="btn sm coral" id="end-yes">Ja, afronden</button><button class="btn sm ghost" id="end-no">Nee</button></div>`
+          :`<button class="btn coral" id="end-chat">Rollenspel afronden en beoordelen</button>`}
+      </div>
+    </div>
+  </div></div>`;
+}
+function prepTimer(st,min){
+  const m=Math.floor(st.timeLeft/60), s=st.timeLeft%60;
+  return `<div class="timer"><span class="clock" id="clock">${m}:${String(s).padStart(2,'0')}</span><span class="small muted">Je hebt ${min} minuten om je voor te bereiden. Lees de opdracht goed door.</span><button class="btn sm ghost" id="tstart">${st.timer?'Pauze':'Start voorbereidingstijd'}</button></div>`;
+}
+function bindTimer(st){
+  const b=$('#tstart'); if(!b) return;
+  b.onclick=()=>{
+    if(st.timer){clearInterval(st.timer); st.timer=null; b.textContent='Verder';}
+    else { st.timer=setInterval(()=>{ st.timeLeft=Math.max(0,st.timeLeft-1); const el=$('#clock'); if(el){const m=Math.floor(st.timeLeft/60),s=st.timeLeft%60; el.textContent=m+':'+String(s).padStart(2,'0');} if(st.timeLeft===0){clearInterval(st.timer); st.timer=null;} },1000); b.textContent='Pauze'; }
+  };
+}
+function pushLog(st,k,t){ st.log.push({k,t}); }
+function scrollLog(){ const l=$('#log'); if(l) l.scrollTop=l.scrollHeight; }
+
+function bindChat(c){
+  const st=runtime.chat, ch=c.chat;
+  bindIntro();
+  if(st.phase==='prep'){
+    bindTimer(st); bindAi(st);
+    document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{ st.mode=b.dataset.mode; render(); });
+    document.querySelectorAll('[data-prep]').forEach(i=>i.onchange=()=>{st.prep[i.dataset.prep]=i.checked;});
+    $('#start-chat').onclick=()=>{
+      if(st.timer){clearInterval(st.timer); st.timer=null;}
+      st.prepOk = PREP.every(p=> !!st.prep[p.id]===p.ok);
+      st.phase='chat'; pushLog(st,'n',ch.opening); render(); $('#say')?.focus();
+    };
+    return;
+  }
+  if(st.phase==='done'){ bindAssess(c,st); return; }
+  scrollLog();
+  bindAi(st);
+  const pk=$('#peek'); if(pk) pk.onclick=()=>{ if(!st.peekOpen) st.peeks++; st.peekOpen=!st.peekOpen; const v=$('#say')?.value; render(); if(v) $('#say').value=v; };
+  $('#composer').onsubmit=(e)=>{ e.preventDefault(); const v=$('#say').value.trim(); if(!v) return; studentSays(c,st,v); };
+  document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>doAction(c,st,b.dataset.act));
+  const end=$('#end-chat'); if(end) end.onclick=()=>{ if(!st.ended){ st.confirmEnd=true; render(); } else finishChat(c,st); };
+  const ey=$('#end-yes'); if(ey) ey.onclick=()=>finishChat(c,st);
+  const en=$('#end-no'); if(en) en.onclick=()=>{st.confirmEnd=false; render();};
+}
+
+function runBeat(c,st){
+  for(const b of c.chat.beats){
+    if(st.used[b.id]) continue;
+    if(b.when(st)){ st.used[b.id]=1; if(b.fx) b.fx(st); return b.line; }
+  }
+  return null;
+}
+function markDone(st,id){ if(st.done[id]===undefined) st.done[id]=++st.seq; }
+
+function doAction(c,st,id, fromText){
+  const ch=c.chat, a=ch.actions.find(x=>x.id===id); if(!a) return [];
+  const key=a.as||a.id;
+  const lines=[];
+  if(a.req){
+    for(const r of a.req){
+      if(!did(st,r)){
+        if(fromText) return null;
+        pushLog(st,'a', a.narr? 'Je wilt: '+a.label.toLowerCase()+'.' : a.label);
+        const m=a.missing&&a.missing[r];
+        st.prompted[r]=1;
+        pushLog(st,'c', m || '*'+ch.short+' kijkt je vragend aan. Er moet eerst iets anders gebeuren.*');
+        render(); return [];
+      }
+    }
+  }
+  if(fromText && did(st,key)) return null;
+  if(!fromText) pushLog(st,'a', a.narr || a.label+'.');
+  if(a.pre){ const p=a.pre(st); if(p) lines.push(p); }
+  markDone(st,key);
+  (st.usedAct ||= {})[a.id]=1;
+  if(a.fx){ const f=a.fx(st); if(f) lines.push(f); }
+  if(a.reply) lines.push(a.reply);
+  if(a.end || (ch.isEnd && ch.isEnd(st))) st.ended=true;
+  if(fromText) return lines;
+  const beat = st.ended?null:runBeat(c,st); if(beat) lines.push(beat);
+  lines.forEach(l=>pushLog(st, l.startsWith('*')&&l.endsWith('*')?'a':'c', l.startsWith('*')&&l.endsWith('*')?l.slice(1,-1):l));
+  if(st.ended) pushLog(st,'n','Je bent bij het einde van de opdracht. Neem afscheid in de chat en klik dan op “Rollenspel afronden en beoordelen”.');
+  render(); scrollLog();
+  return lines;
+}
+
+/* ---- taalherkenning: ruim, met tolerantie voor tikfouten ---- */
+function lev(a,b){ if(Math.abs(a.length-b.length)>2) return 9; const m=[...Array(b.length+1).keys()];
+  for(let i=1;i<=a.length;i++){ let prev=m[0]; m[0]=i; for(let j=1;j<=b.length;j++){ const tmp=m[j]; m[j]=Math.min(m[j]+1,m[j-1]+1,prev+(a[i-1]===b[j-1]?0:1)); prev=tmp; } } return m[b.length]; }
+function fuzzy(t,words){ const toks=t.split(/[^a-zà-ÿ]+/).filter(Boolean);
+  return words.some(w=>toks.some(k=> k===w || (w.length>=5&&k.startsWith(w)) || (w.length>=6&&lev(k,w)<=1) || (w.length>=9&&lev(k,w)<=2))); }
+const GREET=['goedemiddag','goedemorgen','goedenavond','goedendag','goeiemiddag','goeiemorgen','goeiedag','goeienavond','hallo','hoi','hey','hee','hai','dag','hello'];
+const EMP=['vervelend','begrijp','begrijpelijk','voorstellen','moeilijk','lastig','vreselijk','jammer','verdrietig','logisch','zwaar','snap','snapt','balen','sneu','rot','eng','spannend','naar'];
+const RX={
+  intro:/\b(ik ben|mijn naam is|ik heet|ik loop (hier )?stage|ik ben de stagiai?re?)\b/,
+  purposeVerb:/(kom|ga|gaan|wil|mag|zal|help|breng|haal|kan ik)/,
+  closing:/(kan ik (u )?(nog |verder )?(iets|wat|ergens)|nog iets (voor u|doen|nodig)|is er (verder )?nog iets|heeft u (verder )?nog (iets|vragen|wensen)|wilt u (verder )?nog|is (alles|het) (zo )?(goed|naar wens|in orde)|alles (zo )?(goed|naar wens|in orde)|zit (alles|het) (zo )?goed|bent u tevreden|kan ik nog|moet ik nog iets)/,
+  bye:/\b(tot ziens|tot zo|doei|doeg|daag|dag|fijne (dag|middag|avond|tijd)|prettige (dag|middag|avond)|tot (straks|morgen|later|de volgende( keer)?)|veel plezier|goede reis|beterschap|het beste|succes|houdoe)\b/,
+  empathyPh:/(wat naar|rot voor|kan me (dat )?(goed )?voorstellen|niet leuk|niet fijn|klinkt|naar voor u|lijkt me|wat erg|heel erg|dat is (ook )?zwaar|vervelend voor u|ik snap|ik begrijp)/,
+  interestGen:/(hoe was|hoe vond u|wat heeft u|heeft u (lekker|leuk|een fijne|een leuke|goed)|vond u het leuk|was het leuk|hoe bevalt|wat gaat u|waar heeft u zin|wat doet u graag|wat vindt u leuk)/,
+  rude:/\b(stom|dom|kut|shit|tering|kanker|godver\w*|sukkel|idioot|hou je kop|schiet op|zeur|zeurt|boeie|boeien|irritant)\b/,
+  instr:/(schuif|schuift|zet u|zet uw|uw voeten|leg uw|handen op|op drie|1,? ?2,? ?3|een,? twee,? drie|leun|naar voren|draai|gaat u (maar )?zitten|staat u (maar )?op|rustig aan|pak(t)? (mij|me) (maar )?vast|houd? u (mij |me )?vast)/
+};
+const GENERIC_QA=[
+  {re:/(hoe heet u|wat is uw naam|bent u (meneer|mevrouw))/, a:['Ja, dat ben ik: {naam}.']},
+  {re:/hoe oud (bent|ben)/, a:['Oud genoeg, haha.','Dat vraag je niet zomaar, hoor! *lacht*']},
+  {re:/(weer|regen|regent|zonnig|waait|wind)\b/, a:['Het is echt herfstweer, hè.','Ik hoorde dat het straks gaat regenen.']},
+  {re:/(sorry|excuus|pardon|neem me niet kwalijk)/, a:['Geeft niks, hoor.','Ach, maak je niet druk.']},
+  {re:/(momentje|moment|even wachten|ogenblik)/, a:['Neem je tijd.','Ik wacht wel even.']},
+  {re:/(mooi|leuk|prachtig)e? (vest|trui|shirt|haar|ketting|bril|schoenen|blouse)/, a:['Dank je! Die heb ik van mijn familie gekregen.','Wat aardig dat je dat zegt.']},
+  {re:/(drinken|water|koffie|thee)/, a:['Nee, dank je. Ik heb net wat gedronken.']},
+  {re:/(toilet|wc|plassen)/, a:['Nee hoor, dat hoeft niet.']},
+  {re:/(heeft u|hebt u) (pijn|last)/, a:['Een beetje. Het gaat wel.']},
+  {re:/(bent u|ben je) (klaar|zover)/, a:['Ja, ik ben zover.']},
+  {re:/(dank u|bedankt|dankjewel|dank je)/, a:['Graag gedaan, hoor.','Ja hoor.']}
+];
+function pick(st,key,arr){ st.rot ||= {}; const i=st.rot[key]||0; st.rot[key]=i+1; return arr[i%arr.length]; }
+
+function analyse(c,st,raw){
+  const t=raw.toLowerCase().replace(/[’‘]/g,"'");
+  const ch=c.chat, rx=ch.re;
+  st.msgs++;
+  if(st.msgs<=3 && fuzzy(t,GREET)) st.said.greet=1;
+  if(RX.intro.test(t)) st.said.intro=1;
+  if(rx.purpose.test(t) && RX.purposeVerb.test(t)) st.said.purpose=1;
+  if(rx.interest.test(t) || RX.interestGen.test(t)) st.said.interest=1;
+  if(RX.closing.test(t)) st.said.closing=1;
+  if(st.msgs>2 && RX.bye.test(t)) st.said.bye=1;
+  const empText=t.replace(/naar (de|het|uw|je|huis|buiten|boven|beneden|binnen)\b/g,'');
+  if(st.concernAt>=0 && st.msgs<=st.concernAt+2 && (RX.empathyPh.test(t)||fuzzy(empText,EMP))) st.empathyOk=true;
+  if(RX.rude.test(t)) st.flags.rude=(st.flags.rude||0)+1;
+  const uHits=(t.match(/\b(u|uw|alstublieft|dank u)\b/g)||[]).length;
+  const cleaned=t.replace(/dank je( wel)?|bedankt/g,'');
+  const jeHits=(cleaned.match(/\b(je|jij|jou|jouw)\b/g)||[]).length;
+  st.uCount+=uHits; st.jeCount+=jeHits;
+  return t;
+}
+
+async function studentSays(c,st,raw){
+  const ch=c.chat;
+  pushLog(st,'s',raw);
+  const t=analyse(c,st,raw);
+  let lines=[];
+  if(st.flags.rude && !st.used['rude'+st.flags.rude]){ st.used['rude'+st.flags.rude]=1; lines.push(pick(st,'rude',['Hé, zo praat je toch niet tegen mij?','Dat vind ik niet zo aardig, hoor.'])); }
+  // tekst die een handeling is (bijv. “Staat u goed?”)
+  for(const ta of (ch.textActs||[])){ if(ta.re.test(t)){ const r=doAction(c,st,ta.id,true); if(r){ lines.push(...r); break; } } }
+  if(ch.special) lines.push(...ch.special(st,t,ch));
+  if(st.ended && st.said.bye && !st.used.byeReply){ st.used.byeReply=1; lines.push(ch.bye); }
+  if(!lines.length){ const qa=[...(ch.qa||[]),...GENERIC_QA].find(q=>q.re.test(t)); if(qa) lines.push(pick(st,'qa'+qa.re.source,[].concat(qa.a)).replace('{naam}',ch.short)); }
+  if(!lines.length && RX.instr.test(t)) lines.push(pick(st,'instr',['*doet wat je zegt* Zo?','Oké ... *volgt je aanwijzing*','Zo goed?','*knikt en doet het*']));
+  if(st.empathyOk && !st.used.empReply && st.concernAt>=0){ st.used.empReply=1; lines.push(pick(st,'emp',['Dank je. Fijn dat je dat zegt.','Ja ... dat is het ook. Fijn dat je het begrijpt.'])); }
+  const beat=st.ended?null:runBeat(c,st); if(beat) lines.push(beat);
+  if(!lines.length) lines.push(t.trim().endsWith('?') ? pick(st,'fq',['Hm, dat weet ik eigenlijk niet.','Goeie vraag ...','Ik denk het wel.','Wat bedoel je precies?']) : pick(st,'fill',ch.fill));
+
+  if(st.ai && SAMPLE){
+    st.busy=true; render(); scrollLog();
+    try{
+      const transcript=st.log.slice(-14).map(m=>(m.k==='s'?'Stagiair: ':m.k==='c'?'Cliënt: ':'[')+m.t+(m.k==='a'||m.k==='n'?']':'')).join('\n');
+      const prompt=`${ch.persona}
+
+Je speelt deze cliënt in een oefen-rollenspel voor vmbo-leerlingen Zorg & Welzijn (examen Mens & Zorg). Regels:
+- Antwoord in eenvoudig Nederlands (B1), 1 tot 3 korte zinnen. Je spreekt de stagiair aan met "je".
+- Blijf in je rol. Geef geen tips, geen uitleg en geen beoordeling. Neem nooit zelf het initiatief tot zorghandelingen.
+- Handelingen of non-verbaal gedrag zet je tussen *sterretjes*.
+
+Gesprek tot nu toe:
+${transcript}
+
+Jouw antwoord moet deze inhoud bevatten (de betekenis precies behouden, je mag het natuurlijker zeggen en kort reageren op wat de stagiair zei): ${lines.join(' ')}
+
+Geef alleen jouw antwoord als cliënt.`;
+      const res=await SAMPLE(prompt,{modelTier:'quick', cache:false});
+      const txt=(res&&res.text||'').trim();
+      lines = txt? [txt.replace(/^cli[eë]nt:\s*/i,'')] : lines;
+    }catch(e){ if(e&&e.code==='not_granted'){ SAMPLE=null; st.ai=false; AI_STATE='off'; AI_WHY='Je gaf geen toestemming voor AI. De cliënt werkt nu met vaste zinnen.'; } }
+    st.busy=false;
+  }
+  lines.forEach(l=>{ const act=l.startsWith('*')&&l.endsWith('*')&&l.indexOf('*',1)===l.length-1; pushLog(st, act?'a':'c', act?l.slice(1,-1):l); });
+  render(); scrollLog(); $('#say')?.focus();
+}
+
+function finishChat(c,st){
+  if(!st.said.bye){ pushLog(st,'c',c.chat.bye); }
+  st.phase='done'; st.disputes={};
+  const secs=c.chat.criteria.map(s=>scoreSection(s,st));
+  const score=secs.reduce((a,s)=>a+s.pts,0);
+  st.peekOpen=false;
+  R(c.id).o2={score, secs:secs.map(s=>({code:s.code,pts:s.pts,max:s.max})), mode:st.mode, peeks:st.peeks};
+  st.secs=secs; save(); render(); window.scrollTo(0,0);
+}
+function assessView(c,st){
+  const secs=st.secs, score=secs.reduce((a,s)=>a+s.pts,0);
+  return `<div class="opd">${opdHead(2,8)}<div class="content assess">
+    <h2>Beoordeling zorg op maat</h2>
+    <div class="total"><b>${score}</b><span>van 8 punten</span></div>
+    <p class="chip ${st.mode==='examen'?'done':st.peeks?'warn':'blue'}" style="align-self:flex-start">${st.mode==='examen'?'Examenmodus · zonder spieken':'Oefenmodus · '+(st.peeks?st.peeks+'× gespiekt':'niet gespiekt')}</p>
+    ${st.mode==='oefen'?`<p class="small muted">${st.peeks?'Volgende keer: probeer het met minder spieken, of kies de examenmodus.':'Knap, zonder spieken! Probeer de volgende keer de examenmodus.'}</p>`:''}
+    ${!st.prepOk?`<p class="chip bad" style="align-self:flex-start">Voorbereiding niet helemaal goed: ${PREP.filter(p=>!!st.prep[p.id]!==p.ok).map(p=>esc(p.label.toLowerCase())).join('; ')}</p>`:''}
+    ${st.jeCount>0?`<p class="chip warn" style="align-self:flex-start">Je zei ${st.jeCount}× “je/jij” tegen de cliënt. Gebruik steeds “u”.</p>`:''}
+    ${secs.map(s=>`<div class="sec"><div class="sh"><span>${s.code} · ${esc(s.title)}</span><span class="sc">${s.pts}/${s.max}</span></div>
+      <ul>${s.items.map((i,ix)=>{const k=s.code+'|'+ix, on=st.disputes&&st.disputes[k]; return `<li><span class="mark ${i.ok?'y':'n'}">${i.ok?'✓':'✗'}</span><span>${esc(i.l)}${i.ok?'':`<span class="tip">Tip: ${esc(i.tip)}</span><button class="btn sm ghost disp" data-disp="${k}" aria-pressed="${!!on}">${on?'Gemeld bij je docent ✓':'Dit heb ik wél gedaan'}</button>`}</span></li>`;}).join('')}</ul></div>`).join('')}
+    <p class="small muted">Klopt een ✗ niet, omdat je het wél hebt gezegd of gedaan? Klik op “Dit heb ik wél gedaan”. Je docent ziet dat in je uitslag en kijkt het na.</p>
+    <div id="aifb"></div>
+    <details class="docent"><summary>Gesprek teruglezen</summary><div class="log" style="max-height:360px">${st.log.map(m=>`<div class="msg ${m.k}">${m.k==='s'?esc(m.t):fmtAct(m.t)}</div>`).join('')}</div></details>
+    <div class="row">
+      ${SAMPLE?'<button class="btn ghost" id="ask-fb">Vraag AI om een top en een tip</button>':''}
+      <button class="btn ghost" id="chat-again">Opnieuw oefenen</button>
+      <button class="btn primary" data-go="o3">Naar opdracht 3</button>
+    </div>
+  </div></div>`;
+}
+function bindAssess(c,st){
+  $('#chat-again').onclick=()=>{ runtime.chat=newChat(c); render(); };
+  document.querySelectorAll('[data-disp]').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.disp; st.disputes[k]=!st.disputes[k];
+    R(c.id).o2.disputes=st.secs.flatMap(sec=>sec.items.map((i,ix)=>st.disputes[sec.code+'|'+ix]?sec.code+': '+i.l:null)).filter(Boolean);
+    save(); render(); });
+  const f=$('#ask-fb'); if(f) f.onclick=async()=>{
+    const box=$('#aifb'); box.innerHTML='<div class="feedbackai">Feedback wordt geschreven …</div>'; f.disabled=true;
+    try{
+      const tr=st.log.map(m=>(m.k==='s'?'Stagiair: ':m.k==='c'?'Cliënt: ':'Handeling: ')+m.t).join('\n');
+      const crit=st.secs.map(s=>s.code+' '+s.title+': '+s.items.map(i=>(i.ok?'[goed] ':'[mist] ')+i.l).join('; ')).join('\n');
+      const res=await SAMPLE(`Je bent een vriendelijke docent Zorg & Welzijn op het vmbo (${S.level.toUpperCase()}). Een leerling deed een oefen-rollenspel “zorg op maat” met ${c.chat.name}. Geef in eenvoudig Nederlands (B1) precies één TOP (wat ging goed, met een voorbeeld uit het gesprek) en één TIP (wat kan beter, met een concrete zin die de leerling de volgende keer kan zeggen of doen). Maximaal 80 woorden. Spreek de leerling aan met "je".\n\nBeoordeling:\n${crit}\n\nGesprek:\n${tr}`,{modelTier:'quick',cache:false,onText:({text})=>{box.innerHTML='<div class="feedbackai">'+esc(text)+'</div>';}});
+      box.innerHTML='<div class="feedbackai">'+esc(res.text)+'</div>';
+    }catch(e){ box.innerHTML='<p class="small muted">AI-feedback is nu niet beschikbaar.</p>'; }
+  };
+}
+
+/* ---------- OPDRACHT 3: EHBO ---------- */
+function newEhbo(c){
+  const e=c.ehbo;
+  return {phase:'prep', timeLeft:300, timer:null, mats:{}, matsChecked:false, pool:shuffle(e.steps.map((s,i)=>i)), seq:[], orderChecked:false,
+    why:{}, oralPick:[Math.random()<.5?0:1, Math.random()<.5?0:1], oral:{}, hint:false,
+    whyQ:e.why.map(shufQ), oralQ:e.oral.map(pair=>pair.map(shufQ)), matOrder:shuffle(e.mats)};
+}
+function ehboView(c){
+  const st=runtime.ehbo ||= newEhbo(c), e=c.ehbo;
+  if(st.phase==='prep') return `<div class="opd">${opdHead(3,9)}<div class="content">
+    <h2>EHBO-opdracht</h2>
+    ${prepTimer(st,5)}
+    <div class="boekje"><p>${esc(e.text)}</p><p><b>Ga naar ${esc(e.who)} en verleen eerste hulp.</b></p><ul>${e.tasks.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
+    <div class="row"><button class="btn primary" id="eh-start">Start de opdracht</button></div>
+  </div></div>`;
+  const matScore=()=>{ const wrong=e.mats.filter(m=>!!st.mats[m.id]!==m.ok).length; return wrong===0?2:wrong===1?1:0; };
+  let html=`<div class="opd">${opdHead(3,9)}<div class="content">
+    <h2>EHBO: ${esc(e.who)}</h2>
+    <section class="q"><h3>a · Kies de juiste materialen uit de verbanddoos <span class="muted small">(2p)</span></h3>
+      <div class="mats">${st.matOrder.map(m=>`<button class="mat ${st.matsChecked?(m.ok?(st.mats[m.id]?'right':'wrong'):(st.mats[m.id]?'wrong':'')):''}" data-mat="${m.id}" aria-pressed="${!!st.mats[m.id]}" ${st.matsChecked?'disabled':''}>${ico(m.i)}<span>${esc(m.l)}</span></button>`).join('')}</div>
+      ${st.matsChecked?`<p class="chip ${matScore()===2?'done':'bad'}" style="align-self:flex-start">${matScore()}/2 · Juist: ${e.mats.filter(m=>m.ok).map(m=>esc(m.l)).join(', ')}</p>`
+        :`<div class="row"><button class="btn primary sm" id="mat-check">Materialen controleren</button></div>`}
+    </section>`;
+  if(st.matsChecked){
+    const placed=new Set(st.seq);
+    html+=`<section class="q"><h3>b · Zet de stappen in de goede volgorde <span class="muted small">(5p)</span></h3>
+      <p class="small muted">Tik op een stap om hem achter aan jouw volgorde te zetten. Met ↑ ↓ schuif je, met ✕ haal je hem terug.</p>
+      ${S.level==='bb'&&!st.orderChecked?`<div class="row"><button class="btn ghost sm" id="hint">${st.hint?'Hint: de eerste stap is “'+esc(e.steps[0])+'”':'Geef me een hint'}</button></div>`:''}
+      <div class="ordergrid">
+        <div class="pool"><h4>Stappen</h4>${st.pool.filter(i=>!placed.has(i)).map(i=>`<button class="stepc" data-add="${i}" ${st.orderChecked?'disabled':''}><span class="no">+</span><span>${esc(e.steps[i])}</span><span></span></button>`).join('')||'<p class="small muted">Alle stappen staan in je volgorde.</p>'}</div>
+        <div class="seq"><h4>Jouw volgorde</h4>${st.seq.map((i,pos)=>`<div class="stepc ${st.orderChecked?(i===pos?'right':'wrong'):''}"><span class="no">${pos+1}</span><span>${esc(e.steps[i])}${st.orderChecked&&i!==pos?`<span class="tip">Hoort op plek ${i+1}</span>`:''}</span>${st.orderChecked?'<span></span>':`<span class="mv"><button data-up="${pos}" aria-label="Omhoog">↑</button><button data-down="${pos}" aria-label="Omlaag">↓</button><button data-rem="${pos}" aria-label="Terugzetten">✕</button></span>`}</div>`).join('')||'<p class="small muted">Nog leeg.</p>'}</div>
+      </div>
+      ${st.orderChecked?`<p class="chip ${st.orderPts>=4?'done':st.orderPts>=2?'warn':'bad'}" style="align-self:flex-start">${st.orderPts}/5 voor de volgorde</p>`
+        :`<div class="row"><button class="btn primary sm" id="ord-check" ${st.seq.length<e.steps.length?'disabled':''}>Volgorde controleren</button></div>`}
+    </section>`;
+  }
+  if(st.orderChecked && S.level==='kb'){
+    html+=`<section class="q"><h3>Waarom? <span class="muted small">(kader · oefening, geen punten)</span></h3>
+      ${st.whyQ.map((w,wi)=>`<div class="card q"><b>${esc(w.q)}</b><div class="opts">${w.o.map((o,j)=>`<button class="opt ${st.why[wi]!==undefined?(j===w.a?'right':(j===st.why[wi]?'wrong':'')):''}" data-why="${wi}:${j}" ${st.why[wi]!==undefined?'disabled':''}><span class="l">${'ABCD'[j]}</span><span>${esc(o)}</span></button>`).join('')}</div></div>`).join('')}
+    </section>`;
+  }
+  if(st.orderChecked){
+    const qs=st.oralQ.map((pair,k)=>pair[st.oralPick[k]]);
+    const allDone=qs.every((_,k)=>st.oral[k]!==undefined);
+    html+=`<section class="q"><h3>c · Vragen van de examinator <span class="muted small">(2p)</span></h3>
+      <p class="small muted">De vragen gaan over EHBO, maar niet over de opdracht die je net deed.</p>
+      ${qs.map((q,k)=>`<div class="card q"><b>${k+1}. ${esc(q.q)}</b><div class="opts">${q.o.map((o,j)=>`<button class="opt ${st.oral[k]!==undefined?(j===q.a?'right':(j===st.oral[k]?'wrong':'')):''}" data-oral="${k}:${j}" ${st.oral[k]!==undefined?'disabled':''}><span class="l">${'ABCD'[j]}</span><span>${esc(o)}</span></button>`).join('')}</div></div>`).join('')}
+      ${allDone?(()=>{const op=qs.filter((q,k)=>st.oral[k]===q.a).length; const tot=matScore()+st.orderPts+op; R(c.id).o3={score:tot, mats:matScore(), order:st.orderPts, oral:op}; save();
+        return `<div class="total"><b>${tot}</b><span>van 9 punten</span></div><p class="small muted">Materialen ${matScore()}/2 · volgorde ${st.orderPts}/5 · vragen ${op}/2</p>
+        <div class="row"><button class="btn ghost" id="eh-again">Opnieuw oefenen</button><button class="btn primary" data-go="o4">Naar opdracht 4</button></div>`;})():''}
+    </section>`;
+  }
+  return html+`</div></div>`;
+}
+function orderScore(seq){ // paren in juiste volgorde → 0..5
+  let ok=0,tot=0; for(let i=0;i<seq.length;i++) for(let j=i+1;j<seq.length;j++){ tot++; if(seq[i]<seq[j]) ok++; }
+  const exact=seq.every((v,i)=>v===i); if(exact) return 5;
+  const f=ok/tot; return f>=.95?4:f>=.85?3:f>=.7?2:f>=.55?1:0;
+}
+function bindEhbo(c){
+  const st=runtime.ehbo, e=c.ehbo; bindIntro();
+  if(st.phase==='prep'){ bindTimer(st); $('#eh-start').onclick=()=>{ if(st.timer){clearInterval(st.timer);st.timer=null;} st.phase='work'; render(); }; return; }
+  document.querySelectorAll('[data-mat]').forEach(b=>b.onclick=()=>{ st.mats[b.dataset.mat]=!st.mats[b.dataset.mat]; render(); });
+  const mc=$('#mat-check'); if(mc) mc.onclick=()=>{ st.matsChecked=true; render(); };
+  const h=$('#hint'); if(h) h.onclick=()=>{ st.hint=true; render(); };
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{ st.seq.push(+b.dataset.add); render(); });
+  document.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{ const p=+b.dataset.up; if(p>0){[st.seq[p-1],st.seq[p]]=[st.seq[p],st.seq[p-1]];} render(); });
+  document.querySelectorAll('[data-down]').forEach(b=>b.onclick=()=>{ const p=+b.dataset.down; if(p<st.seq.length-1){[st.seq[p+1],st.seq[p]]=[st.seq[p],st.seq[p+1]];} render(); });
+  document.querySelectorAll('[data-rem]').forEach(b=>b.onclick=()=>{ st.seq.splice(+b.dataset.rem,1); render(); });
+  const oc=$('#ord-check'); if(oc) oc.onclick=()=>{ st.orderChecked=true; st.orderPts=orderScore(st.seq); render(); };
+  document.querySelectorAll('[data-why]').forEach(b=>b.onclick=()=>{ const [w,j]=b.dataset.why.split(':').map(Number); st.why[w]=j; render(); });
+  document.querySelectorAll('[data-oral]').forEach(b=>b.onclick=()=>{ const [k,j]=b.dataset.oral.split(':').map(Number); st.oral[k]=j; render(); });
+  const ag=$('#eh-again'); if(ag) ag.onclick=()=>{ runtime.ehbo=newEhbo(c); runtime.ehbo.phase='work'; render(); };
+}
+
+/* ---------- OPDRACHT 4: FILM ---------- */
+let FILM=null; // afspeelstaat
+function stopFilm(){ if(FILM&&FILM.raf){cancelAnimationFrame(FILM.raf); FILM.raf=null; FILM.playing=false;} }
+function figSVG(color,ini,uniform){
+  return `<svg viewBox="0 0 100 160" aria-hidden="true"><circle cx="50" cy="30" r="22" style="fill:${color}"/><text x="50" y="37" text-anchor="middle" font-family="Archivo,Arial" font-weight="800" font-size="20" style="fill:var(--sheet)">${ini}</text><path d="M14 160 V92 a36 36 0 0 1 72 0 V160 Z" style="fill:${uniform}"/>${uniform==='var(--blue)'?'<rect x="58" y="88" width="16" height="8" rx="2" style="fill:var(--sheet)"/>':''}</svg>`;
+}
+function filmView(c){
+  const f=c.film;
+  const st=runtime.film ||= {flags:[], ended:false, scores:{}, expl:{}, submitted:false, mode:'film', own:{}, ownTop:'', ownTip:''};
+  if(!FILM || FILM.cid!==c.id){ let t=0; FILM={cid:c.id, starts:f.frames.map(fr=>{const s=t; t+=fr.d; return s;}), total:f.frames.reduce((a,b)=>a+b.d,0), t:0, playing:false, raf:null, last:0}; }
+  const errs=f.frames.map((fr,i)=>({fr,i})).filter(x=>x.fr.err);
+  const tabs=`<div class="seg" role="group" aria-label="Soort filmpje" style="align-self:flex-start"><button data-fmode="film" aria-pressed="${st.mode==='film'}">Filmpje stagiair</button><button data-fmode="own" aria-pressed="${st.mode==='own'}">Eigen video</button></div>`;
+  if(st.mode==='own') return ownVideoView(c,st,tabs);
+  return `<div class="opd">${opdHead(4,2)}<div class="content">
+    <h2>Terugkijkopdracht</h2>
+    ${tabs}
+    <div class="boekje"><p>Bekijk het filmpje: <b>${esc(f.title)}</b>. Druk op <b>Fout gezien!</b> zodra je iets ziet dat niet goed gaat. Geef daarna een score voor de uitvoering en voor de communicatie, en leg met één voorbeeld uit waarom.</p></div>
+    <div class="player">
+      <div class="stage" id="stage"></div>
+      <div class="subs" id="subs"></div>
+      <div class="ctrl">
+        <button class="btn sm primary" id="play">${FILM.playing?'Pauze':(FILM.t>=FILM.total?'Opnieuw':'Afspelen')}</button>
+        <div class="bar" id="bar"><div class="fill" id="fill"></div>${st.flags.map(x=>`<span class="flag" style="left:${(x/FILM.total*100).toFixed(2)}%"></span>`).join('')}</div>
+        <span class="time" id="time"></span>
+        <button class="btn sm coral" id="flag">Fout gezien!</button>
+      </div>
+    </div>
+    ${st.ended?errorReport(c,st,errs):'<p class="small muted">Kijk het filmpje helemaal af. Daarna verschijnt de terugkijkopdracht.</p>'}
+  </div></div>`;
+}
+function errorReport(c,st,errs){
+  const spotted=errs.filter(x=>st.flags.some(t=>t>=FILM.starts[x.i] && t<=FILM.starts[x.i]+x.fr.d+1.5));
+  const falseFlags=st.flags.filter(t=>!errs.some(x=>t>=FILM.starts[x.i] && t<=FILM.starts[x.i]+x.fr.d+1.5)).length;
+  const aspect=(k,lbl)=>`<div class="card q"><b>${lbl}</b><p class="small">Ik geef ${esc(c.film.s)} een:</p>
+    <div class="scorepick">${['onvoldoende','voldoende','goed'].map(s=>`<button data-score="${k}:${s}" aria-pressed="${st.scores[k]===s}" ${st.submitted?'disabled':''}>${s}</button>`).join('')}</div>
+    <label class="small" for="ex-${k}" style="font-weight:700">Leg met één voorbeeld uit waarom.</label>
+    <textarea id="ex-${k}" data-ex="${k}" ${st.submitted?'disabled':''} placeholder="Bijvoorbeeld: ${k==='verband'?'hij …':'ze zei …'}">${esc(st.expl[k]||'')}</textarea></div>`;
+  let html=`<section class="q">
+    <h3>Terugkijken op de uitvoering van ${esc(c.film.s)}</h3>
+    ${aspect('verband', c.id==='B'?'Vingerbob aanleggen':c.id==='C'?'Kompres en elastisch windsel aanbrengen':'Wonddrukverband aanleggen')}
+    ${aspect('comm','Communiceren tijdens het verlenen van de eerste hulp')}`;
+  if(!st.submitted) html+=`<div class="row"><button class="btn primary" id="f-submit" ${!(st.scores.verband&&st.scores.comm)?'disabled':''}>Inleveren</button></div>`;
+  else {
+    const res=st.res;
+    html+=`<div class="total"><b>${res.score}</b><span>van 2 punten</span></div>
+      <p class="small muted">Je zag ${spotted.length} van de ${errs.length} fouten${falseFlags?` en drukte ${falseFlags}× op een moment zonder fout`:''}.</p>
+      <ul class="errlist">${errs.map(x=>{const s=spotted.includes(x);return `<li><span class="mark ${s?'y':'n'}">${s?'✓':'✗'}</span><span><b>${x.fr.err.a==='comm'?'Communicatie':'Uitvoering'}:</b> ${esc(x.fr.err.t)}</span></li>`;}).join('')}</ul>
+      <div class="sec"><div class="sh"><span>D4 · terugkijkopdracht</span><span class="sc">${res.score}/2</span></div><ul>
+        <li><span class="mark ${res.v?'y':'n'}">${res.v?'✓':'✗'}</span><span>Uitvoering: passende score met een uitleg en één voorbeeld${res.v?'':'<span class="tip">Kies een score die past bij wat je zag en noem een fout of goed punt uit het filmpje.</span>'}</span></li>
+        <li><span class="mark ${res.c?'y':'n'}">${res.c?'✓':'✗'}</span><span>Communicatie: passende score met een uitleg en één voorbeeld${res.c?'':'<span class="tip">Noem iets wat de stagiair zei of deed tegen de cliënt.</span>'}</span></li></ul></div>
+      <div class="row"><button class="btn ghost" id="f-again">Opnieuw kijken</button><button class="btn primary" data-go="res">Naar de uitslag</button></div>`;
+  }
+  return html+'</section>';
+}
+function judgeExpl(c,k,score,text){
+  const t=(text||'').toLowerCase(), words=t.split(/\s+/).filter(Boolean).length;
+  const errs=c.film.frames.filter(f=>f.err&&f.err.a===k).map(f=>f.err);
+  if(words<5) return false;
+  if(errs.length && score==='goed') return false;
+  const hitsErr=errs.some(e=>e.k.some(w=>t.includes(w)));
+  return hitsErr || words>=12;
+}
+function drawFrame(c){
+  const f=c.film, stage=$('#stage'); if(!stage) return;
+  let i=FILM.starts.findIndex((s,k)=>FILM.t>=s && FILM.t<s+f.frames[k].d); if(i<0) i=f.frames.length-1;
+  if(FILM.cur!==i || !stage.firstChild){
+    FILM.cur=i; const fr=f.frames[i];
+    stage.innerHTML=`<div class="fig s ${fr.who==='s'&&FILM.playing?'talk':''}">${figSVG('var(--ink)',f.sIni,'var(--blue)')}</div>
+      <div class="fig c ${fr.who==='c'&&FILM.playing?'talk':''}">${figSVG('var(--coral)',f.cIni,'var(--muted)')}</div>
+      <span class="tag s">${esc(f.s)} · stagiair</span><span class="tag c">${esc(f.c)}</span>
+      ${fr.say?`<div class="bubble ${fr.who}">${esc(fr.say)}</div>`:''}
+      ${fr.act?`<div class="actcard">${ico(fr.act.i)}<span>${esc(fr.act.t)}</span></div>`:''}
+      <div class="flash" id="flash"></div>
+      ${!FILM.playing&&FILM.t===0?'<div class="playcover"><span>▶ Afspelen</span></div>':''}`;
+    $('#subs').textContent=(fr.who?(fr.who==='s'?f.s:f.c)+': “'+fr.say+'”  ':'')+(fr.act?fr.act.t:'');
+  }
+  $('#fill').style.width=(FILM.t/FILM.total*100)+'%';
+  const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+  $('#time').textContent=fmt(FILM.t)+' / '+fmt(FILM.total);
+}
+function bindFilm(c){
+  const st=runtime.film; bindIntro();
+  document.querySelectorAll('[data-fmode]').forEach(b=>b.onclick=()=>{ stopFilm(); st.mode=b.dataset.fmode; render(); });
+  if(st.mode==='own'){ bindOwn(c,st); return; }
+  FILM.cur=-1; drawFrame(c);
+  const tick=(now)=>{ if(!FILM.playing) return; const dt=(now-FILM.last)/1000; FILM.last=now; FILM.t=Math.min(FILM.total,FILM.t+dt); drawFrame(c);
+    if(FILM.t>=FILM.total){ FILM.playing=false; FILM.raf=null; if(!st.ended){st.ended=true; render();} else { $('#play').textContent='Opnieuw'; FILM.cur=-1; drawFrame(c);} return; }
+    FILM.raf=requestAnimationFrame(tick); };
+  const play=()=>{ if(FILM.playing){ stopFilm(); $('#play').textContent='Afspelen'; FILM.cur=-1; drawFrame(c); return; }
+    if(FILM.t>=FILM.total) FILM.t=0; FILM.playing=true; FILM.last=performance.now(); $('#play').textContent='Pauze'; FILM.cur=-1; drawFrame(c); FILM.raf=requestAnimationFrame(tick); };
+  $('#play').onclick=play;
+  $('#stage').onclick=()=>{ if(!FILM.playing) play(); };
+  $('#bar').onclick=(e)=>{ const r=e.currentTarget.getBoundingClientRect(); FILM.t=Math.max(0,Math.min(FILM.total,(e.clientX-r.left)/r.width*FILM.total)); FILM.cur=-1; drawFrame(c); };
+  $('#flag').onclick=()=>{ if(FILM.t<=0) return; st.flags.push(FILM.t); const fl=$('#flash'); if(fl){fl.classList.add('on'); setTimeout(()=>fl.classList.remove('on'),300);} const bar=$('#bar'); const m=document.createElement('span'); m.className='flag'; m.style.left=(FILM.t/FILM.total*100)+'%'; bar.appendChild(m); };
+  document.querySelectorAll('[data-score]').forEach(b=>b.onclick=()=>{ const [k,s]=b.dataset.score.split(':'); st.scores[k]=s; keepExpl(st); render(); });
+  document.querySelectorAll('[data-ex]').forEach(t=>t.oninput=()=>{ st.expl[t.dataset.ex]=t.value; });
+  const sb=$('#f-submit'); if(sb) sb.onclick=()=>{ keepExpl(st);
+    const v=judgeExpl(c,'verband',st.scores.verband,st.expl.verband), cm=judgeExpl(c,'comm',st.scores.comm,st.expl.comm);
+    st.res={v,c:cm,score:(v?1:0)+(cm?1:0)}; st.submitted=true; R(c.id).o4={score:st.res.score}; save(); render(); };
+  const ag=$('#f-again'); if(ag) ag.onclick=()=>{ runtime.film={flags:[],ended:false,scores:{},expl:{},submitted:false,mode:'film',own:{}}; FILM.t=0; render(); };
+}
+function keepExpl(st){ document.querySelectorAll('[data-ex]').forEach(t=>st.expl[t.dataset.ex]=t.value); }
+
+function ownVideoView(c,st,tabs){
+  const steps=c.ehbo.steps;
+  return `<div class="opd">${opdHead(4,2)}<div class="content">
+    <h2>Terugkijken met een eigen video</h2>
+    ${tabs}
+    <div class="boekje"><p>Heb je een filmpje van jezelf of een klasgenoot (bijvoorbeeld opgenomen tijdens de les)? Open het hier en vul de kijkwijzer in. De video blijft op jouw apparaat en wordt nergens opgeslagen.</p></div>
+    <label class="btn ghost" style="align-self:flex-start">Video kiezen<input type="file" accept="video/*" id="own-file" hidden></label>
+    <div id="own-player">${st.ownUrl?`<video src="${st.ownUrl}" controls playsinline></video>`:''}</div>
+    <div class="tablewrap"><table class="kw"><thead><tr><th>Stap (kijkwijzer)</th><th class="c">Goed</th><th class="c">Fout</th><th class="c">Niet gezien</th></tr></thead><tbody>
+      ${steps.map((s,i)=>`<tr><td>${esc(s)}</td>${['g','f','n'].map(v=>`<td class="c"><input type="radio" name="kw${i}" data-kw="${i}" value="${v}" ${st.own[i]===v?'checked':''} aria-label="${v}"></td>`).join('')}</tr>`).join('')}
+    </tbody></table></div>
+    <label style="font-weight:700;display:grid;gap:6px">Top: wat ging goed?<textarea id="own-top">${esc(st.ownTop||'')}</textarea></label>
+    <label style="font-weight:700;display:grid;gap:6px">Tip: wat kan beter? Geef één voorbeeld.<textarea id="own-tip">${esc(st.ownTip||'')}</textarea></label>
+    <div class="row"><button class="btn primary" id="own-copy">Feedback kopiëren</button><span class="small muted" id="own-msg"></span></div>
+    <textarea id="own-out" hidden readonly></textarea>
+  </div></div>`;
+}
+function bindOwn(c,st){
+  const fi=$('#own-file'); fi.onchange=()=>{ const f=fi.files[0]; if(!f) return; if(st.ownUrl) URL.revokeObjectURL(st.ownUrl); st.ownUrl=URL.createObjectURL(f); $('#own-player').innerHTML=`<video src="${st.ownUrl}" controls playsinline></video>`; };
+  document.querySelectorAll('[data-kw]').forEach(r=>r.onchange=()=>{ st.own[r.dataset.kw]=r.value; });
+  $('#own-top').oninput=e=>st.ownTop=e.target.value; $('#own-tip').oninput=e=>st.ownTip=e.target.value;
+  $('#own-copy').onclick=()=>{
+    const map={g:'goed',f:'fout',n:'niet gezien'};
+    const txt=`Kijkwijzer ${c.ehbo.who} (oefenexamen ${c.id}) — ${S.name||'leerling'} ${S.klas||''}\n`+c.ehbo.steps.map((s,i)=>`${i+1}. ${s}: ${map[st.own[i]]||'-'}`).join('\n')+`\nTop: ${st.ownTop||'-'}\nTip: ${st.ownTip||'-'}`;
+    copyText(txt,$('#own-out'),$('#own-msg'));
+  };
+}
+function copyText(txt,area,msg){
+  const fallback=()=>{ area.hidden=false; area.value=txt; area.style.minHeight='160px'; area.focus(); area.select(); msg.textContent='Selecteer en kopieer de tekst hieronder.'; };
+  try{ navigator.clipboard.writeText(txt).then(()=>{msg.textContent='Gekopieerd.';},fallback); }catch(e){ fallback(); }
+}
+
+/* ---------- UITSLAG ---------- */
+function resView(c){
+  const r=S.results[c.id]||{};
+  const rows=[['1','Vragen maken','o1',6],['2','Zorg-op-maatopdracht','o2',8],['3','EHBO-opdracht','o3',9],['4','Terugkijkopdracht','o4',2]];
+  const tot=rows.reduce((a,x)=>a+(r[x[2]]?r[x[2]].score:0),0), doneAll=rows.every(x=>r[x[2]]);
+  return `<div class="opd"><div class="marg"><span class="nr">Σ</span></div><div class="content">
+    <h2>Uitslag oefenexamen ${c.id} · ${esc(c.place)}</h2>
+    <p class="muted">${esc(S.name||'Naam nog niet ingevuld')}${S.klas?' · '+esc(S.klas):''} · niveau ${S.level.toUpperCase()}</p>
+    <div class="tablewrap"><table class="restab"><thead><tr><th>Opdracht</th><th></th><th class="r">Score</th><th class="r">Max</th></tr></thead><tbody>
+      ${rows.map(x=>`<tr><td>D${x[0]}</td><td>${x[1]}${x[2]==='o2'&&r.o2?`<div class="small muted">${r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(' · ')} · ${r.o2.mode==='oefen'?'oefenmodus, '+(r.o2.peeks||0)+'× gespiekt':'examenmodus'}</div>`:''}${x[2]==='o2'&&r.o2&&r.o2.disputes&&r.o2.disputes.length?`<div class="small" style="color:var(--warn)">Betwist door leerling: ${r.o2.disputes.map(esc).join('; ')}</div>`:''}${x[2]==='o3'&&r.o3?`<div class="small muted">materialen ${r.o3.mats}/2 · volgorde ${r.o3.order}/5 · vragen ${r.o3.oral}/2</div>`:''}</td><td class="r">${r[x[2]]?r[x[2]].score:'–'}</td><td class="r">${x[3]}</td></tr>`).join('')}
+    </tbody><tfoot><tr><td colspan="2">Totaal onderdeel D</td><td class="r">${tot}</td><td class="r">25</td></tr></tfoot></table></div>
+    ${!doneAll?'<p class="chip warn" style="align-self:flex-start">Nog niet alle opdrachten gemaakt.</p>':''}
+    <div class="row"><button class="btn primary" id="res-copy">Uitslag kopiëren voor je docent</button><span class="small muted" id="res-msg"></span></div>
+    <textarea id="res-out" hidden readonly></textarea>
+    <p class="note">Plak de uitslag in Teams, Magister of je portfolio. Dit is een oefenscore: bij het echte cspe beoordeelt de examinator je praktijk.</p>
+  </div></div>`;
+}
+function bindRes(c){
+  $('#res-copy').onclick=()=>{
+    const r=S.results[c.id]||{}; const g=k=>r[k]?r[k].score:'-';
+    const tot=['o1','o2','o3','o4'].reduce((a,k)=>a+(r[k]?r[k].score:0),0);
+    const txt=`Virtuele cliënt – oefenexamen ${c.id} (${c.place})\n${S.name||'-'} ${S.klas||''} · ${S.level.toUpperCase()}\nD1 vragen: ${g('o1')}/6\nD2 zorg op maat: ${g('o2')}/8${r.o2?' ('+r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(', ')+'; '+(r.o2.mode==='oefen'?'oefenmodus, '+(r.o2.peeks||0)+'× gespiekt':'examenmodus')+')':''}${r.o2&&r.o2.disputes&&r.o2.disputes.length?'\n   Betwist: '+r.o2.disputes.join('; '):''}\nD3 EHBO: ${g('o3')}/9\nD4 terugkijken: ${g('o4')}/2\nTotaal: ${tot}/25`;
+    copyText(txt,$('#res-out'),$('#res-msg'));
+  };
+}
+
+/* ---------- start ---------- */
+render();
+(async()=>{
+  try{ if(window.claude&&window.claude.use){ const s=await window.claude.use('sample'); if(s){ SAMPLE=s; AI_STATE='on'; } else AI_STATE='off'; } else AI_STATE='none'; }
+  catch(e){ AI_STATE='off'; }
+  if(view.screen==='case'&&view.tab==='o2' && !(runtime.chat&&runtime.chat.busy)) { const v=document.getElementById('say'); const keep=v?v.value:''; render(); const n=document.getElementById('say'); if(n&&keep) n.value=keep; }
+})();
+</script>
+
+</body>
+</html>
