@@ -260,6 +260,11 @@ video{width:100%;border-radius:10px;background:#000}
 .mtr .tip{grid-column:2}
 .mtr.right{background:var(--ok-soft)}.mtr.wrong{background:var(--bad-soft)}
 @media (max-width:560px){.mtr{grid-template-columns:1fr}.mtr .tip{grid-column:1}.mx td.c{width:64px}}
+.mailbox{display:flex;flex-direction:column;gap:10px}
+.mailbox select{max-width:320px}
+a.btn{text-decoration:none;color:inherit}
+a.btn.primary{color:var(--blue-ink)}
+a.btn.disabled{opacity:.45;pointer-events:none}
 .modepick,.peek{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .feedbackai{border:1.5px solid var(--blue);background:var(--blue-soft);border-radius:10px;padding:12px 14px;white-space:pre-wrap}
 footer{margin-top:32px}
@@ -342,24 +347,45 @@ const CASES = [
   place:'Woonzorgcentrum De Schie', town:'Delft',
   intro:'Woonzorgcentrum De Schie in Delft biedt zorg aan ouderen. Sommige bewoners wonen in een appartement in het woonzorgcentrum, anderen in een aanleunwoning ernaast. Elke woensdag is er een activiteitenmiddag in de recreatiezaal, met koffie, bingo en een beweegquiz.',
   topics:'rolstoeltransfer · wonddrukverband',
-  quiz:[
-    {t:'matrix', ctx:'Meneer Van Leeuwen kan zelf zijn voeten op de voetsteunen van de rolstoel zetten.', q:'Stimuleer je in deze situaties wel of niet zijn zelfredzaamheid?', cols:['wel stimulerend','niet stimulerend'], rows:[
+  quizBB:[
+    {t:'matrix', ctx:'Meneer Van Leeuwen kan zelf zijn voeten op de voetsteunen zetten.', q:'Stimuleer je zo wel of niet zijn zelfredzaamheid?', cols:['wel stimulerend','niet stimulerend'], rows:[
       {s:'Je vraagt of hij zelf zijn voeten op de steunen zet.', a:0},
       {s:'Je zet zijn voeten snel voor hem op de steunen.', a:1},
-      {s:'Je wacht rustig tot hij het zelf gedaan heeft.', a:0}], e:'Wat meneer zelf kan, laat je hem zelf doen. Vragen en rustig wachten helpt hem daarbij.'},
-    {t:'match', q:'Waar biedt het hulpmiddel vooral ondersteuning bij?', items:[{l:'rolstoel',a:3},{l:'rollator',a:0},{l:'glijzeil',a:1}], o:['het lopen','het verplaatsen in bed','het zelfstandig douchen','het verplaatsen over een lange afstand'], e:'Rollator: lopen met steun. Glijzeil: verplaatsen in bed. Rolstoel: grotere afstanden.'},
-    {t:'mc', ctx:'Meneer Van Leeuwen heeft hartfalen.', q:'Wat merk je daar vaak aan?', o:['hij is snel moe','hij heeft jeuk','hij heeft koorts','hij ziet slecht'], a:0, e:'Bij hartfalen pompt het hart minder goed. Daardoor is iemand snel moe en kortademig.'},
+      {s:'Je wacht rustig tot hij het zelf gedaan heeft.', a:0}], e:'Wat meneer zelf kan, laat je hem zelf doen.'},
+    {t:'match', q:'Waar helpt het hulpmiddel vooral bij?', items:[{l:'rolstoel',a:2},{l:'rollator',a:0},{l:'glijzeil',a:1}], o:['het lopen','het verplaatsen in bed','het verplaatsen over een lange afstand'], e:'Rollator: lopen. Glijzeil: verplaatsen in bed. Rolstoel: grotere afstanden.'},
+    {t:'mc', ctx:'Meneer Van Leeuwen heeft hartfalen.', q:'Wat merk je daar vaak aan?', o:['hij is snel moe','hij heeft jeuk','hij heeft koorts'], a:0, e:'Bij hartfalen pompt het hart minder goed. Daardoor is iemand snel moe.'},
+    {t:'matrix', ctx:'Mevrouw Jansen heeft een snijwond in haar arm. De wond bloedt hevig.', q:'Zijn deze EHBO-adviezen juist of onjuist?', cols:['juist advies','onjuist advies'], rows:[
+      {s:'druk geven op de wond', a:0},
+      {s:'de arm naar beneden laten hangen', a:1},
+      {s:'een wonddrukverband aanleggen', a:0}], e:'Druk op de wond en een wonddrukverband stoppen het bloeden. Houd de arm juist omhoog.'},
+    {t:'matrix', q:'Is dit mantelzorg of professionele zorg?', cols:['mantelzorg','professionele zorg'], rows:[
+      {s:'De dochter van meneer doet zijn boodschappen.', a:0},
+      {s:'De wijkverpleegkundige geeft meneer een injectie.', a:1},
+      {s:'De buurvrouw kookt soms voor meneer.', a:0}], e:'Mantelzorg geven familie, vrienden of buren. Professionele zorg geven mensen die er een opleiding voor hebben en ervoor betaald worden.'}
+  ],
+  quizKB:[
+    {t:'matrix', q:'Horen deze voorbeelden bij intramurale of extramurale zorg?', cols:['intramurale zorg','extramurale zorg'], rows:[
+      {s:'Meneer Van Leeuwen woont in een aanleunwoning en krijgt thuiszorg.', a:1},
+      {s:'Mevrouw De Graaf woont op de afdeling voor dementie van De Schie.', a:0},
+      {s:'Meneer Bos krijgt thuis een injectie van de wijkverpleegkundige.', a:1},
+      {s:'Mevrouw Smit ligt in het ziekenhuis na een heupoperatie.', a:0}], e:'Intramuraal: de cliënt woont of verblijft in de instelling. Extramuraal: de cliënt woont thuis.'},
+    {t:'mc', ctx:'Je hebt meneer Van Leeuwen net geholpen met opstaan. Hij wordt ineens wit en zegt dat hij duizelig is.', q:'Wat doe je eerst?', o:['hem weer laten zitten','snel naar de lift rijden','hem zelf water laten pakken','zijn dochter bellen'], a:0, e:'Bij duizeligheid laat je de cliënt eerst weer zitten. Zo voorkom je dat hij valt.'},
     {t:'matrix', ctx:'Mevrouw Jansen heeft een snijwond in haar onderarm. De wond bloedt hevig.', q:'Zijn deze EHBO-adviezen juist of onjuist?', cols:['juist advies','onjuist advies'], rows:[
       {s:'druk geven op de wond', a:0},
       {s:'de arm naar beneden laten hangen', a:1},
       {s:'een wonddrukverband aanleggen', a:0},
       {s:'watten op de wond leggen', a:1}], e:'Druk op de wond en een wonddrukverband stoppen het bloeden. Houd de arm juist omhoog. Watten plakken in de wond.'},
+    {t:'matrix', q:'Is deze toedieningsvorm oraal, rectaal of dermaal?', cols:['oraal','rectaal','dermaal'], rows:[
+      {s:'tablet met een glas water', a:0},
+      {s:'zetpil', a:1},
+      {s:'zalf op de huid', a:2},
+      {s:'drankje met een maatbekertje', a:0}], e:'Oraal: via de mond. Rectaal: via de anus. Dermaal: via de huid.'},
+    {t:'mc', table:{title:'Paracetamol meneer Van Leeuwen', head:['tijd','ingenomen'], rows:[['08:00','1 tablet'],['12:00','1 tablet']]}, ctx:'Meneer mag per dag maximaal 3 tabletten paracetamol. Tussen twee tabletten moet minstens 4 uur zitten.', q:'Wanneer mag meneer vandaag zijn laatste tablet nemen?', o:['om 14:00','vanaf 16:00','om 12:30','pas morgen'], a:1, e:'De laatste tablet was om 12:00. Daarna moet 4 uur zitten, dus vanaf 16:00.'},
     {t:'matrix', ctx:'Je praat met meneer Van Leeuwen.', q:'Zijn deze vragen open of gesloten?', cols:['open','gesloten'], rows:[
       {s:'Zit u goed?', a:1},
       {s:'Hoe was de bingo?', a:0},
       {s:'Wilt u uw vest aan?', a:1},
-      {s:'Wat heeft u vanmiddag gedaan?', a:0}], e:'Op een gesloten vraag antwoord je met ja of nee. Op een open vraag vertel je meer.'},
-    {t:'mc', table:{title:'Medicijnlijst meneer Van Leeuwen', head:['tijd','medicijn'], rows:[['08:00','1 plastablet'],['08:00','1 bloeddruktablet'],['18:00','1 bloeddruktablet']]}, ctx:'Je kijkt op de medicijnlijst van meneer.', q:'Hoe vaak per dag neemt meneer een bloeddruktablet?', o:['1 keer','2 keer','3 keer','4 keer'], a:1, e:'Om 08:00 en om 18:00: dat is 2 keer per dag.'}
+      {s:'Wat heeft u vanmiddag gedaan?', a:0}], e:'Op een gesloten vraag antwoord je met ja of nee. Op een open vraag vertel je meer.'}
   ],
   chat:{
     name:'meneer Van Leeuwen', short:'Meneer Van Leeuwen', ini:'VL', aanspreek:'meneer',
@@ -421,7 +447,7 @@ const CASES = [
     ],
     bye:'Dankjewel voor je hulp. Ik heb een fijne middag gehad!',
     criteria:[
-      {code:'D2a', title:'voorbereiding en communicatie', max:2, mode:'minus', items:[
+      {code:'D2a', title:'voorbereiding en communicatie', max:2, maxBB:3, mode:'minus', items:[
         {l:'heeft gezorgd voor goede persoonlijke hygiëne (werkkleding, platte schoenen, geen kauwgom)', ok:st=>st.prepOk, tip:'Kijk nog eens naar de voorbereiding: wat hoort wel en niet bij een goede beroepshouding?'},
         {l:'groet meneer op eigen initiatief en stelt zichzelf verstaanbaar voor', ok:st=>st.said.greet&&st.said.intro, tip:'Begin met een groet en zeg je naam: “Goedemiddag meneer, ik ben …”.'},
         {l:'vertelt op eigen initiatief wat zij/hij komt doen', ok:st=>st.said.purpose&&!st.prompted.purpose, tip:'Vertel meteen waarvoor je komt: “Ik kom u helpen om in de rolstoel te gaan zitten.”'},
@@ -506,22 +532,38 @@ const CASES = [
   place:'Zorgboerderij De Molenhoeve', town:'Den Hoorn',
   intro:'Zorgboerderij De Molenhoeve aan de rand van Delft biedt dagbesteding aan volwassenen en ouderen met een zorgvraag. Er zijn dieren, een moestuin en een kas. ’s Middags zijn er activiteiten zoals bloemschikken en kaas maken. Na de lunch kunnen deelnemers rusten in de rustkamer.',
   topics:'uit bed met papegaai · vingerbob',
-  quiz:[
-    {t:'mc', ctx:'Mevrouw Yilmaz heeft al jaren pijnlijke en stijve gewrichten.', q:'Bij welke aandoening past dit het best?', o:['reuma','griep','diabetes','beroerte'], a:0, e:'Bij reuma zijn gewrichten pijnlijk, stijf en soms ontstoken.'},
+  quizBB:[
+    {t:'mc', ctx:'Mevrouw Yilmaz heeft al jaren pijnlijke en stijve gewrichten.', q:'Bij welke aandoening past dit het best?', o:['reuma','griep','diabetes'], a:0, e:'Bij reuma zijn gewrichten pijnlijk en stijf.'},
     {t:'matrix', ctx:'Je helpt mevrouw Yilmaz met haar vest. Haar rechterarm doet pijn.', q:'Doe je het zo juist of onjuist?', cols:['juist','onjuist'], rows:[
       {s:'eerst de rechterarm in de mouw', a:0},
       {s:'eerst de linkerarm in de mouw', a:1},
       {s:'rustig werken en vragen of het pijn doet', a:0}], e:'Aankleden: eerst de zere arm. Zo hoeft die arm zo weinig mogelijk te draaien.'},
-    {t:'match', q:'Waar biedt het hulpmiddel vooral ondersteuning bij?', items:[{l:'papegaai',a:1},{l:'hoog-laagbed',a:2},{l:'passieve tillift',a:3}], o:['het lopen','het zelf omhoog komen in bed','het werken op de goede hoogte','het verplaatsen als iemand niet kan staan'], e:'Met een papegaai trekt iemand zich zelf op. Een hoog-laagbed zet je op werkhoogte. Een passieve tillift gebruik je als iemand niet kan staan.'},
-    {t:'matrix', ctx:'Je helpt mevrouw Yilmaz met aankleden.', q:'Houd je zo wel of geen rekening met haar privacy?', cols:['wel','niet'], rows:[
+    {t:'match', q:'Waar helpt het hulpmiddel vooral bij?', items:[{l:'papegaai',a:1},{l:'rollator',a:0},{l:'tillift',a:2}], o:['het lopen','het zelf omhoog komen in bed','het verplaatsen als iemand niet kan staan'], e:'Met een papegaai trekt iemand zich zelf op. Een rollator is voor lopen. Een tillift gebruik je als iemand niet kan staan.'},
+    {t:'matrix', ctx:'Je helpt mevrouw Yilmaz met aankleden.', q:'Let je zo wel of niet op haar privacy?', cols:['wel','niet'], rows:[
       {s:'Je doet de deur dicht.', a:0},
       {s:'Je laat de deur openstaan.', a:1},
-      {s:'Je dekt haar af met een handdoek.', a:0}], e:'Deur dicht en afdekken wat niet nodig is: zo houd je rekening met privacy.'},
-    {t:'mc', ctx:'Meneer Rijsdijk heeft een snijwond in zijn wijsvinger. De wond is schoon.', q:'Welk verband gebruik je?', o:['een vingerbob','een mitella','een coldpack','een ideaalzwachtel'], a:0, e:'Een kompres met een vingerbob is het verband voor een vinger.'},
+      {s:'Je dekt haar af met een handdoek.', a:0}], e:'Deur dicht en afdekken wat niet nodig is: zo let je op privacy.'},
+    {t:'mc', ctx:'Meneer Rijsdijk heeft een snijwond in zijn vinger. De wond is schoon.', q:'Welk verband gebruik je?', o:['een vingerbob','een mitella','een coldpack'], a:0, e:'Een kompres met een vingerbob is het verband voor een vinger.'}
+  ],
+  quizKB:[
+    {t:'matrix', q:'Zijn deze aandoeningen acuut of chronisch?', cols:['acuut','chronisch'], rows:[
+      {s:'reuma', a:1},
+      {s:'griep', a:0},
+      {s:'diabetes type 2', a:1},
+      {s:'blaasontsteking', a:0}], e:'Acuut: komt plotseling en gaat meestal over. Chronisch: blijft lang of altijd.'},
+    {t:'matrix', ctx:'Je helpt mevrouw Yilmaz met haar vest. Haar rechterarm doet pijn.', q:'Doe je het zo juist of onjuist?', cols:['juist','onjuist'], rows:[
+      {s:'aantrekken: eerst de rechterarm in de mouw', a:0},
+      {s:'aantrekken: eerst de linkerarm in de mouw', a:1},
+      {s:'uittrekken: eerst de linkerarm uit de mouw', a:0},
+      {s:'de rechterarm ver naar achteren draaien', a:1}], e:'Aankleden: eerst de zere arm. Uitkleden: eerst de goede arm. Zo beweegt de zere arm zo weinig mogelijk.'},
+    {t:'mc', ctx:'Mevrouw Yilmaz ligt veel in bed. Op haar stuitje is de huid rood. De roodheid blijft als je erop drukt.', q:'Wat is hier waarschijnlijk aan de hand?', o:['beginnende decubitus','een allergie','een blauwe plek','een brandwond'], a:0, e:'Rode huid die niet wegtrekt als je drukt, op een drukplek, is een teken van beginnende decubitus.'},
+    {t:'match', q:'Waar biedt het hulpmiddel vooral ondersteuning bij?', items:[{l:'papegaai',a:1},{l:'hoog-laagbed',a:2},{l:'passieve tillift',a:3}], o:['het lopen','het zelf omhoog komen in bed','het werken op de goede hoogte','het verplaatsen als iemand niet kan staan'], e:'Met een papegaai trekt iemand zich zelf op. Een hoog-laagbed zet je op werkhoogte. Een passieve tillift gebruik je als iemand niet kan staan.'},
     {t:'matrix', ctx:'Je schrijft in het dossier van mevrouw Yilmaz.', q:'Is wat je schrijft objectief of subjectief?', cols:['objectief','subjectief'], rows:[
       {s:'Mevrouw heeft een uur geslapen.', a:0},
       {s:'Mevrouw was chagrijnig.', a:1},
-      {s:'Mevrouw liep zelf naar de stoel.', a:0}], e:'Objectief: wat je ziet of meet. Subjectief: een mening of gevoel.'}
+      {s:'Mevrouw liep zelf naar de stoel.', a:0},
+      {s:'Ik denk dat mevrouw verdrietig is.', a:1}], e:'Objectief: wat je ziet, hoort of meet. Subjectief: een mening of gevoel.'},
+    {t:'mc', ctx:'Mevrouw Yilmaz woont thuis. Ze komt drie dagen per week naar de dagbesteding.', q:'Welke vorm van zorg is de dagbesteding?', o:['intramurale zorg','extramurale zorg','mantelzorg','tweedelijnszorg'], a:1, e:'Extramuraal: de cliënt woont niet in de instelling maar thuis.'}
   ],
   chat:{
     name:'mevrouw Yilmaz', short:'Mevrouw Yilmaz', ini:'Y', aanspreek:'mevrouw',
@@ -579,7 +621,7 @@ const CASES = [
     isEnd:st=>did(st,'walkSelf')&&did(st,'bedMake'),
     bye:'Dankjewel, lief van je. Tot de volgende keer!',
     criteria:[
-      {code:'D2a', title:'voorbereiding en introductie', max:2, mode:'minus', items:[
+      {code:'D2a', title:'voorbereiding en introductie', max:2, maxBB:3, mode:'minus', items:[
         {l:'heeft gezorgd voor goede persoonlijke hygiëne (werkkleding, platte schoenen, geen sieraden, geen kauwgom, handen gereinigd)', ok:st=>st.prepOk&&did(st,'hands'), tip:'Denk aan je voorbereiding én aan handen reinigen.'},
         {l:'groet mevrouw op eigen initiatief en stelt zichzelf verstaanbaar voor', ok:st=>st.said.greet&&st.said.intro, tip:'Groet en zeg je naam.'},
         {l:'vertelt op eigen initiatief wat zij/hij komt doen', ok:st=>st.said.purpose&&!st.prompted.purpose, tip:'Vertel meteen dat je mevrouw uit bed komt helpen.'},
@@ -667,23 +709,41 @@ const CASES = [
   place:'Logeerhuis Duinzicht', town:'Monster',
   intro:'Logeerhuis Duinzicht in Monster is een vakantie- en logeerhuis voor volwassenen met een (licht) verstandelijke beperking. Gasten logeren een week in kleine groepjes met een begeleider. Elke dag is er een activiteitenprogramma: samen koken, muziek maken en wandelen naar het strand.',
   topics:'opstaan met rollator · brandwond verbinden',
-  quiz:[
+  quizBB:[
     {t:'matrix', ctx:'Meneer Pinas is slechthorend.', q:'Help je hem zo wel of niet goed?', cols:['wel goed','niet goed'], rows:[
       {s:'Je kijkt hem aan als je praat.', a:0},
       {s:'Je roept vanuit de gang.', a:1},
-      {s:'Je praat rustig en duidelijk.', a:0}], e:'Kijk de cliënt aan en praat rustig en duidelijk. Dan kan hij ook je mond zien.'},
-    {t:'mc', ctx:'Mevrouw Bouali heeft zich gebrand aan een hete pan.', q:'Hoe lang koel je de brandwond?', o:['1 minuut','10 tot 20 minuten','1 uur','niet koelen'], a:1, e:'Koel 10 tot 20 minuten met lauw, zacht stromend water.'},
+      {s:'Je praat rustig en duidelijk.', a:0}], e:'Kijk de cliënt aan en praat rustig en duidelijk.'},
+    {t:'mc', ctx:'Mevrouw Bouali heeft zich gebrand aan een hete pan.', q:'Hoe lang koel je de brandwond?', o:['1 minuut','10 tot 20 minuten','1 uur'], a:1, e:'Koel 10 tot 20 minuten met lauw, zacht stromend water.'},
+    {t:'matrix', ctx:'Mevrouw Bouali heeft een brandwond op haar arm.', q:'Zijn deze EHBO-adviezen juist of onjuist?', cols:['juist advies','onjuist advies'], rows:[
+      {s:'koelen met lauw stromend water', a:0},
+      {s:'zalf op de wond smeren', a:1},
+      {s:'blaren doorprikken', a:1}], e:'Koelen is goed. Geen zalf en blaren niet doorprikken.'},
+    {t:'match', q:'Waar helpt het hulpmiddel vooral bij?', items:[{l:'rollator',a:0},{l:'rolstoel',a:2},{l:'douchestoel',a:1}], o:['het lopen','het zittend douchen','het verplaatsen over een lange afstand'], e:'Rollator: lopen. Douchestoel: zittend douchen. Rolstoel: grotere afstanden.'},
+    {t:'matrix', ctx:'Meneer Pinas kan zelf zijn schoen aandoen.', q:'Stimuleer je zo wel of niet zijn zelfredzaamheid?', cols:['wel stimulerend','niet stimulerend'], rows:[
+      {s:'Je moedigt hem aan.', a:0},
+      {s:'Je doet de schoen voor hem aan.', a:1},
+      {s:'Je geeft een compliment als het lukt.', a:0}], e:'Aanmoedigen en een compliment geven helpt meneer om het zelf te doen.'}
+  ],
+  quizKB:[
+    {t:'matrix', ctx:'Meneer Pinas is slechthorend.', q:'Help je hem zo wel of niet goed?', cols:['wel goed','niet goed'], rows:[
+      {s:'Je kijkt hem aan als je praat.', a:0},
+      {s:'Je roept vanuit de gang.', a:1},
+      {s:'Je praat rustig en duidelijk.', a:0},
+      {s:'Je zet de radio harder als je met hem praat.', a:1}], e:'Kijk de cliënt aan, praat rustig en duidelijk, en zorg voor zo min mogelijk achtergrondgeluid.'},
     {t:'matrix', ctx:'Mevrouw Bouali heeft een brandwond op haar onderarm.', q:'Zijn deze EHBO-adviezen juist of onjuist?', cols:['juist advies','onjuist advies'], rows:[
       {s:'koelen met lauw stromend water', a:0},
       {s:'zalf op de wond smeren', a:1},
       {s:'blaren doorprikken', a:1},
       {s:'armband in de buurt afdoen', a:0}], e:'Koelen en sieraden afdoen is goed. Geen zalf en blaren niet doorprikken.'},
     {t:'mc', ctx:'Mevrouw Bouali heeft een rode huid met blaren.', q:'Welke verbranding is dit?', o:['oppervlakkige','gedeeltelijke','volledige','geen verbranding'], a:1, e:'Blaren horen bij een gedeeltelijke (tweedegraads) verbranding.'},
-    {t:'match', q:'Waar biedt het hulpmiddel vooral ondersteuning bij?', items:[{l:'rollator',a:0},{l:'rolstoel',a:3},{l:'douchestoel',a:2}], o:['het lopen','het verplaatsen in bed','het zittend douchen','het verplaatsen over een lange afstand'], e:'Rollator: lopen. Douchestoel: zittend douchen. Rolstoel: grotere afstanden.'},
-    {t:'matrix', ctx:'Meneer Pinas kan zelf zijn schoen aandoen.', q:'Stimuleer je in deze situaties wel of niet zijn zelfredzaamheid?', cols:['wel stimulerend','niet stimulerend'], rows:[
-      {s:'Je moedigt hem aan.', a:0},
-      {s:'Je doet de schoen voor hem aan.', a:1},
-      {s:'Je geeft een compliment als het lukt.', a:0}], e:'Aanmoedigen en een compliment geven helpt meneer om het zelf te doen.'}
+    {t:'matrix', q:'Zijn dit voorbeelden van domotica of robotica?', cols:['domotica','robotica'], rows:[
+      {s:'een lamp die aangaat als meneer uit bed stapt', a:0},
+      {s:'een knuffelkat die reageert als je hem aait', a:1},
+      {s:'de voordeur openen met een app', a:0},
+      {s:'een robotarm die helpt bij het eten', a:1}], e:'Domotica: slimme techniek in huis. Robotica: een robot die iets doet of reageert.'},
+    {t:'mc', ctx:'Meneer Pinas heeft een licht verstandelijke beperking.', q:'Hoe leg je hem uit wat jullie gaan koken?', o:['in korte zinnen, één stap tegelijk','alles in één keer vertellen','met moeilijke woorden','alleen op papier'], a:0, e:'Houd het kort en concreet, één stap tegelijk. Voordoen helpt ook.'},
+    {t:'mc', table:{title:'Dagprogramma Duinzicht', head:['tijd','activiteit'], rows:[['10:00','strandwandeling'],['12:30','lunch'],['14:00','muziek maken'],['16:30','samen koken']]}, ctx:'Het is nu 15:30. Meneer Pinas wil naar het samen koken.', q:'Hoe lang moet hij nog wachten?', o:['30 minuten','60 minuten','90 minuten','2 uur'], a:1, e:'Van 15:30 tot 16:30 is 60 minuten.'}
   ],
   chat:{
     name:'meneer Pinas', short:'Meneer Pinas', ini:'P', aanspreek:'meneer',
@@ -774,7 +834,7 @@ const CASES = [
         {l:'loopt mee in het tempo van meneer', ok:st=>did(st,'walk')&&!st.flags.tempoBad, tip:'Loop naast meneer, in zijn tempo.'},
         {l:'werkt steeds ergonomisch', ok:st=>did(st,'stand')&&!st.flags.ergoBad, tip:'Niet trekken; rug recht, door de knieën.'}
       ]},
-      {code:'D2d', title:'interesse, empathie en afsluiting', max:2, mode:'minus', items:[
+      {code:'D2d', title:'interesse, empathie en afsluiting', max:2, maxBB:3, mode:'minus', items:[
         {l:'toont interesse (bijv. vraagt hoe het logeren bevalt)', ok:st=>st.said.interest, tip:'“Hoe bevalt het logeren?”'},
         {l:'vraagt naar de reden van het verdriet en toont empathie', ok:st=>st.askedWhy&&st.empathyOk, tip:'Vraag “Wat is er?” en reageer met begrip: “Wat jammer, dat snap ik.”'},
         {l:'blijft geduldig als meneer vraagt iets te herhalen', ok:st=>st.repeatAsks>0&&!st.repeatBad, tip:'Herhaal rustig wat je zei, iets duidelijker.'},
@@ -842,6 +902,15 @@ const CASES = [
 /* =========================================================
    STATE
    ========================================================= */
+/* =========================================================
+   DOCENTEN — hier pas je de lijst aan (naam zoals leerlingen hem zien, e-mailadres van school)
+   ========================================================= */
+const DOCENTEN = [
+  {naam:'R. van Veen',  mail:'R.vanveen@sc-delfland.nl'},
+  {naam:'M. Delhaas',   mail:'M.delhaas@sc-delfland.nl'},
+  {naam:'L. Schreuder', mail:'L.schreuder@sc-delfland.nl'}
+];
+
 const KEY='virtuele-client-mz-v1';
 let S = {name:'', klas:'', level:'kb', results:{}};
 try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S, JSON.parse(raw)); }catch(e){}
@@ -875,7 +944,9 @@ function before(st,a,b){ return did(st,a) && (!did(st,b) || st.done[a]<st.done[b
 function uForm(st){ return st.uCount>0 && st.jeCount===0 && !st.flags.rude; }
 
 /* scoring */
+const MAX=()=>S.level==='bb'?{o1:5,o2:9,o3:9,o4:2}:{o1:6,o2:8,o3:9,o4:2};
 function scoreSection(sec, st){
+  sec={...sec, max:(S.level==='bb'&&sec.maxBB)||sec.max};
   const res=sec.items.map(it=>({l:it.l, tip:it.tip, ok:!!it.ok(st)}));
   const n=res.filter(r=>r.ok).length, wrong=res.length-n;
   let pts=0;
@@ -925,8 +996,8 @@ function homeView(){
       <h1>Oefen zorg op maat met een virtuele cliënt</h1>
       <p class="lead">Elk oefenexamen is opgebouwd zoals onderdeel D van het echte cspe: eerst vragen, dan een zorg-op-maatopdracht, een EHBO-opdracht en een terugkijkopdracht. Je praat met de cliënt in een chat, zet handelingen in de goede volgorde, beoordeelt een filmpje van een stagiair en maakt een minitoets.</p>
       <div class="facts" style="margin-top:18px">
-        <div class="fact"><b>6p</b><span class="small muted">1 · vragen</span></div>
-        <div class="fact"><b>8p</b><span class="small muted">2 · zorg op maat (chat)</span></div>
+        <div class="fact"><b>${MAX().o1}p</b><span class="small muted">1 · vragen</span></div>
+        <div class="fact"><b>${MAX().o2}p</b><span class="small muted">2 · zorg op maat (chat)</span></div>
         <div class="fact"><b>9p</b><span class="small muted">3 · EHBO (stappen)</span></div>
         <div class="fact"><b>2p</b><span class="small muted">4 · terugkijken (film)</span></div>
       </div>
@@ -967,10 +1038,10 @@ function bindHome(){
 /* ---------- CASE ---------- */
 const TABS=[
   {id:'intro', n:'i', l:'Inleiding'},
-  {id:'o1', n:'1', l:'Vragen', p:6},
-  {id:'o2', n:'2', l:'Zorg op maat', p:8},
-  {id:'o3', n:'3', l:'EHBO', p:9},
-  {id:'o4', n:'4', l:'Terugkijken', p:2},
+  {id:'o1', n:'1', l:'Vragen', p:'o1'},
+  {id:'o2', n:'2', l:'Zorg op maat', p:'o2'},
+  {id:'o3', n:'3', l:'EHBO', p:'o3'},
+  {id:'o4', n:'4', l:'Terugkijken', p:'o4'},
   {id:'res', n:'Σ', l:'Uitslag'}
 ];
 function caseView(){
@@ -978,7 +1049,7 @@ function caseView(){
   return `<div class="casegrid">
     <nav class="rail" aria-label="Opdrachten">
       <button class="btn ghost sm back" id="home">← Alle examens</button>
-      ${TABS.map(t=>`<button class="tab" data-tab="${t.id}" aria-current="${view.tab===t.id}"><span class="n">${t.n}</span><span>${t.l}</span>${t.p?`<span class="p">${r[t.id]?r[t.id].score+'/':''}${t.p}p</span>`:'<span></span>'}</button>`).join('')}
+      ${TABS.map(t=>`<button class="tab" data-tab="${t.id}" aria-current="${view.tab===t.id}"><span class="n">${t.n}</span><span>${t.l}</span>${t.p?`<span class="p">${r[t.id]?r[t.id].score+'/':''}${MAX()[t.p]}p</span>`:'<span></span>'}</button>`).join('')}
     </nav>
     <main class="sheet" id="sheet">${tabContent(c)}</main>
   </div>`;
@@ -1005,14 +1076,14 @@ function introView(c){
     <div class="boekje"><h3>Inleiding</h3><p>${esc(c.intro)}</p><p><b>Jij loopt stage bij ${esc(c.place)}.</b></p></div>
     <div><h3 style="margin-bottom:8px">Opdrachten onderdeel D</h3>
       <ol style="margin:0;padding-left:22px;display:grid;gap:4px">
-        <li>Vragen maken (minitoets) — 6p</li>
-        <li>Zorg-op-maatopdracht: gesprek en handelingen met ${esc(c.chat.name)} — 8p</li>
+        <li>Vragen maken (minitoets) — ${MAX().o1}p</li>
+        <li>Zorg-op-maatopdracht: gesprek en handelingen met ${esc(c.chat.name)} — ${MAX().o2}p</li>
         <li>EHBO-opdracht: materialen kiezen en stappen ordenen — 9p</li>
         <li>Terugkijkopdracht: filmpje van een stagiair beoordelen — 2p</li>
       </ol></div>
     <div class="row"><button class="btn primary" data-go="o1">Begin met opdracht 1</button></div>
     <details class="docent"><summary>Voor de docent: beoordelingsmodel opdracht 2</summary>
-      <div class="crit">${c.chat.criteria.map(s=>`<div><b>${s.code} ${esc(s.title)}</b> <span class="muted small">(max ${s.max}p · ${s.mode==='minus'?'alle aspecten juist '+s.max+', per fout −1':s.mode==='all'?'alle aspecten juist':'staffel: '+s.bands.filter(b=>b[1]>0).map(b=>b[0]+'+ juist → '+b[1]).join(', ')})</span>
+      <div class="crit">${c.chat.criteria.map(s=>`<div><b>${s.code} ${esc(s.title)}</b> <span class="muted small">(max ${(S.level==='bb'&&s.maxBB)||s.max}p · ${s.mode==='minus'?'alle aspecten juist '+((S.level==='bb'&&s.maxBB)||s.max)+', per fout −1':s.mode==='all'?'alle aspecten juist':'staffel: '+s.bands.filter(b=>b[1]>0).map(b=>b[0]+'+ juist → '+b[1]).join(', ')})</span>
         <ul>${s.items.map(i=>`<li>${esc(i.l)}</li>`).join('')}</ul></div>`).join('')}
       <p class="small muted">De chat herkent groeten, voorstellen, u-vorm, interesse en empathie aan woorden in de tekst; handelingen kiest de leerling met knoppen. Gebruik de uitslag als oefening, niet als officieel cijfer.</p></div>
     </details>
@@ -1021,7 +1092,7 @@ function introView(c){
 function bindIntro(){ document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{view.tab=b.dataset.go; render(); window.scrollTo(0,0);}); }
 
 /* ---------- OPDRACHT 1: QUIZ (Facet-stijl) ---------- */
-function quizSet(c){ return c.quiz.slice(0,6); }
+function quizSet(c){ return S.level==='bb'?c.quizBB:c.quizKB; }
 function prepQ(q){
   if(q.t==='mc'){ const r=shufQ(q); return r; }
   if(q.t==='matrix') return {...q, rows:shuffle(q.rows)};
@@ -1054,21 +1125,22 @@ function qBody(q,ans,review,k=0){
   return h;
 }
 function quizView(c){
-  const rt = runtime.quiz ||= {i:0, ans:[], done:false, set:quizSet(c).map(prepQ)};
+  if(runtime.quiz && runtime.quiz.lv!==S.level) runtime.quiz=null;
+  const rt = runtime.quiz ||= {i:0, ans:[], done:false, lv:S.level, set:quizSet(c).map(prepQ)};
   const r=R(c.id).o1;
-  if(rt.done || (r && r.set && r.set[0] && r.set[0].t && !rt.retry && rt.ans.length===0)){
+  if(rt.done || (r && r.lv===S.level && r.set && r.set[0] && r.set[0].t && !rt.retry && rt.ans.length===0)){
     const ans = rt.done? rt.ans : r.ans; const set = rt.done? rt.set : r.set;
     const score = set.filter((q,i)=>qRight(q,ans[i])).length;
-    return `<div class="opd">${opdHead(1,6)}<div class="content">
+    return `<div class="opd">${opdHead(1,MAX().o1)}<div class="content">
       <h2>Vragen maken — uitslag</h2>
-      <div class="total"><b>${score}</b><span>van 6 punten</span></div>
+      <div class="total"><b>${score}</b><span>van ${set.length} punten</span></div>
       ${set.map((q,i)=>`<div class="q card"><div class="qhead"><span class="eyebrow">Vraag ${i+1} · 1p</span><span class="chip ${qRight(q,ans[i])?'done':'bad'}">${qRight(q,ans[i])?'goed':'fout'}</span></div>${qBody(q,ans[i],true,i)}<p class="expl">${esc(q.e)}</p></div>`).join('')}
       <p class="small muted">Net als in Facet krijg je bij een vraag met meerdere regels alleen het punt als alle regels goed zijn.</p>
       <div class="row"><button class="btn ghost" id="q-retry">Opnieuw maken</button><button class="btn primary" data-go="o2">Naar opdracht 2</button></div>
     </div></div>`;
   }
   const q=rt.set[rt.i], a=rt.ans[rt.i];
-  return `<div class="opd">${opdHead(1,6)}<div class="content">
+  return `<div class="opd">${opdHead(1,MAX().o1)}<div class="content">
     <h2>Vragen maken</h2>
     <div class="q card facet">
       <div class="qhead"><span class="eyebrow">Vraag ${rt.i+1} van ${rt.set.length} · 1p</span><span class="dots">${rt.set.map((_,i)=>`<i class="${i<=rt.i?'on':''}"></i>`).join('')}</span></div>
@@ -1087,9 +1159,9 @@ function bindQuiz(c){
   document.querySelectorAll('[data-mc]').forEach(b=>b.onchange=()=>{ rt.ans[rt.i]=+b.dataset.mc; upd(); });
   document.querySelectorAll('[data-mx]').forEach(b=>b.onchange=()=>{ const [i,j]=b.dataset.mx.split(':').map(Number); const arr=(rt.ans[rt.i] ||= Array(q.rows.length).fill(undefined)); arr[i]=j; upd(); });
   document.querySelectorAll('[data-mt]').forEach(b=>b.onchange=()=>{ const i=+b.dataset.mt; const arr=(rt.ans[rt.i] ||= Array(q.items.length).fill(undefined)); arr[i]=b.value===''?undefined:+b.value; upd(); });
-  const n=$('#q-next'); if(n) n.onclick=()=>{ if(rt.i<rt.set.length-1){rt.i++; render();} else { rt.done=true; const score=rt.set.filter((qq,i)=>qRight(qq,rt.ans[i])).length; R(c.id).o1={score,ans:rt.ans.slice(),set:rt.set}; save(); render(); window.scrollTo(0,0);} };
+  const n=$('#q-next'); if(n) n.onclick=()=>{ if(rt.i<rt.set.length-1){rt.i++; render();} else { rt.done=true; const score=rt.set.filter((qq,i)=>qRight(qq,rt.ans[i])).length; R(c.id).o1={score,ans:rt.ans.slice(),set:rt.set,lv:S.level,max:rt.set.length}; save(); render(); window.scrollTo(0,0);} };
   const p=$('#q-prev'); if(p) p.onclick=()=>{rt.i--; render();};
-  const rr=$('#q-retry'); if(rr) rr.onclick=()=>{ runtime.quiz={i:0,ans:[],done:false,retry:true,set:shuffle(quizSet(c)).map(prepQ)}; render(); };
+  const rr=$('#q-retry'); if(rr) rr.onclick=()=>{ runtime.quiz={i:0,ans:[],done:false,retry:true,lv:S.level,set:shuffle(quizSet(c)).map(prepQ)}; render(); };
 }
 
 /* ---------- OPDRACHT 2: CHAT ---------- */
@@ -1103,9 +1175,9 @@ function newChat(c){
 function chatView(c){
   const st = runtime.chat ||= newChat(c);
   const ch=c.chat;
-  if(st.phase==='prep') return `<div class="opd">${opdHead(2,8)}<div class="content">
+  if(st.phase==='prep') return `<div class="opd">${opdHead(2,MAX().o2)}<div class="content">
       <h2>Zorg-op-maatopdracht</h2>
-      ${R(c.id).o2?`<span class="chip blue" style="align-self:flex-start">Vorige keer: ${R(c.id).o2.score}/8</span>`:''}
+      ${R(c.id).o2?`<span class="chip blue" style="align-self:flex-start">Vorige keer: ${R(c.id).o2.score}/${R(c.id).o2.max||8}</span>`:''}
       ${prepTimer(st,10)}
       <div class="boekje"><p style="white-space:pre-line">${esc(ch.text)}</p>
         <p><b>Ga naar ${esc(ch.name)} en geef zorg op maat.</b></p>
@@ -1125,7 +1197,7 @@ function chatView(c){
       <div class="row"><button class="btn primary" id="start-chat">Start het rollenspel</button></div>
     </div></div>`;
   if(st.phase==='done') return assessView(c,st);
-  return `<div class="opd">${opdHead(2,8)}<div class="content">
+  return `<div class="opd">${opdHead(2,MAX().o2)}<div class="content">
     <div class="row" style="justify-content:space-between"><h2>Rollenspel: ${esc(ch.short)}</h2>
       </div>
     ${aiSwitch(st)}
@@ -1331,14 +1403,14 @@ function finishChat(c,st){
   const secs=c.chat.criteria.map(s=>scoreSection(s,st));
   const score=secs.reduce((a,s)=>a+s.pts,0);
   st.peekOpen=false;
-  R(c.id).o2={score, secs:secs.map(s=>({code:s.code,pts:s.pts,max:s.max})), mode:st.mode, peeks:st.peeks};
+  R(c.id).o2={score, max:secs.reduce((a,s)=>a+s.max,0), secs:secs.map(s=>({code:s.code,pts:s.pts,max:s.max})), mode:st.mode, peeks:st.peeks};
   st.secs=secs; save(); render(); window.scrollTo(0,0);
 }
 function assessView(c,st){
   const secs=st.secs, score=secs.reduce((a,s)=>a+s.pts,0);
-  return `<div class="opd">${opdHead(2,8)}<div class="content assess">
+  return `<div class="opd">${opdHead(2,MAX().o2)}<div class="content assess">
     <h2>Beoordeling zorg op maat</h2>
-    <div class="total"><b>${score}</b><span>van 8 punten</span></div>
+    <div class="total"><b>${score}</b><span>van ${secs.reduce((a,s)=>a+s.max,0)} punten</span></div>
     <p class="chip ${st.mode==='examen'?'done':st.peeks?'warn':'blue'}" style="align-self:flex-start">${st.mode==='examen'?'Examenmodus · zonder spieken':'Oefenmodus · '+(st.peeks?st.peeks+'× gespiekt':'niet gespiekt')}</p>
     ${st.mode==='oefen'?`<p class="small muted">${st.peeks?'Volgende keer: probeer het met minder spieken, of kies de examenmodus.':'Knap, zonder spieken! Probeer de volgende keer de examenmodus.'}</p>`:''}
     ${!st.prepOk?`<p class="chip bad" style="align-self:flex-start">Voorbereiding niet helemaal goed: ${PREP.filter(p=>!!st.prep[p.id]!==p.ok).map(p=>esc(p.label.toLowerCase())).join('; ')}</p>`:''}
@@ -1387,12 +1459,13 @@ function ehboView(c){
     <div class="boekje"><p>${esc(e.text)}</p><p><b>Ga naar ${esc(e.who)} en verleen eerste hulp.</b></p><ul>${e.tasks.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="row"><button class="btn primary" id="eh-start">Start de opdracht</button></div>
   </div></div>`;
-  const matScore=()=>{ const wrong=e.mats.filter(m=>!!st.mats[m.id]!==m.ok).length; return wrong===0?2:wrong===1?1:0; };
+  const bb=S.level==='bb', matMax=bb?3:2;
+  const matScore=()=>{ const wrong=e.mats.filter(m=>!!st.mats[m.id]!==m.ok).length; return Math.max(0,matMax-wrong); };
   let html=`<div class="opd">${opdHead(3,9)}<div class="content">
     <h2>EHBO: ${esc(e.who)}</h2>
-    <section class="q"><h3>a · Kies de juiste materialen uit de verbanddoos <span class="muted small">(2p)</span></h3>
+    <section class="q"><h3>a · Kies de juiste materialen uit de verbanddoos <span class="muted small">(${matMax}p)</span></h3>
       <div class="mats">${st.matOrder.map(m=>`<button class="mat ${st.matsChecked?(m.ok?(st.mats[m.id]?'right':'wrong'):(st.mats[m.id]?'wrong':'')):''}" data-mat="${m.id}" aria-pressed="${!!st.mats[m.id]}" ${st.matsChecked?'disabled':''}>${ico(m.i)}<span>${esc(m.l)}</span></button>`).join('')}</div>
-      ${st.matsChecked?`<p class="chip ${matScore()===2?'done':'bad'}" style="align-self:flex-start">${matScore()}/2 · Juist: ${e.mats.filter(m=>m.ok).map(m=>esc(m.l)).join(', ')}</p>`
+      ${st.matsChecked?`<p class="chip ${matScore()===matMax?'done':'bad'}" style="align-self:flex-start">${matScore()}/${matMax} · Juist: ${e.mats.filter(m=>m.ok).map(m=>esc(m.l)).join(', ')}</p>`
         :`<div class="row"><button class="btn primary sm" id="mat-check">Materialen controleren</button></div>`}
     </section>`;
   if(st.matsChecked){
@@ -1414,13 +1487,13 @@ function ehboView(c){
     </section>`;
   }
   if(st.orderChecked){
-    const qs=st.oralQ.map((pair,k)=>pair[st.oralPick[k]]);
+    const qs=st.oralQ.map((pair,k)=>pair[st.oralPick[k]]).slice(0,bb?1:2);
     const allDone=qs.every((_,k)=>st.oral[k]!==undefined);
-    html+=`<section class="q"><h3>c · Vragen van de examinator <span class="muted small">(2p)</span></h3>
-      <p class="small muted">De vragen gaan over EHBO, maar niet over de opdracht die je net deed.</p>
+    html+=`<section class="q"><h3>c · ${bb?'Vraag':'Vragen'} van de examinator <span class="muted small">(${qs.length}p)</span></h3>
+      <p class="small muted">De ${bb?'vraag gaat':'vragen gaan'} over EHBO, maar niet over de opdracht die je net deed.</p>
       ${qs.map((q,k)=>`<div class="card q"><b>${k+1}. ${esc(q.q)}</b><div class="opts">${q.o.map((o,j)=>`<button class="opt ${st.oral[k]!==undefined?(j===q.a?'right':(j===st.oral[k]?'wrong':'')):''}" data-oral="${k}:${j}" ${st.oral[k]!==undefined?'disabled':''}><span class="l">${'ABCD'[j]}</span><span>${esc(o)}</span></button>`).join('')}</div></div>`).join('')}
-      ${allDone?(()=>{const op=qs.filter((q,k)=>st.oral[k]===q.a).length; const tot=matScore()+st.orderPts+op; R(c.id).o3={score:tot, mats:matScore(), order:st.orderPts, oral:op}; save();
-        return `<div class="total"><b>${tot}</b><span>van 9 punten</span></div><p class="small muted">Materialen ${matScore()}/2 · volgorde ${st.orderPts}/5 · vragen ${op}/2</p>
+      ${allDone?(()=>{const op=qs.filter((q,k)=>st.oral[k]===q.a).length; const tot=matScore()+st.orderPts+op; R(c.id).o3={score:tot, mats:matScore(), matMax, order:st.orderPts, oral:op, oralMax:qs.length}; save();
+        return `<div class="total"><b>${tot}</b><span>van 9 punten</span></div><p class="small muted">Materialen ${matScore()}/${matMax} · volgorde ${st.orderPts}/5 · ${bb?'vraag':'vragen'} ${op}/${qs.length}</p>
         <div class="row"><button class="btn ghost" id="eh-again">Opnieuw oefenen</button><button class="btn primary" data-go="o4">Naar opdracht 4</button></div>`;})():''}
     </section>`;
   }
@@ -1443,7 +1516,7 @@ function bindEhbo(c){
   document.querySelectorAll('[data-rem]').forEach(b=>b.onclick=()=>{ st.seq.splice(+b.dataset.rem,1); render(); });
   const oc=$('#ord-check'); if(oc) oc.onclick=()=>{ st.orderChecked=true; st.orderPts=orderScore(st.seq); render(); };
   document.querySelectorAll('[data-why]').forEach(b=>b.onclick=()=>{ const [w,j]=b.dataset.why.split(':').map(Number); st.why[w]=j; render(); });
-  document.querySelectorAll('[data-oral]').forEach(b=>b.onclick=()=>{ const [k,j]=b.dataset.oral.split(':').map(Number); st.oral[k]=j; render(); });
+  document.querySelectorAll('[data-oral]').forEach(b=>b.onclick=()=>{ const [k,j]=b.dataset.oral.split(':').map(Number); st.oral[k]=j; render(); render(); });
   const ag=$('#eh-again'); if(ag) ag.onclick=()=>{ runtime.ehbo=newEhbo(c); runtime.ehbo.phase='work'; render(); };
 }
 
@@ -1585,27 +1658,45 @@ function copyText(txt,area,msg){
 /* ---------- UITSLAG ---------- */
 function resView(c){
   const r=S.results[c.id]||{};
-  const rows=[['1','Vragen maken','o1',6],['2','Zorg-op-maatopdracht','o2',8],['3','EHBO-opdracht','o3',9],['4','Terugkijkopdracht','o4',2]];
+  const M=MAX(); const rows=[['1','Vragen maken','o1',(r.o1&&r.o1.max)||M.o1],['2','Zorg-op-maatopdracht','o2',(r.o2&&r.o2.max)||M.o2],['3','EHBO-opdracht','o3',9],['4','Terugkijkopdracht','o4',2]];
   const tot=rows.reduce((a,x)=>a+(r[x[2]]?r[x[2]].score:0),0), doneAll=rows.every(x=>r[x[2]]);
   return `<div class="opd"><div class="marg"><span class="nr">Σ</span></div><div class="content">
     <h2>Uitslag oefenexamen ${c.id} · ${esc(c.place)}</h2>
     <p class="muted">${esc(S.name||'Naam nog niet ingevuld')}${S.klas?' · '+esc(S.klas):''} · niveau ${S.level.toUpperCase()}</p>
     <div class="tablewrap"><table class="restab"><thead><tr><th>Opdracht</th><th></th><th class="r">Score</th><th class="r">Max</th></tr></thead><tbody>
-      ${rows.map(x=>`<tr><td>D${x[0]}</td><td>${x[1]}${x[2]==='o2'&&r.o2?`<div class="small muted">${r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(' · ')} · ${r.o2.mode==='oefen'?'oefenmodus, '+(r.o2.peeks||0)+'× gespiekt':'examenmodus'}</div>`:''}${x[2]==='o2'&&r.o2&&r.o2.disputes&&r.o2.disputes.length?`<div class="small" style="color:var(--warn)">Betwist door leerling: ${r.o2.disputes.map(esc).join('; ')}</div>`:''}${x[2]==='o3'&&r.o3?`<div class="small muted">materialen ${r.o3.mats}/2 · volgorde ${r.o3.order}/5 · vragen ${r.o3.oral}/2</div>`:''}</td><td class="r">${r[x[2]]?r[x[2]].score:'–'}</td><td class="r">${x[3]}</td></tr>`).join('')}
+      ${rows.map(x=>`<tr><td>D${x[0]}</td><td>${x[1]}${x[2]==='o2'&&r.o2?`<div class="small muted">${r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(' · ')} · ${r.o2.mode==='oefen'?'oefenmodus, '+(r.o2.peeks||0)+'× gespiekt':'examenmodus'}</div>`:''}${x[2]==='o2'&&r.o2&&r.o2.disputes&&r.o2.disputes.length?`<div class="small" style="color:var(--warn)">Betwist door leerling: ${r.o2.disputes.map(esc).join('; ')}</div>`:''}${x[2]==='o3'&&r.o3?`<div class="small muted">materialen ${r.o3.mats}/${r.o3.matMax||2} · volgorde ${r.o3.order}/5 · vragen ${r.o3.oral}/${r.o3.oralMax||2}</div>`:''}</td><td class="r">${r[x[2]]?r[x[2]].score:'–'}</td><td class="r">${x[3]}</td></tr>`).join('')}
     </tbody><tfoot><tr><td colspan="2">Totaal onderdeel D</td><td class="r">${tot}</td><td class="r">25</td></tr></tfoot></table></div>
     ${!doneAll?'<p class="chip warn" style="align-self:flex-start">Nog niet alle opdrachten gemaakt.</p>':''}
-    <div class="row"><button class="btn primary" id="res-copy">Uitslag kopiëren voor je docent</button><span class="small muted" id="res-msg"></span></div>
+    <div class="card mailbox">
+      <h3>Uitslag naar je docent sturen</h3>
+      ${!S.name?'<p class="chip warn" style="align-self:flex-start">Vul eerst je naam in op de startpagina.</p>':''}
+      <label for="docent" style="font-weight:700">Naar welke docent?</label>
+      <select id="docent"><option value="">Kies je docent …</option>${DOCENTEN.map((d,i)=>`<option value="${i}" ${S.docent===i?'selected':''}>${esc(d.naam)}</option>`).join('')}</select>
+      <div class="row">
+        <a class="btn primary ${S.docent==null||!S.name?'disabled':''}" id="res-mail" target="_blank" rel="noopener" href="${S.docent!=null&&S.name?esc(mailLink(c)):'#'}" aria-disabled="${S.docent==null||!S.name}">Mail naar docent</a>
+        <button class="btn ghost" id="res-copy">Uitslag kopiëren</button><span class="small muted" id="res-msg"></span>
+      </div>
+      <p class="small muted">Er opent een nieuwe e-mail in Outlook met je uitslag erin. Controleer hem en klik op <b>Verzenden</b>. Werkt de knop niet? Kopieer dan je uitslag en plak die in een mail of in Teams.</p>
+    </div>
     <textarea id="res-out" hidden readonly></textarea>
-    <p class="note">Plak de uitslag in Teams, Magister of je portfolio. Dit is een oefenscore: bij het echte cspe beoordeelt de examinator je praktijk.</p>
+    <p class="note">Dit is een oefenscore: bij het echte cspe beoordeelt de examinator je praktijk.</p>
   </div></div>`;
 }
-function bindRes(c){
-  $('#res-copy').onclick=()=>{
+function resultText(c){
     const r=S.results[c.id]||{}; const g=k=>r[k]?r[k].score:'-';
     const tot=['o1','o2','o3','o4'].reduce((a,k)=>a+(r[k]?r[k].score:0),0);
-    const txt=`Virtuele cliënt – oefenexamen ${c.id} (${c.place})\n${S.name||'-'} ${S.klas||''} · ${S.level.toUpperCase()}\nD1 vragen: ${g('o1')}/6\nD2 zorg op maat: ${g('o2')}/8${r.o2?' ('+r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(', ')+'; '+(r.o2.mode==='oefen'?'oefenmodus, '+(r.o2.peeks||0)+'× gespiekt':'examenmodus')+')':''}${r.o2&&r.o2.disputes&&r.o2.disputes.length?'\n   Betwist: '+r.o2.disputes.join('; '):''}\nD3 EHBO: ${g('o3')}/9\nD4 terugkijken: ${g('o4')}/2\nTotaal: ${tot}/25`;
-    copyText(txt,$('#res-out'),$('#res-msg'));
-  };
+    return `Virtuele cliënt – oefenexamen ${c.id} (${c.place})\n${S.name||'-'} ${S.klas||''} · ${S.level.toUpperCase()}\nD1 vragen: ${g('o1')}/${(r.o1&&r.o1.max)||MAX().o1}\nD2 zorg op maat: ${g('o2')}/${(r.o2&&r.o2.max)||MAX().o2}${r.o2?' ('+r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(', ')+'; '+(r.o2.mode==='oefen'?'oefenmodus, '+(r.o2.peeks||0)+'× gespiekt':'examenmodus')+')':''}${r.o2&&r.o2.disputes&&r.o2.disputes.length?'\n   Betwist: '+r.o2.disputes.join('; '):''}\nD3 EHBO: ${g('o3')}/9\nD4 terugkijken: ${g('o4')}/2\nTotaal: ${tot}/25`;
+}
+function mailLink(c){
+  const d=DOCENTEN[S.docent]; if(!d) return '#';
+  const subject=`Virtuele cliënt – examen ${c.id} – ${S.name||'leerling'}${S.klas?' '+S.klas:''}`;
+  const body=resultText(c).replace(/\n/g,'\r\n');
+  return 'https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent(d.mail)+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+}
+function bindRes(c){
+  $('#res-copy').onclick=()=>copyText(resultText(c),$('#res-out'),$('#res-msg'));
+  $('#docent').onchange=e=>{ S.docent=e.target.value===''?null:+e.target.value; save(); render(); };
+  $('#res-mail').onclick=e=>{ if(S.docent==null||!S.name){ e.preventDefault(); } };
 }
 
 /* ---------- start ---------- */
