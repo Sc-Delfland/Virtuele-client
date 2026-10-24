@@ -260,6 +260,31 @@ video{width:100%;border-radius:10px;background:#000}
 .mtr .tip{grid-column:2}
 .mtr.right{background:var(--ok-soft)}.mtr.wrong{background:var(--bad-soft)}
 @media (max-width:560px){.mtr{grid-template-columns:1fr}.mtr .tip{grid-column:1}.mx td.c{width:64px}}
+.guide{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:10px;padding:10px 14px;border:1.5px solid var(--line);background:var(--sheet)}
+.guide svg{width:22px;height:22px;flex:none}
+.guide .gk{font-family:var(--f-display);font-weight:800;white-space:nowrap}
+.guide.say{border-color:var(--blue);background:var(--blue-soft)}
+.guide.say svg,.guide.say .gk{color:var(--blue)}
+.guide.do{border-color:var(--coral);background:var(--coral-soft)}
+.guide.do svg,.guide.do .gk{color:var(--coral)}
+.guide.exam{border-style:dashed}
+.guide.exam svg{color:var(--muted)}
+.guide.wait{border-style:dashed;color:var(--muted)}
+.guide.wait span:first-child{flex:1;min-width:200px}
+.guide.end{border-color:var(--ok);background:var(--ok-soft)}
+.guide.end .gk{color:var(--ok)}
+#say.hint{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.agrp.hint{border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft)}
+.agrp.hint summary span:first-child{color:var(--coral)}
+.agrp{border:1.5px solid var(--line);border-radius:10px;background:var(--sheet)}
+.agrp[open]{border-color:var(--blue)}
+.agrp summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;font-weight:700;cursor:pointer;list-style:none;min-height:44px}
+.agrp summary::-webkit-details-marker{display:none}
+.agrp summary::before{content:'▸';color:var(--muted);margin-right:2px;transition:transform .15s}
+.agrp[open] summary::before{transform:rotate(90deg)}
+.agrp summary span:first-child{flex:1}
+.agrp .cnt{font-size:.8rem;color:var(--muted);font-weight:700}
+.agrp-b{display:flex;flex-direction:column;gap:6px;padding:0 10px 10px}
 .mailbox{display:flex;flex-direction:column;gap:10px}
 .mailbox select{max-width:320px}
 a.btn{text-decoration:none;color:inherit}
@@ -395,7 +420,7 @@ const CASES = [
     persona:'Je bent meneer Van Leeuwen, 79 jaar. Je woont in een aanleunwoning bij woonzorgcentrum De Schie in Delft. Je hebt hartfalen: je bent snel moe en kortademig en je laat korte stiltes vallen als je praat (gebruik soms ...). Je hebt een goed humeur en houdt van een praatje. Je hebt net meegedaan aan de bingo en een doosje bonbons gewonnen; dat zit in een tasje op tafel. Je dochter Ingrid haalt je zo op bij de lift.',
     re:{purpose:/(help|helpen|rolstoel|lift|breng|ophalen|dochter|vest)/, interest:/(bingo|gewonnen|prijs|leuk|gezellig|hoe was|middag|gedaan|dochter|ingrid|quiz|bonbon)/},
     qa:[
-      {re:/(bingo|gewonnen|prijs|hoe was|leuk geweest|middag|quiz|gedaan|vandaag)/, a:['Oh, de bingo was heel gezellig! ... Ik heb zelfs een doosje bonbons gewonnen.','Twee keer bijna een volle kaart! ... *lacht* En de derde keer was het raak.']},
+      {re:/(bingo|gewonnen|prijs|hoe was|leuk geweest|uw middag|vanmiddag|quiz|gedaan|vandaag)/, a:['Oh, de bingo was heel gezellig! ... Ik heb zelfs een doosje bonbons gewonnen.','Twee keer bijna een volle kaart! ... *lacht* En de derde keer was het raak.']},
       {re:/(hoe gaat|hoe voelt|gaat het|voelt u)/, a:['Gaat wel ... ik ben wel moe. *haalt adem* Het was een drukke middag.','Een beetje moe, hoor ... maar wel tevreden.']},
       {re:/(dochter|ingrid|wie haalt|familie|kinderen)/, a:['Mijn dochter Ingrid haalt me op. Die is altijd precies op tijd.','Ik heb twee kinderen. Ingrid woont hier vlakbij, gelukkig.']},
       {re:/(koud|jas|aantrekken|waar is uw vest)/, a:['Buiten is het fris, hè. Mijn vest hangt daar over de stoel.']},
@@ -418,17 +443,17 @@ const CASES = [
       {id:'brake', g:'Rolstoel klaarzetten', label:'Rolstoel op de rem zetten', narr:'Je zet de rolstoel op de rem.'},
       {id:'footUp', g:'Rolstoel klaarzetten', label:'Voetsteunen omhoog klappen', narr:'Je klapt de voetsteunen omhoog.'},
       {id:'vest', g:'Verzorgen', label:'Vest pakken en helpen aantrekken', narr:'Je pakt het vest en helpt meneer het aan te trekken.', reply:'Dank je ... Zo, lekker warm.'},
-      {id:'stand', g:'Verplaatsen', label:'Aanwijzingen geven en helpen opstaan (rug recht, door de knieën)', narr:'Je legt uit wat meneer moet doen, houdt hem vast en helpt hem omhoog.', reply:'Pfoe ... *haalt adem* ... ja, ik sta.', req:['near','brake','footUp'],
+      {id:'stand', g:'Opstaan', label:'Aanwijzingen geven en helpen opstaan (rug recht, door de knieën)', narr:'Je legt uit wat meneer moet doen, houdt hem vast en helpt hem omhoog.', reply:'Pfoe ... *haalt adem* ... ja, ik sta.', req:['near','brake','footUp'],
         missing:{near:'Die rolstoel staat wel ver weg, hè? Zo moet ik een heel stuk lopen.', brake:'Moet de rolstoel niet op de rem? Straks rolt hij weg.', footUp:'Moeten de voetsteunen niet omhoog? Zo val ik misschien.'}},
-      {id:'pull', g:'Verplaatsen', label:'Meneer onder de oksels omhoog trekken', as:'stand', narr:'Je pakt meneer onder zijn oksels en trekt hem omhoog.', reply:'Au! Voorzichtig ... je trekt aan mijn armen.', req:['near','brake','footUp'],
+      {id:'pull', g:'Opstaan', label:'Meneer onder de oksels omhoog trekken', as:'stand', narr:'Je pakt meneer onder zijn oksels en trekt hem omhoog.', reply:'Au! Voorzichtig ... je trekt aan mijn armen.', req:['near','brake','footUp'],
         missing:{near:'Die rolstoel staat wel ver weg, hè?', brake:'Moet de rolstoel niet op de rem? Straks rolt hij weg.', footUp:'Moeten de voetsteunen niet omhoog? Zo val ik misschien.'}, fx:st=>{st.flags.ergoBad=1; st.flags.pulled=1;}},
-      {id:'askStand', g:'Verplaatsen', label:'Vragen of meneer goed staat', req:['stand'], reply:'Ja hoor, ik sta goed.'},
-      {id:'sit', g:'Verplaatsen', label:'Laten draaien en aanwijzingen geven om te gaan zitten', req:['stand'], narr:'Je laat meneer kleine stapjes draaien en zegt wat hij moet doen.', reply:'*gaat langzaam zitten* Zo ...'},
-      {id:'drop', g:'Verplaatsen', label:'Meneer snel in de rolstoel laten zakken', as:'sit', req:['stand'], narr:'Je laat meneer snel in de rolstoel zakken.', reply:'Oei! Dat ging wel hard.', fx:st=>{st.flags.ergoBad=1; st.flags.dropped=1;}},
-      {id:'askSit', g:'Verplaatsen', label:'Vragen of meneer goed zit', req:['sit'], reply:'Ja, ik zit goed, dank je.'},
-      {id:'footDown', g:'Verplaatsen', label:'Voetsteunen voorzichtig omlaag klappen', req:['sit'], narr:'Je klapt de voetsteunen voorzichtig omlaag.'},
-      {id:'askFeet', g:'Verplaatsen', label:'Vragen of meneer zelf zijn voeten op de steunen zet', req:['footDown'], reply:'Dat lukt me zelf wel. *zet zijn voeten op de steunen*'},
-      {id:'placeFeet', g:'Verplaatsen', label:'Zelf de voeten van meneer op de steunen zetten', as:'askFeet', req:['footDown'], narr:'Je tilt de voeten van meneer op de steunen.', reply:'Oh ... dat had ik zelf ook gekund, hoor.', fx:st=>{st.flags.feetBad=1;}},
+      {id:'askStand', g:'Opstaan', label:'Vragen of meneer goed staat', req:['stand'], reply:'Ja hoor, ik sta goed.'},
+      {id:'sit', g:'Gaan zitten', label:'Laten draaien en aanwijzingen geven om te gaan zitten', req:['stand'], narr:'Je laat meneer kleine stapjes draaien en zegt wat hij moet doen.', reply:'*gaat langzaam zitten* Zo ...'},
+      {id:'drop', g:'Gaan zitten', label:'Meneer snel in de rolstoel laten zakken', as:'sit', req:['stand'], narr:'Je laat meneer snel in de rolstoel zakken.', reply:'Oei! Dat ging wel hard.', fx:st=>{st.flags.ergoBad=1; st.flags.dropped=1;}},
+      {id:'askSit', g:'Gaan zitten', label:'Vragen of meneer goed zit', req:['sit'], reply:'Ja, ik zit goed, dank je.'},
+      {id:'footDown', g:'Voetsteunen', label:'Voetsteunen voorzichtig omlaag klappen', req:['sit'], narr:'Je klapt de voetsteunen voorzichtig omlaag.'},
+      {id:'askFeet', g:'Voetsteunen', label:'Vragen of meneer zelf zijn voeten op de steunen zet', req:['footDown'], reply:'Dat lukt me zelf wel. *zet zijn voeten op de steunen*'},
+      {id:'placeFeet', g:'Voetsteunen', label:'Zelf de voeten van meneer op de steunen zetten', as:'askFeet', req:['footDown'], narr:'Je tilt de voeten van meneer op de steunen.', reply:'Oh ... dat had ik zelf ook gekund, hoor.', fx:st=>{st.flags.feetBad=1;}},
       {id:'bag', g:'Afronden', label:'Tasje met de bingoprijs meegeven', narr:'Je geeft meneer het tasje.', reply:'Oh ja, mijn bonbons! Goed dat je eraan denkt.'},
       {id:'drive', g:'Afronden', label:'Rem eraf en in rustig tempo naar de lift rijden', req:['sit','footDown','bag'],
         missing:{sit:'Ik zit nog niet in de rolstoel, hoor.', footDown:'Moeten de voetsteunen niet naar beneden? Waar laat ik anders mijn voeten?', bag:'Oh, ik vergeet mijn tasje! Wil je dat nog even voor me pakken?'},
@@ -444,6 +469,24 @@ const CASES = [
       {id:'concern', when:st=>st.said.purpose && st.msgs>=3, line:'Ik kan niet zoveel meer ... *haalt adem* ... door mijn hart. Ik ben bang dat het steeds erger wordt.', fx:st=>{st.concernAt=st.msgs}},
       {id:'vestAsk', when:st=>did(st,'stand') && !did(st,'vest'), line:'Wil je mijn vest even pakken? Het is fris buiten.', fx:st=>{st.prompted.vest=1}},
       {id:'bagHint', when:st=>did(st,'sit') && !did(st,'bag'), line:'Ik heb vanmiddag nog wat gewonnen bij de bingo, hoor.'}
+    ],
+    guide:[
+      {k:'say', t:'Begin het gesprek: groet meneer en vertel wie je bent.', done:st=>st.said.greet&&st.said.intro},
+      {k:'say', t:'Vertel meneer waarvoor je komt.', done:st=>st.said.purpose},
+      {k:'do', g:'Voorbereiden', t:'Zorg dat je meneer goed aankijkt.', done:st=>did(st,'eye')},
+      {k:'say', urgent:true, t:'Meneer vertelt iets over zijn ziekte. Reageer daarop.', when:st=>st.concernAt>=0&&st.msgs<=st.concernAt+1, done:st=>st.empathyOk},
+      {k:'say', t:'Maak een praatje: toon interesse in meneer.', done:st=>st.said.interest},
+      {k:'do', g:'Rolstoel klaarzetten', t:'Maak de rolstoel klaar voordat meneer opstaat.', done:st=>did(st,'near')&&did(st,'brake')&&did(st,'footUp')},
+      {k:'do', g:'Verzorgen', t:'Help meneer met zijn vest.', done:st=>did(st,'vest')},
+      {k:'say', t:'Vertel meneer hoe hij straks moet opstaan. Geef duidelijke aanwijzingen.', done:st=>st.said.instr||did(st,'stand')},
+      {k:'do', g:'Opstaan', t:'Help meneer opstaan.', done:st=>did(st,'stand')},
+      {k:'say', t:'Vraag meneer hoe hij staat.', done:st=>did(st,'askStand')},
+      {k:'do', g:'Gaan zitten', t:'Laat meneer in de rolstoel gaan zitten.', done:st=>did(st,'sit')},
+      {k:'say', t:'Vraag meneer hoe hij zit.', done:st=>did(st,'askSit')},
+      {k:'do', g:'Voetsteunen', t:'Klap de voetsteunen omlaag.', done:st=>did(st,'footDown')},
+      {k:'say', t:'Vraag of meneer zijn voeten zelf op de steunen kan zetten.', done:st=>did(st,'askFeet')||did(st,'placeFeet')},
+      {k:'do', g:'Afronden', t:'Kijk of meneer alles bij zich heeft en breng hem naar de lift.', done:st=>did(st,'bag')&&did(st,'drive')},
+      {k:'say', t:'Rond het gesprek netjes af en neem afscheid.', done:st=>st.said.closing&&st.said.bye}
     ],
     bye:'Dankjewel voor je hulp. Ik heb een fijne middag gehad!',
     criteria:[
@@ -586,7 +629,7 @@ const CASES = [
     textActs:[
       {re:/(staat u|sta je|staat u wel) (goed|stevig)|goed staan/, id:'askStand'},
       {re:/(zit u|zit je|zit u wel) (goed|lekker|fijn|prettig)|goed zitten/, id:'askSitBed'},
-      {re:/(wilt u|kunt u|wil je).*(vastpakken|vasthouden|mij vast)/, id:'hold'}
+      {re:/(vastpakken|vasthouden|pak(t)? (u )?(mij|me) (maar )?vast|houd(t)? (u )?(mij|me) (maar )?vast|mij vast)/, id:'hold'}
     ],
     actions:[
       {id:'hands', g:'Voorbereiden', label:'Handen reinigen', narr:'Je reinigt je handen.'},
@@ -617,6 +660,24 @@ const CASES = [
       {id:'who', when:st=>st.msgs>=2 && !st.said.purpose, line:'Hallo ... wie ben jij? Kom je me helpen?', fx:st=>{st.prompted.purpose=1}},
       {id:'concern', when:st=>st.said.purpose && st.msgs>=3, line:'Mijn arm doet vandaag zo’n pijn. Vroeger deed ik alles zelf ... nu heb ik overal hulp bij nodig.', fx:st=>{st.concernAt=st.msgs}},
       {id:'vestAsk', when:st=>did(st,'stand') && !did(st,'vest'), line:'Mag ik mijn vest aan? Ik heb het een beetje koud.', fx:st=>{st.prompted.vest=1}}
+    ],
+    guide:[
+      {k:'say', t:'Begin het gesprek: groet mevrouw en vertel wie je bent.', done:st=>st.said.greet&&st.said.intro},
+      {k:'say', t:'Vertel mevrouw waarvoor je komt.', done:st=>st.said.purpose},
+      {k:'do', g:'Voorbereiden', t:'Bereid je voor: denk aan hygiëne, oogcontact en de hoogte van het bed.', done:st=>did(st,'hands')&&did(st,'eye')&&did(st,'bedUp')},
+      {k:'say', t:'Maak een praatje: toon interesse in mevrouw.', done:st=>st.said.interest},
+      {k:'say', urgent:true, t:'Mevrouw vertelt dat ze pijn heeft. Reageer daarop.', when:st=>st.concernAt>=0&&st.msgs<=st.concernAt+1, done:st=>st.empathyOk},
+      {k:'say', t:'Vertel mevrouw hoe ze rechtop kan komen. Geef duidelijke aanwijzingen.', done:st=>st.said.instr||did(st,'parrot')},
+      {k:'do', g:'Uit bed', t:'Help mevrouw rechtop op de rand van het bed. Denk aan haar zere arm.', done:st=>did(st,'parrot')&&did(st,'legs')},
+      {k:'say', t:'Vraag mevrouw hoe ze zit.', done:st=>did(st,'askSitBed')},
+      {k:'do', g:'Aankleden', t:'Help mevrouw met haar vest en schoenen.', done:st=>did(st,'vest')&&did(st,'shoes')},
+      {k:'do', g:'Opstaan', t:'Zet het bed op de goede hoogte om op te staan.', done:st=>did(st,'bedDown')},
+      {k:'say', t:'Vraag mevrouw om jou vast te pakken.', done:st=>did(st,'hold')},
+      {k:'do', g:'Opstaan', t:'Help mevrouw opstaan.', done:st=>did(st,'stand')},
+      {k:'say', t:'Vraag mevrouw hoe ze staat.', done:st=>did(st,'askStand')},
+      {k:'do', g:'Naar de stoel', t:'Zorg dat mevrouw naar de stoel kan. Wat kan ze zelf?', done:st=>did(st,'chair')&&did(st,'walkSelf')},
+      {k:'do', g:'Afronden', t:'Laat de kamer netjes achter.', done:st=>did(st,'bedMake')},
+      {k:'say', t:'Rond het gesprek netjes af en neem afscheid.', done:st=>st.said.closing&&st.said.bye}
     ],
     isEnd:st=>did(st,'walkSelf')&&did(st,'bedMake'),
     bye:'Dankjewel, lief van je. Tot de volgende keer!',
@@ -800,6 +861,23 @@ const CASES = [
       {id:'reluct', when:st=>st.said.purpose && st.msgs>=2, line:'Koken? ... Ik weet het niet. Ik blijf liever hier zitten.', fx:st=>{st.reluctAt=st.msgs}},
       {id:'sad', when:st=>st.reluctAt>=0 && st.msgs>=st.reluctAt+2, line:'*kijkt naar beneden* Ik ben een beetje verdrietig.', fx:st=>{st.sadAt=st.msgs}},
       {id:'hear2', when:st=>st.msgs>=7, line:'Hè? Kun je dat nog een keer zeggen?', fx:st=>{st.repeatAt=st.msgs}}
+    ],
+    guide:[
+      {k:'say', t:'Begin het gesprek: groet meneer en vertel wie je bent.', done:st=>st.said.greet&&st.said.intro},
+      {k:'say', urgent:true, t:'Meneer verstaat je niet goed. Zeg het rustig nog een keer.', when:st=>st.repeatAt>=0&&st.msgs===st.repeatAt, done:()=>false},
+      {k:'say', t:'Vertel meneer waarvoor je komt.', done:st=>st.said.purpose},
+      {k:'do', g:'Voorbereiden', t:'Denk aan hygiëne, en zorg dat meneer je goed kan zien en horen.', done:st=>did(st,'hands')&&did(st,'eye')},
+      {k:'say', urgent:true, t:'Meneer heeft geen zin. Moedig hem aan om mee te gaan.', when:st=>st.reluctAt>=0, done:st=>st.stimOk},
+      {k:'say', urgent:true, t:'Meneer is verdrietig. Vraag wat er is.', when:st=>st.sadAt>=0, done:st=>st.askedWhy},
+      {k:'say', urgent:true, t:'Reageer op wat meneer vertelt.', when:st=>st.askedWhy, done:st=>st.empathyOk},
+      {k:'say', t:'Maak een praatje: toon interesse in meneer.', done:st=>st.said.interest},
+      {k:'say', t:'Meneer moet nog een schoen aan. Moedig hem aan om dat zelf te doen.', done:st=>did(st,'shoeSelf')},
+      {k:'do', g:'Rollator', t:'Zet de rollator klaar voordat meneer opstaat.', done:st=>did(st,'rollNear')&&did(st,'rollBrake')},
+      {k:'say', t:'Vraag of je meneer mag helpen met opstaan.', done:st=>did(st,'askHelp')||did(st,'stand')},
+      {k:'do', g:'Opstaan', t:'Help meneer opstaan.', done:st=>did(st,'stand')},
+      {k:'say', t:'Vraag meneer hoe hij staat.', done:st=>did(st,'askStand')},
+      {k:'do', g:'Naar de keuken', t:'Kijk of meneer alles bij zich heeft en loop met hem naar de keuken.', done:st=>did(st,'bag')&&did(st,'walk')&&did(st,'sitSelf')},
+      {k:'say', t:'Neem afscheid van meneer.', done:st=>st.said.bye}
     ],
     bye:'Dag! Tot straks.',
     special:(st,t,c)=>{ // extra regels voor stimuleren, verdriet en slechthorendheid
@@ -1170,7 +1248,7 @@ function newChat(c){
     concernAt:-1, empathyOk:false, repeatAt:-1, repeatAsks:0, repeatBad:0, reluctAt:-1, sadAt:-1, stimOk:0, askedWhy:0,
     log:[], ended:false, ai:false, busy:false, timer:null, timeLeft:600, confirmEnd:false,
     actOrder:shuffle(c.chat.actions.map(a=>a.id)), prepOrder:shuffle(PREP),
-    mode:S.level==='bb'?'oefen':'examen', peeks:0, peekOpen:false};
+    mode:S.level==='bb'?'oefen':'tussen', peeks:0, peekOpen:false, hints:0, hintOn:false, lastAct:Date.now()};
 }
 function chatView(c){
   const st = runtime.chat ||= newChat(c);
@@ -1187,13 +1265,14 @@ function chatView(c){
         <div class="prep">${st.prepOrder.map(p=>`<label class="check"><input type="checkbox" id="prep-${p.id}" data-prep="${p.id}" ${st.prep[p.id]?'checked':''}><span>${esc(p.label)}</span></label>`).join('')}</div></div>
       <div class="modepick"><span style="font-weight:700">Hoe wil je oefenen?</span>
         <div class="seg" role="group" aria-label="Modus">
-          <button type="button" data-mode="oefen" aria-pressed="${st.mode==='oefen'}">Oefenmodus</button>
-          <button type="button" data-mode="examen" aria-pressed="${st.mode==='examen'}">Examenmodus</button>
+          <button type="button" data-mode="oefen" aria-pressed="${st.mode==='oefen'}">Oefenen</button>
+          <button type="button" data-mode="tussen" aria-pressed="${st.mode==='tussen'}">Tussenstap</button>
+          <button type="button" data-mode="examen" aria-pressed="${st.mode==='examen'}">Examen</button>
         </div>
-        <span class="small muted">${st.mode==='oefen'?'Je mag tijdens het rollenspel in de opdracht spieken. De app telt hoe vaak.':'Zoals het echte cspe: tijdens het rollenspel kun je de opdracht niet meer bekijken.'}</span>
+        <span class="small muted">${({oefen:'Oefenmodus: je ziet steeds of je moet typen of klikken, de handelingen staan per onderdeel, en je mag in de opdracht spieken.',tussen:'Tussenmodus: de handelingen staan per onderdeel en je mag spieken. Je krijgt pas een hint als je 30 seconden niets doet, of als je zelf op Hint klikt. De app telt je hints.',examen:'Examenmodus: zoals het echte cspe. Geen hints, één lange lijst met handelingen, en je kunt de opdracht niet meer bekijken.'})[st.mode]}</span>
       </div>
       ${aiSwitch(st)}
-      <p class="rule">${st.mode==='oefen'?'Probeer zo min mogelijk te spieken. Op het examen mag je tijdens de uitvoering niet meer in het opdrachtenboekje kijken.':'Tijdens de uitvoering mag je niet meer in het opdrachtenboekje kijken.'}</p>
+      <p class="rule">${st.mode!=='examen'?'Probeer zo min mogelijk te spieken. Op het examen mag je tijdens de uitvoering niet meer in het opdrachtenboekje kijken.':'Tijdens de uitvoering mag je niet meer in het opdrachtenboekje kijken.'}</p>
       <div class="row"><button class="btn primary" id="start-chat">Start het rollenspel</button></div>
     </div></div>`;
   if(st.phase==='done') return assessView(c,st);
@@ -1201,26 +1280,53 @@ function chatView(c){
     <div class="row" style="justify-content:space-between"><h2>Rollenspel: ${esc(ch.short)}</h2>
       </div>
     ${aiSwitch(st)}
-    ${st.mode==='oefen'?`<div class="peek"><button class="btn sm ghost" id="peek" aria-expanded="${st.peekOpen}">${st.peekOpen?'Opdracht verbergen':'Opdracht bekijken (spieken)'}</button><span class="small muted">${st.peeks?st.peeks+'× gespiekt':'Nog niet gespiekt'}</span></div>
+    ${st.mode!=='examen'?`<div class="peek"><button class="btn sm ghost" id="peek" aria-expanded="${st.peekOpen}">${st.peekOpen?'Opdracht verbergen':'Opdracht bekijken (spieken)'}</button><span class="small muted">${st.peeks?st.peeks+'× gespiekt':'Nog niet gespiekt'}</span></div>
       ${st.peekOpen?`<div class="boekje"><p style="white-space:pre-line">${esc(ch.text)}</p><p><b>Ga naar ${esc(ch.name)} en geef zorg op maat.</b></p><ul>${ch.tasks.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:''}`
       :`<p class="small muted">Examenmodus: je kunt de opdracht niet meer bekijken.</p>`}
-    <p class="small muted">Typ wat je zegt in de chat. Kies wat je doet met de knoppen. De cliënt reageert op allebei.</p>
+    ${st.mode!=='examen'?'<p class="small muted">Typ wat je zegt in de chat. Kies wat je doet met de knoppen. De cliënt reageert op allebei.</p>':''}
+    <div id="guide-slot">${guideHTML(ch,st)}</div>
     <div class="chatgrid">
       <div class="chatbox">
         <div class="chathead"><span class="ava">${esc(ch.ini)}</span><div><b>${esc(ch.short)}</b><div class="small muted">${esc(c.place)}</div></div></div>
         <div class="log" id="log" aria-live="polite">${st.log.map(m=>`<div class="msg ${m.k}">${m.k==='s'?esc(m.t):fmtAct(m.t)}</div>`).join('')}${st.busy?'<div class="typing">'+esc(ch.short)+' typt …</div>':''}</div>
         <form class="composer" id="composer" autocomplete="off">
-          <input id="say" placeholder="Wat zeg je tegen ${esc(ch.aanspreek)}?" ${st.busy?'disabled':''} aria-label="Bericht">
+          <input id="say" class="${showHints(st)&&!st.ended&&(nextGuide(ch,st)||{}).k==='say'?'hint':''}" placeholder="Wat zeg je tegen ${esc(ch.aanspreek)}?" ${st.busy?'disabled':''} aria-label="Bericht">
           <button class="btn primary" ${st.busy?'disabled':''}>Zeg</button>
         </form>
       </div>
       <div class="actions">
-        <div class="agroup"><h4>Wat doe je?</h4><p class="small muted">Kies zelf de goede handeling op het goede moment. Niet alles is juist.</p>${st.actOrder.map(id=>ch.actions.find(a=>a.id===id)).map(a=>`<button class="abtn ${st.usedAct&&st.usedAct[a.id]?'used':''}" data-act="${a.id}" ${st.ended||st.busy?'disabled':''}>${esc(a.label)}</button>`).join('')}</div>
+        ${(()=>{ const btn=a=>`<button class="abtn ${st.usedAct&&st.usedAct[a.id]?'used':''}" data-act="${a.id}" ${st.ended||st.busy?'disabled':''}>${esc(a.label)}</button>`;
+          const ordered=st.actOrder.map(id=>ch.actions.find(a=>a.id===id));
+          if(st.mode==='examen') return `<div class="agroup"><h4>Wat doe je?</h4><p class="small muted">Kies zelf de goede handeling op het goede moment. Niet alles is juist.</p>${ordered.map(btn).join('')}</div>`;
+          const groups=[...new Set(ch.actions.map(a=>a.g))];
+          return `<div class="agroup"><h4>Wat doe je?</h4><p class="small muted">Open een onderdeel en kies de goede handeling. Niet alles is juist.</p>
+            ${groups.map(g=>{ const items=ordered.filter(a=>a.g===g); const done=items.filter(a=>st.usedAct&&st.usedAct[a.id]).length;
+              const hl=showHints(st)&&!st.ended&&(nextGuide(ch,st)||{}).k==='do'&&(nextGuide(ch,st)||{}).g===g; return `<details class="agrp ${hl?'hint':''}" data-grp="${esc(g)}" ${st.openGrp&&st.openGrp[g]?'open':''}><summary><span>${esc(g)}</span><span class="cnt">${done?done+' gekozen · ':''}${items.length}</span></summary><div class="agrp-b">${items.map(btn).join('')}</div></details>`; }).join('')}</div>`; })()}
         ${st.confirmEnd?`<div class="inline-confirm"><span class="small">Je bent nog niet klaar met de opdracht. Toch afronden?</span><button class="btn sm coral" id="end-yes">Ja, afronden</button><button class="btn sm ghost" id="end-no">Nee</button></div>`
           :`<button class="btn coral" id="end-chat">Rollenspel afronden en beoordelen</button>`}
       </div>
     </div>
   </div></div>`;
+}
+function nextGuide(ch,st){
+  const list=ch.guide||[];
+  const urgent=list.find(g=>g.urgent && (!g.when||g.when(st)) && !g.done(st));
+  if(urgent) return urgent;
+  return list.find(g=>!g.urgent && (!g.when||g.when(st)) && !g.done(st)) || null;
+}
+function modeText(m,peeks,hints){
+  if(m==='examen') return 'examenmodus';
+  return (m==='tussen'?'tussenmodus':'oefenmodus')+', '+(peeks||0)+'× gespiekt'+(m==='tussen'?', '+(hints||0)+'× hint':'');
+}
+function showHints(st){ return st.mode==='oefen' || (st.mode==='tussen' && st.hintOn); }
+function guideHTML(ch,st){
+  if(st.mode==='examen') return `<div class="guide exam" role="note">${ico('talk')}<span><b>Typ</b> wat je zegt tegen de cliënt. <b>Klik</b> op wat je doet. In het echte rollenspel praat je ook tijdens het helpen. Je bepaalt zelf wanneer.</span></div>`;
+  if(st.mode==='tussen' && !st.hintOn) return `<div class="guide wait" role="note"><span>Weet je even niet wat je moet doen? Na 30 seconden zonder actie krijg je een hint.</span><button class="btn sm ghost" id="hint-now">Hint</button>${st.hints?`<span class="small muted">${st.hints}× hint gebruikt</span>`:''}</div>`;
+  const g = st.ended ? {k:'end'} : nextGuide(ch,st);
+  if(!g) return `<div class="guide end" role="status"><span class="gk">Klaar?</span><span>Neem afscheid als je dat nog niet deed en klik op <b>Rollenspel afronden en beoordelen</b>.</span></div>`;
+  if(g.k==='end') return st.said.bye ? `<div class="guide end" role="status"><span class="gk">Klaar</span><span>Klik op <b>Rollenspel afronden en beoordelen</b>.</span></div>`
+    : `<div class="guide end" role="status"><span class="gk">Bijna klaar</span><span>Neem afscheid in de chat en klik daarna op <b>Rollenspel afronden en beoordelen</b>.</span></div>`;
+  return `<div class="guide ${g.k}" role="status">${ico(g.k==='say'?'talk':'hands')}<span class="gk">${st.mode==='tussen'?'Hint: '+(g.k==='say'?'nu typen':'nu klikken'):(g.k==='say'?'Nu typen':'Nu klikken')}</span><span>${esc(g.t)}${g.k==='do'&&g.g?` <span class="small muted">(onderdeel ${esc(g.g)})</span>`:''}</span></div>`;
 }
 function prepTimer(st,min){
   const m=Math.floor(st.timeLeft/60), s=st.timeLeft%60;
@@ -1246,14 +1352,25 @@ function bindChat(c){
     $('#start-chat').onclick=()=>{
       if(st.timer){clearInterval(st.timer); st.timer=null;}
       st.prepOk = PREP.every(p=> !!st.prep[p.id]===p.ok);
-      st.phase='chat'; pushLog(st,'n',ch.opening); render(); $('#say')?.focus();
+      st.phase='chat'; st.lastAct=Date.now(); pushLog(st,'n',ch.opening); render(); $('#say')?.focus();
     };
     return;
   }
   if(st.phase==='done'){ bindAssess(c,st); return; }
   scrollLog();
   bindAi(st);
+  document.querySelectorAll('details.agrp').forEach(d=>d.ontoggle=()=>{ (st.openGrp ||= {})[d.dataset.grp]=d.open; });
+  const keepRender=()=>{ const v=$('#say')?.value; const f=document.activeElement&&document.activeElement.id==='say'; render(); if(v) $('#say').value=v; if(f) $('#say')?.focus(); };
+  const hn=$('#hint-now'); if(hn) hn.onclick=()=>{ st.hintOn=true; st.hints++; keepRender(); };
+  if(window.__hintTimer) clearInterval(window.__hintTimer);
+  if(st.mode==='tussen' && !st.ended){
+    window.__hintTimer=setInterval(()=>{
+      if(runtime.chat!==st || st.phase!=='chat' || view.tab!=='o2' || view.caseId!==c.id){ clearInterval(window.__hintTimer); return; }
+      if(!st.hintOn && !st.busy && !st.ended && Date.now()-st.lastAct>=30000){ st.hintOn=true; st.hints++; keepRender(); }
+    },1000);
+  }
   const pk=$('#peek'); if(pk) pk.onclick=()=>{ if(!st.peekOpen) st.peeks++; st.peekOpen=!st.peekOpen; const v=$('#say')?.value; render(); if(v) $('#say').value=v; };
+  const sayEl=$('#say'); if(sayEl) sayEl.addEventListener('input',()=>{ st.lastAct=Date.now(); });
   $('#composer').onsubmit=(e)=>{ e.preventDefault(); const v=$('#say').value.trim(); if(!v) return; studentSays(c,st,v); };
   document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>doAction(c,st,b.dataset.act));
   const end=$('#end-chat'); if(end) end.onclick=()=>{ if(!st.ended){ st.confirmEnd=true; render(); } else finishChat(c,st); };
@@ -1271,6 +1388,7 @@ function runBeat(c,st){
 function markDone(st,id){ if(st.done[id]===undefined) st.done[id]=++st.seq; }
 
 function doAction(c,st,id, fromText){
+  if(!fromText){ st.lastAct=Date.now(); st.hintOn=false; }
   const ch=c.chat, a=ch.actions.find(x=>x.id===id); if(!a) return [];
   const key=a.as||a.id;
   const lines=[];
@@ -1317,7 +1435,7 @@ const RX={
   empathyPh:/(wat naar|rot voor|kan me (dat )?(goed )?voorstellen|niet leuk|niet fijn|klinkt|naar voor u|lijkt me|wat erg|heel erg|dat is (ook )?zwaar|vervelend voor u|ik snap|ik begrijp)/,
   interestGen:/(hoe was|hoe vond u|wat heeft u|heeft u (lekker|leuk|een fijne|een leuke|goed)|vond u het leuk|was het leuk|hoe bevalt|wat gaat u|waar heeft u zin|wat doet u graag|wat vindt u leuk)/,
   rude:/\b(stom|dom|kut|shit|tering|kanker|godver\w*|sukkel|idioot|hou je kop|schiet op|zeur|zeurt|boeie|boeien|irritant)\b/,
-  instr:/(schuif|schuift|zet u|zet uw|uw voeten|leg uw|handen op|op drie|1,? ?2,? ?3|een,? twee,? drie|leun|naar voren|draai|gaat u (maar )?zitten|staat u (maar )?op|rustig aan|pak(t)? (mij|me) (maar )?vast|houd? u (mij |me )?vast)/
+  instr:/(schuif|schuift|zet u|zet uw|uw voeten|leg uw|handen op|op drie|tel tot|1,? ?2,? ?3|een,? twee,? drie|leun|naar voren|voorover|draai|gaat u (maar )?zitten|staat u (maar )?op|sta(at)? op|duw|steun|rustig aan|pak(t)? (mij|me) (maar )?vast|houd? u (mij |me )?vast|papegaai|trek(t)? u (zich|uzelf)|benen over)/
 };
 const GENERIC_QA=[
   {re:/(hoe heet u|wat is uw naam|bent u (meneer|mevrouw))/, a:['Ja, dat ben ik: {naam}.']},
@@ -1335,14 +1453,15 @@ const GENERIC_QA=[
 function pick(st,key,arr){ st.rot ||= {}; const i=st.rot[key]||0; st.rot[key]=i+1; return arr[i%arr.length]; }
 
 function analyse(c,st,raw){
-  const t=raw.toLowerCase().replace(/[’‘]/g,"'");
+  const t=raw.toLowerCase().replace(/[’‘]/g,"'").replace(/\bgoe(?:de|ie|i)n? ?(morgen|middag|avond|dag)\b/g,'goede$1');
   const ch=c.chat, rx=ch.re;
   st.msgs++;
-  if(st.msgs<=3 && fuzzy(t,GREET)) st.said.greet=1;
+  if(st.msgs<=3 && fuzzy(t,GREET)){ if(!st.said.greet) st.greetedNow=(t.match(/goede(morgen|middag|avond)/)||[])[1]||'hallo'; st.said.greet=1; }
   if(RX.intro.test(t)) st.said.intro=1;
   if(rx.purpose.test(t) && RX.purposeVerb.test(t)) st.said.purpose=1;
   if(rx.interest.test(t) || RX.interestGen.test(t)) st.said.interest=1;
   if(RX.closing.test(t)) st.said.closing=1;
+  if(RX.instr.test(t)) st.said.instr=1;
   if(st.msgs>2 && RX.bye.test(t)) st.said.bye=1;
   const empText=t.replace(/naar (de|het|uw|je|huis|buiten|boven|beneden|binnen)\b/g,'');
   if(st.concernAt>=0 && st.msgs<=st.concernAt+2 && (RX.empathyPh.test(t)||fuzzy(empText,EMP))) st.empathyOk=true;
@@ -1355,13 +1474,14 @@ function analyse(c,st,raw){
 }
 
 async function studentSays(c,st,raw){
-  const ch=c.chat;
+  const ch=c.chat; st.lastAct=Date.now(); st.hintOn=false;
   pushLog(st,'s',raw);
   const t=analyse(c,st,raw);
   let lines=[];
   if(st.flags.rude && !st.used['rude'+st.flags.rude]){ st.used['rude'+st.flags.rude]=1; lines.push(pick(st,'rude',['Hé, zo praat je toch niet tegen mij?','Dat vind ik niet zo aardig, hoor.'])); }
   // tekst die een handeling is (bijv. “Staat u goed?”)
   for(const ta of (ch.textActs||[])){ if(ta.re.test(t)){ const r=doAction(c,st,ta.id,true); if(r){ lines.push(...r); break; } } }
+  if(st.greetedNow){ const w=st.greetedNow; st.greetedNow=null; const hardOfHearingFirst=ch.beats.some(x=>x.id==='hear1')&&st.msgs===1; if(!hardOfHearingFirst) lines.push(w==='hallo'?'Hallo!':'Goede'+w+'!'); }
   if(ch.special) lines.push(...ch.special(st,t,ch));
   if(st.ended && st.said.bye && !st.used.byeReply){ st.used.byeReply=1; lines.push(ch.bye); }
   if(!lines.length){ const qa=[...(ch.qa||[]),...GENERIC_QA].find(q=>q.re.test(t)); if(qa) lines.push(pick(st,'qa'+qa.re.source,[].concat(qa.a)).replace('{naam}',ch.short)); }
@@ -1387,10 +1507,13 @@ ${transcript}
 Jouw antwoord moet deze inhoud bevatten (de betekenis precies behouden, je mag het natuurlijker zeggen en kort reageren op wat de stagiair zei): ${lines.join(' ')}
 
 Geef alleen jouw antwoord als cliënt.`;
-      const res=await SAMPLE(prompt,{modelTier:'quick', cache:false});
+      const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),12000);
+      const res=await Promise.race([SAMPLE(prompt,{modelTier:'quick', cache:false, signal:ctl.signal}), new Promise((_,rej)=>setTimeout(()=>rej({code:'timeout'}),12500))]);
+      clearTimeout(to);
       const txt=(res&&res.text||'').trim();
       lines = txt? [txt.replace(/^cli[eë]nt:\s*/i,'')] : lines;
-    }catch(e){ if(e&&e.code==='not_granted'){ SAMPLE=null; st.ai=false; AI_STATE='off'; AI_WHY='Je gaf geen toestemming voor AI. De cliënt werkt nu met vaste zinnen.'; } }
+    }catch(e){ if(e&&e.code==='not_granted'){ SAMPLE=null; st.ai=false; AI_STATE='off'; AI_WHY='Je gaf geen toestemming voor AI. De cliënt werkt nu met vaste zinnen.'; }
+      else { st.ai=false; AI_WHY=''; pushLog(st,'n','De AI reageerde niet op tijd. De cliënt gaat verder met vaste zinnen. Je kunt de AI later weer aanzetten.'); } }
     st.busy=false;
   }
   lines.forEach(l=>{ const act=l.startsWith('*')&&l.endsWith('*')&&l.indexOf('*',1)===l.length-1; pushLog(st, act?'a':'c', act?l.slice(1,-1):l); });
@@ -1403,7 +1526,7 @@ function finishChat(c,st){
   const secs=c.chat.criteria.map(s=>scoreSection(s,st));
   const score=secs.reduce((a,s)=>a+s.pts,0);
   st.peekOpen=false;
-  R(c.id).o2={score, max:secs.reduce((a,s)=>a+s.max,0), secs:secs.map(s=>({code:s.code,pts:s.pts,max:s.max})), mode:st.mode, peeks:st.peeks};
+  R(c.id).o2={score, max:secs.reduce((a,s)=>a+s.max,0), secs:secs.map(s=>({code:s.code,pts:s.pts,max:s.max})), mode:st.mode, peeks:st.peeks, hints:st.hints};
   st.secs=secs; save(); render(); window.scrollTo(0,0);
 }
 function assessView(c,st){
@@ -1411,8 +1534,9 @@ function assessView(c,st){
   return `<div class="opd">${opdHead(2,MAX().o2)}<div class="content assess">
     <h2>Beoordeling zorg op maat</h2>
     <div class="total"><b>${score}</b><span>van ${secs.reduce((a,s)=>a+s.max,0)} punten</span></div>
-    <p class="chip ${st.mode==='examen'?'done':st.peeks?'warn':'blue'}" style="align-self:flex-start">${st.mode==='examen'?'Examenmodus · zonder spieken':'Oefenmodus · '+(st.peeks?st.peeks+'× gespiekt':'niet gespiekt')}</p>
-    ${st.mode==='oefen'?`<p class="small muted">${st.peeks?'Volgende keer: probeer het met minder spieken, of kies de examenmodus.':'Knap, zonder spieken! Probeer de volgende keer de examenmodus.'}</p>`:''}
+    <p class="chip ${st.mode==='examen'?'done':(st.peeks||st.hints)?'warn':'blue'}" style="align-self:flex-start">${st.mode==='examen'?'Examenmodus · zonder hulp':(st.mode==='tussen'?'Tussenmodus':'Oefenmodus')+' · '+(st.peeks?st.peeks+'× gespiekt':'niet gespiekt')+(st.mode==='tussen'?' · '+(st.hints?st.hints+'× hint':'geen hints'):'')}</p>
+    ${st.mode==='oefen'?`<p class="small muted">${st.peeks?'Volgende keer: probeer het met minder spieken, of kies de tussenstap.':'Knap, zonder spieken! Probeer de volgende keer de tussenstap.'}</p>`:''}
+    ${st.mode==='tussen'?`<p class="small muted">${(st.peeks||st.hints)?'Volgende keer: probeer het met minder hulp.':'Knap, zonder hulp! Probeer de volgende keer de examenmodus.'}</p>`:''}
     ${!st.prepOk?`<p class="chip bad" style="align-self:flex-start">Voorbereiding niet helemaal goed: ${PREP.filter(p=>!!st.prep[p.id]!==p.ok).map(p=>esc(p.label.toLowerCase())).join('; ')}</p>`:''}
     ${st.jeCount>0?`<p class="chip warn" style="align-self:flex-start">Je zei ${st.jeCount}× “je/jij” tegen de cliënt. Gebruik steeds “u”.</p>`:''}
     ${secs.map(s=>`<div class="sec"><div class="sh"><span>${s.code} · ${esc(s.title)}</span><span class="sc">${s.pts}/${s.max}</span></div>
@@ -1664,7 +1788,7 @@ function resView(c){
     <h2>Uitslag oefenexamen ${c.id} · ${esc(c.place)}</h2>
     <p class="muted">${esc(S.name||'Naam nog niet ingevuld')}${S.klas?' · '+esc(S.klas):''} · niveau ${S.level.toUpperCase()}</p>
     <div class="tablewrap"><table class="restab"><thead><tr><th>Opdracht</th><th></th><th class="r">Score</th><th class="r">Max</th></tr></thead><tbody>
-      ${rows.map(x=>`<tr><td>D${x[0]}</td><td>${x[1]}${x[2]==='o2'&&r.o2?`<div class="small muted">${r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(' · ')} · ${r.o2.mode==='oefen'?'oefenmodus, '+(r.o2.peeks||0)+'× gespiekt':'examenmodus'}</div>`:''}${x[2]==='o2'&&r.o2&&r.o2.disputes&&r.o2.disputes.length?`<div class="small" style="color:var(--warn)">Betwist door leerling: ${r.o2.disputes.map(esc).join('; ')}</div>`:''}${x[2]==='o3'&&r.o3?`<div class="small muted">materialen ${r.o3.mats}/${r.o3.matMax||2} · volgorde ${r.o3.order}/5 · vragen ${r.o3.oral}/${r.o3.oralMax||2}</div>`:''}</td><td class="r">${r[x[2]]?r[x[2]].score:'–'}</td><td class="r">${x[3]}</td></tr>`).join('')}
+      ${rows.map(x=>`<tr><td>D${x[0]}</td><td>${x[1]}${x[2]==='o2'&&r.o2?`<div class="small muted">${r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(' · ')} · ${modeText(r.o2.mode,r.o2.peeks,r.o2.hints)}</div>`:''}${x[2]==='o2'&&r.o2&&r.o2.disputes&&r.o2.disputes.length?`<div class="small" style="color:var(--warn)">Betwist door leerling: ${r.o2.disputes.map(esc).join('; ')}</div>`:''}${x[2]==='o3'&&r.o3?`<div class="small muted">materialen ${r.o3.mats}/${r.o3.matMax||2} · volgorde ${r.o3.order}/5 · vragen ${r.o3.oral}/${r.o3.oralMax||2}</div>`:''}</td><td class="r">${r[x[2]]?r[x[2]].score:'–'}</td><td class="r">${x[3]}</td></tr>`).join('')}
     </tbody><tfoot><tr><td colspan="2">Totaal onderdeel D</td><td class="r">${tot}</td><td class="r">25</td></tr></tfoot></table></div>
     ${!doneAll?'<p class="chip warn" style="align-self:flex-start">Nog niet alle opdrachten gemaakt.</p>':''}
     <div class="card mailbox">
@@ -1685,7 +1809,7 @@ function resView(c){
 function resultText(c){
     const r=S.results[c.id]||{}; const g=k=>r[k]?r[k].score:'-';
     const tot=['o1','o2','o3','o4'].reduce((a,k)=>a+(r[k]?r[k].score:0),0);
-    return `Virtuele cliënt – oefenexamen ${c.id} (${c.place})\n${S.name||'-'} ${S.klas||''} · ${S.level.toUpperCase()}\nD1 vragen: ${g('o1')}/${(r.o1&&r.o1.max)||MAX().o1}\nD2 zorg op maat: ${g('o2')}/${(r.o2&&r.o2.max)||MAX().o2}${r.o2?' ('+r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(', ')+'; '+(r.o2.mode==='oefen'?'oefenmodus, '+(r.o2.peeks||0)+'× gespiekt':'examenmodus')+')':''}${r.o2&&r.o2.disputes&&r.o2.disputes.length?'\n   Betwist: '+r.o2.disputes.join('; '):''}\nD3 EHBO: ${g('o3')}/9\nD4 terugkijken: ${g('o4')}/2\nTotaal: ${tot}/25`;
+    return `Virtuele cliënt – oefenexamen ${c.id} (${c.place})\n${S.name||'-'} ${S.klas||''} · ${S.level.toUpperCase()}\nD1 vragen: ${g('o1')}/${(r.o1&&r.o1.max)||MAX().o1}\nD2 zorg op maat: ${g('o2')}/${(r.o2&&r.o2.max)||MAX().o2}${r.o2?' ('+r.o2.secs.map(s=>s.code+' '+s.pts+'/'+s.max).join(', ')+'; '+modeText(r.o2.mode,r.o2.peeks,r.o2.hints)+')':''}${r.o2&&r.o2.disputes&&r.o2.disputes.length?'\n   Betwist: '+r.o2.disputes.join('; '):''}\nD3 EHBO: ${g('o3')}/9\nD4 terugkijken: ${g('o4')}/2\nTotaal: ${tot}/25`;
 }
 function mailLink(c){
   const d=DOCENTEN[S.docent]; if(!d) return '#';
