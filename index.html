@@ -146,6 +146,7 @@ details.docent ul{margin:4px 0 0;padding-left:20px}
 .msg.c{background:var(--bubble-c);border-bottom-left-radius:4px;align-self:flex-start}
 .msg.s{background:var(--blue);color:var(--blue-ink);border-bottom-right-radius:4px;align-self:flex-end}
 .msg.a{align-self:center;background:transparent;border:1.5px dashed var(--line);font-style:italic;color:var(--muted);font-size:.9rem;max-width:92%;text-align:center}
+.msg.n.warnnote{color:var(--warn);font-weight:700}
 .msg.n{align-self:center;font-size:.88rem;color:var(--muted);text-align:center;max-width:92%}
 .msg em{font-style:italic;opacity:.85}
 .typing{align-self:flex-start;color:var(--muted);font-size:.88rem;font-style:italic}
@@ -267,6 +268,9 @@ video{width:100%;border-radius:10px;background:#000}
 .guide.say svg,.guide.say .gk{color:var(--blue)}
 .guide.do{border-color:var(--coral);background:var(--coral-soft)}
 .guide.do svg,.guide.do .gk{color:var(--coral)}
+.sayopts{flex-basis:100%;display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.sayopt{text-align:left;border:1.5px solid var(--blue);background:var(--sheet);color:var(--ink);border-radius:10px;padding:8px 12px;font-size:.95rem;min-height:42px}
+.sayopt:hover{background:var(--blue-soft)}
 .guide.exam{border-style:dashed}
 .guide.exam svg{color:var(--muted)}
 .guide.wait{border-style:dashed;color:var(--muted)}
@@ -977,6 +981,50 @@ const CASES = [
 }
 ];
 
+
+/* =========================================================
+   KEUZEZINNEN — per typ-stap één goede zin en twee zinnen met een veelgemaakte fout
+   ========================================================= */
+const SAYOPTS = {
+ A:{
+  'Begin het gesprek: groet meneer en vertel wie je bent.':['Goedemiddag meneer Van Leeuwen, ik ben {naam}, stagiair.',['Hé, gaan we?','Groet meneer netjes en zeg wie je bent.'],['Goedemiddag, kom jij even mee?','Zeg “u” tegen een cliënt, niet “jij”. En vertel wie je bent.']],
+  'Vertel meneer waarvoor je komt.':['Ik kom u helpen om in de rolstoel te gaan zitten. Daarna breng ik u naar de lift.',['Ik moet u even ophalen.','Vertel duidelijk wát je komt doen.'],['Kom op, we gaan.','Dit is onvriendelijk, en meneer weet niet wat er gaat gebeuren.']],
+  'Meneer vertelt iets over zijn ziekte. Reageer daarop.':['Dat kan ik me goed voorstellen. Wat vervelend voor u.',['Ach, dat valt vast wel mee.','Je neemt zijn zorgen niet serieus. Laat merken dat je het begrijpt.'],['Daar kan ik niks aan doen.','Laat merken dat je begrijpt hoe meneer zich voelt.']],
+  'Maak een praatje: toon interesse in meneer.':['Hoe was de bingo vanmiddag?',['Ik heb eigenlijk weinig tijd.','Toon interesse in meneer, bijvoorbeeld door te vragen naar zijn middag.'],['Heb jij nog gewonnen?','Goed dat je interesse toont, maar zeg “u”.']],
+  'Vertel meneer hoe hij straks moet opstaan. Geef duidelijke aanwijzingen.':['Straks schuift u naar voren en zet u uw voeten plat op de grond. Op drie gaan we staan.',['Kom, omhoog maar.','Geef meer uitleg: hoe moet meneer precies opstaan?'],['Ik trek je wel omhoog.','Trek nooit aan een cliënt, en zeg “u”.']],
+  'Vraag meneer hoe hij staat.':['Staat u goed?',['Zo, klaar.','Controleer of meneer goed staat.'],['Sta je goed?','Goede vraag, maar zeg “u”.']],
+  'Vraag meneer hoe hij zit.':['Zit u goed?',['Zo, u zit.','Vraag of meneer goed zit.'],['Lekker hè, zo’n stoel?','Vraag of meneer goed zit.']],
+  'Vraag of meneer zijn voeten zelf op de steunen kan zetten.':['Kunt u zelf uw voeten op de voetsteunen zetten?',['Ik zet uw voeten er wel even op.','Meneer kan dit zelf. Vraag of hij het zelf doet.'],['Voeten erop!','Vraag het vriendelijk en volledig.']],
+  'Rond het gesprek netjes af en neem afscheid.':['Kan ik nog iets voor u doen? Tot ziens, meneer!',['Doei!','Vraag ook of je nog iets voor meneer kan doen, en neem netjes afscheid.'],['Ik ga weer.','Neem netjes afscheid en vraag of meneer nog iets nodig heeft.']]
+ },
+ B:{
+  'Begin het gesprek: groet mevrouw en vertel wie je bent.':['Goedemiddag mevrouw Yilmaz, ik ben {naam}, stagiair.',['Hé, wakker worden!','Groet mevrouw rustig en vriendelijk en zeg wie je bent.'],['Hallo, ben jij al wakker?','Zeg “u” tegen een cliënt, niet “jij”. En vertel wie je bent.']],
+  'Vertel mevrouw waarvoor je komt.':['Ik kom u helpen om uit bed te komen. Straks gaat u bloemschikken.',['U moet eruit.','Vertel vriendelijk en duidelijk wát je komt doen.'],['Ik ben er even.','Vertel duidelijk wát je komt doen.']],
+  'Maak een praatje: toon interesse in mevrouw.':['Heeft u lekker gerust?',['Schiet u maar op.','Toon interesse in mevrouw, bijvoorbeeld door te vragen of ze goed gerust heeft.'],['Heb jij lekker geslapen?','Goed dat je interesse toont, maar zeg “u”.']],
+  'Mevrouw vertelt dat ze pijn heeft. Reageer daarop.':['Wat vervelend dat uw arm pijn doet. Ik doe het rustig aan.',['Dat gaat wel over.','Laat merken dat je begrijpt dat ze pijn heeft.'],['Ja ja.','Reageer echt op wat mevrouw vertelt.']],
+  'Vertel mevrouw hoe ze rechtop kan komen. Geef duidelijke aanwijzingen.':['Pakt u de papegaai met uw linkerhand en trekt u zich rustig op.',['Kom maar.','Geef meer uitleg: hoe kan mevrouw rechtop komen?'],['Ik trek je wel aan je arm omhoog.','Trek nooit aan een (zere) arm, en zeg “u”.']],
+  'Vraag mevrouw hoe ze zit.':['Zit u goed zo?',['Zo.','Vraag of mevrouw goed zit.'],['Zit je goed?','Goede vraag, maar zeg “u”.']],
+  'Vraag mevrouw om jou vast te pakken.':['Wilt u mij vastpakken? Dan pak ik u ook vast.',['Daar gaan we.','Vertel mevrouw wat ze moet doen: jou vastpakken.'],['Hou je vast.','Vraag het vriendelijk en zeg “u”.']],
+  'Vraag mevrouw hoe ze staat.':['Staat u goed?',['Zo, u staat.','Controleer of mevrouw goed staat.'],['Sta je stevig?','Goede vraag, maar zeg “u”.']],
+  'Rond het gesprek netjes af en neem afscheid.':['Is alles naar wens? Fijne middag, mevrouw!',['Doei!','Vraag ook of alles naar wens is, en neem netjes afscheid.'],['Klaar.','Neem netjes afscheid en vraag of mevrouw nog iets nodig heeft.']]
+ },
+ C:{
+  'Begin het gesprek: groet meneer en vertel wie je bent.':['Goedemiddag meneer Pinas, ik ben {naam}.',['Hé! Kom je?','Groet meneer netjes, zeg wie je bent en zeg “u”.'],['Daar ben ik weer.','Groet meneer en vertel wie je bent.']],
+  'Meneer verstaat je niet goed. Zeg het rustig nog een keer.':['Ik ben {naam}. Ik kom u ophalen voor het samen koken.',['Dat zei ik toch al!','Blijf geduldig en herhaal rustig wat je zei.'],['Laat maar.','Herhaal wat je zei, rustig en duidelijk.']],
+  'Vertel meneer waarvoor je komt.':['Ik kom u ophalen voor het samen koken in de keuken.',['Opstaan!','Vertel vriendelijk wát je komt doen.'],['Ik ben er.','Vertel duidelijk wát je komt doen.']],
+  'Meneer heeft geen zin. Moedig hem aan om mee te gaan.':['Kevin is er ook al. Het wordt vast heel gezellig!',['Je moet gewoon mee.','Dwing meneer niet. Vertel wat er leuk is aan de activiteit, en zeg “u”.'],['Oké, dan blijft u hier.','Probeer meneer te stimuleren om toch mee te gaan.']],
+  'Meneer is verdrietig. Vraag wat er is.':['Wat is er aan de hand?',['Niet verdrietig zijn, hoor.','Vraag eerst wat er is.'],['Kom, we gaan.','Meneer is verdrietig. Vraag wat er is.']],
+  'Reageer op wat meneer vertelt.':['Wat jammer dat u Tijger mist. Dat snap ik goed.',['Het is maar een kat.','Neem zijn gevoel serieus en toon begrip.'],['Oké.','Laat merken dat je begrijpt hoe meneer zich voelt.']],
+  'Maak een praatje: toon interesse in meneer.':['Hoe bevalt het logeren hier?',['Schiet u maar op.','Toon interesse in meneer, bijvoorbeeld door te vragen hoe het logeren bevalt.'],['Vind jij het hier leuk?','Goed dat je interesse toont, maar zeg “u”.']],
+  'Meneer moet nog een schoen aan. Moedig hem aan om dat zelf te doen.':['Lukt het om uw schoen zelf aan te doen?',['Geef maar, dan doe ik het.','Meneer kan het zelf. Moedig hem aan.'],['Opschieten!','Wees geduldig en moedig meneer aan.']],
+  'Vraag of je meneer mag helpen met opstaan.':['Mag ik u helpen met opstaan?',['Hup, omhoog.','Vraag eerst of je mag helpen.'],['Ik trek je wel overeind.','Trek nooit aan een cliënt. Vraag of je mag helpen, en zeg “u”.']],
+  'Vraag meneer hoe hij staat.':['Staat u goed?',['Zo.','Controleer of meneer goed staat.'],['Sta je goed?','Goede vraag, maar zeg “u”.']],
+  'Neem afscheid van meneer.':['Veel plezier met koken, tot straks!',['Ik ga.','Neem vriendelijk afscheid.'],['…','Neem afscheid van meneer.']]
+ }
+};
+CASES.forEach(c=>(c.chat.guide||[]).forEach(g=>{ if(g.k==='say' && SAYOPTS[c.id] && SAYOPTS[c.id][g.t]) g.opts=SAYOPTS[c.id][g.t]; }));
+const firstName=()=> (S.name||'').trim().split(/\s+/)[0] || 'Sanne';
+
 /* =========================================================
    STATE
    ========================================================= */
@@ -1127,7 +1175,7 @@ function caseView(){
   return `<div class="casegrid">
     <nav class="rail" aria-label="Opdrachten">
       <button class="btn ghost sm back" id="home">← Alle examens</button>
-      ${TABS.map(t=>`<button class="tab" data-tab="${t.id}" aria-current="${view.tab===t.id}"><span class="n">${t.n}</span><span>${t.l}</span>${t.p?`<span class="p">${r[t.id]?r[t.id].score+'/':''}${MAX()[t.p]}p</span>`:'<span></span>'}</button>`).join('')}
+      ${TABS.map(t=>`<button class="tab" data-tab="${t.id}" aria-current="${view.tab===t.id}"><span class="n">${t.n}</span><span>${t.l}</span>${t.p?`<span class="p">${r[t.id]?r[t.id].score+'/'+(r[t.id].max||MAX()[t.p]):MAX()[t.p]}p</span>`:'<span></span>'}</button>`).join('')}
     </nav>
     <main class="sheet" id="sheet">${tabContent(c)}</main>
   </div>`;
@@ -1288,7 +1336,7 @@ function chatView(c){
     <div class="chatgrid">
       <div class="chatbox">
         <div class="chathead"><span class="ava">${esc(ch.ini)}</span><div><b>${esc(ch.short)}</b><div class="small muted">${esc(c.place)}</div></div></div>
-        <div class="log" id="log" aria-live="polite">${st.log.map(m=>`<div class="msg ${m.k}">${m.k==='s'?esc(m.t):fmtAct(m.t)}</div>`).join('')}${st.busy?'<div class="typing">'+esc(ch.short)+' typt …</div>':''}</div>
+        <div class="log" id="log" aria-live="polite">${st.log.map(m=>`<div class="msg ${m.k}${m.k==='n'&&m.t.startsWith('Let op')?' warnnote':''}">${m.k==='s'?esc(m.t):fmtAct(m.t)}</div>`).join('')}${st.busy?'<div class="typing">'+esc(ch.short)+' typt …</div>':''}</div>
         <form class="composer" id="composer" autocomplete="off">
           <input id="say" class="${showHints(st)&&!st.ended&&(nextGuide(ch,st)||{}).k==='say'?'hint':''}" placeholder="Wat zeg je tegen ${esc(ch.aanspreek)}?" ${st.busy?'disabled':''} aria-label="Bericht">
           <button class="btn primary" ${st.busy?'disabled':''}>Zeg</button>
@@ -1322,11 +1370,14 @@ function showHints(st){ return st.mode==='oefen' || (st.mode==='tussen' && st.hi
 function guideHTML(ch,st){
   if(st.mode==='examen') return `<div class="guide exam" role="note">${ico('talk')}<span><b>Typ</b> wat je zegt tegen de cliënt. <b>Klik</b> op wat je doet. In het echte rollenspel praat je ook tijdens het helpen. Je bepaalt zelf wanneer.</span></div>`;
   if(st.mode==='tussen' && !st.hintOn) return `<div class="guide wait" role="note"><span>Weet je even niet wat je moet doen? Na 30 seconden zonder actie krijg je een hint.</span><button class="btn sm ghost" id="hint-now">Hint</button>${st.hints?`<span class="small muted">${st.hints}× hint gebruikt</span>`:''}</div>`;
-  const g = st.ended ? {k:'end'} : nextGuide(ch,st);
+  let g = nextGuide(ch,st);
+  if(st.ended && !(g && g.k==='say')) g={k:'end'};
   if(!g) return `<div class="guide end" role="status"><span class="gk">Klaar?</span><span>Neem afscheid als je dat nog niet deed en klik op <b>Rollenspel afronden en beoordelen</b>.</span></div>`;
   if(g.k==='end') return st.said.bye ? `<div class="guide end" role="status"><span class="gk">Klaar</span><span>Klik op <b>Rollenspel afronden en beoordelen</b>.</span></div>`
     : `<div class="guide end" role="status"><span class="gk">Bijna klaar</span><span>Neem afscheid in de chat en klik daarna op <b>Rollenspel afronden en beoordelen</b>.</span></div>`;
-  return `<div class="guide ${g.k}" role="status">${ico(g.k==='say'?'talk':'hands')}<span class="gk">${st.mode==='tussen'?'Hint: '+(g.k==='say'?'nu typen':'nu klikken'):(g.k==='say'?'Nu typen':'Nu klikken')}</span><span>${esc(g.t)}${g.k==='do'&&g.g?` <span class="small muted">(onderdeel ${esc(g.g)})</span>`:''}</span></div>`;
+  const optsHTML = (g.k==='say' && g.opts) ? (()=>{ const ord=((st.optOrder ||= {})[g.t] ||= shuffle([0,1,2]));
+      return `<div class="sayopts"><span class="small muted">${(st.sayFail&&st.sayFail[g.t]>=2)?'Lukt het niet? ':''}Kies een zin, of typ zelf:</span>${ord.map(i=>{ const o=g.opts[i]; const txt=(Array.isArray(o)?o[0]:o).replace('{naam}',firstName()); return `<button class="sayopt" data-sayopt="${i}">${esc(txt)}</button>`; }).join('')}</div>`; })() : '';
+  return `<div class="guide ${g.k}" role="status">${ico(g.k==='say'?'talk':'hands')}<span class="gk">${st.mode==='tussen'?'Hint: '+(g.k==='say'?'nu typen':'nu klikken'):(g.k==='say'?'Nu typen':'Nu klikken')}</span><span>${esc(g.t)}${g.k==='do'&&g.g?` <span class="small muted">(onderdeel ${esc(g.g)})</span>`:''}</span>${optsHTML}</div>`;
 }
 function prepTimer(st,min){
   const m=Math.floor(st.timeLeft/60), s=st.timeLeft%60;
@@ -1361,6 +1412,13 @@ function bindChat(c){
   bindAi(st);
   document.querySelectorAll('details.agrp').forEach(d=>d.ontoggle=()=>{ (st.openGrp ||= {})[d.dataset.grp]=d.open; });
   const keepRender=()=>{ const v=$('#say')?.value; const f=document.activeElement&&document.activeElement.id==='say'; render(); if(v) $('#say').value=v; if(f) $('#say')?.focus(); };
+  document.querySelectorAll('[data-sayopt]').forEach(b=>b.onclick=async()=>{
+    const g=nextGuide(ch,st); if(!g||!g.opts) return; const o=g.opts[+b.dataset.sayopt];
+    const txt=(Array.isArray(o)?o[0]:o).replace('{naam}',firstName());
+    st.optUsed=(st.optUsed||0)+1;
+    await studentSays(c,st,txt);
+    if(Array.isArray(o)&&o[1]){ pushLog(st,'n','Let op: '+o[1]); render(); scrollLog(); }
+  });
   const hn=$('#hint-now'); if(hn) hn.onclick=()=>{ st.hintOn=true; st.hints++; keepRender(); };
   if(window.__hintTimer) clearInterval(window.__hintTimer);
   if(st.mode==='tussen' && !st.ended){
@@ -1474,7 +1532,9 @@ function analyse(c,st,raw){
 }
 
 async function studentSays(c,st,raw){
-  const ch=c.chat; st.lastAct=Date.now(); st.hintOn=false;
+  const ch=c.chat; st.lastAct=Date.now();
+  const g0 = st.mode!=='examen' ? nextGuide(ch,st) : null;
+  st.hintOn=false;
   pushLog(st,'s',raw);
   const t=analyse(c,st,raw);
   let lines=[];
@@ -1488,6 +1548,8 @@ async function studentSays(c,st,raw){
   if(!lines.length && RX.instr.test(t)) lines.push(pick(st,'instr',['*doet wat je zegt* Zo?','Oké ... *volgt je aanwijzing*','Zo goed?','*knikt en doet het*']));
   if(st.empathyOk && !st.used.empReply && st.concernAt>=0){ st.used.empReply=1; lines.push(pick(st,'emp',['Dank je. Fijn dat je dat zegt.','Ja ... dat is het ook. Fijn dat je het begrijpt.'])); }
   const beat=st.ended?null:runBeat(c,st); if(beat) lines.push(beat);
+  if(g0 && g0.k==='say' && nextGuide(ch,st)===g0){ st.sayFail ||= {}; st.sayFail[g0.t]=(st.sayFail[g0.t]||0)+1;
+    if(st.mode==='tussen' && st.sayFail[g0.t]>=2 && g0.opts){ st.hintOn=true; st.hints++; } }
   if(!lines.length) lines.push(t.trim().endsWith('?') ? pick(st,'fq',['Hm, dat weet ik eigenlijk niet.','Goeie vraag ...','Ik denk het wel.','Wat bedoel je precies?']) : pick(st,'fill',ch.fill));
 
   if(st.ai && SAMPLE){
